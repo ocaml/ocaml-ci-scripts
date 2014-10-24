@@ -1,6 +1,5 @@
-wget https://github.com/samoht/ocaml-travisci-skeleton/blob/master/.opam-travis.sh
-chmod +x opam-travis.sh
-./opam-travis.sh
+wget https://raw.githubusercontent.com/samoht/ocaml-travisci-skeleton/master/.travis-opam.sh
+sh .travis-opam.sh
 
 eval `opam config env`
 ./configure --enable-tests

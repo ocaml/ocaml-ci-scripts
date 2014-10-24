@@ -6,4 +6,7 @@
 
 2. Copy `.travis.yml` and `.travis-ci.sh` at the root of your project.
 
-3. Enable Travis runs on `https://travis-ci.org/profile/<YOURGITHUBID>`
+3. (optional) If needed, update `.travis-ci.sh` to tweaks the commands
+   to run to test your project.
+
+4. Enable Travis runs on `https://travis-ci.org/profile/<YOURGITHUBID>`

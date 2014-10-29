@@ -18,6 +18,8 @@ pkg=my-package
 opam init -a
 opam pin add $pkg . -n
 
+IPS='
+'
 depext=`opam list --required-by $pkg -e ubuntu -s`
 if [ "$depext" != "" ]; then
   echo Ubuntu depexts: $depext

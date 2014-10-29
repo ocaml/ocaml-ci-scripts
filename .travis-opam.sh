@@ -12,8 +12,11 @@ sudo apt-get update -qq
 sudo apt-get install -y ocaml-compiler-libs ocaml-interp ocaml-base-nox ocaml-base ocaml ocaml-nox ocaml-native-compilers camlp4 camlp4-extra opam
 
 export OPAMYES=1
+
+pkg=my-package
+
 opam init -a
-opam pin add local-package . -n
+opam pin add $pkg . -n
 
 depext=`opam install $pkg -e ubuntu`
 if [ "$depext" != "" ]; then
@@ -26,4 +29,4 @@ if [ "$srcext" != "" ]; then
   curl -sL ${srcext} | bash
 fi
 
-opam install local-package --deps-only --build-test
+opam install $pkg --deps-only --build-test

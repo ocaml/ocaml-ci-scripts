@@ -14,4 +14,16 @@ sudo apt-get install -y ocaml-compiler-libs ocaml-interp ocaml-base-nox ocaml-ba
 export OPAMYES=1
 opam init -a
 opam pin add local-package . -n
+
+depext=`opam install $pkg -e ubuntu`
+if [ "$depext" != "" ]; then
+  echo Ubuntu depexts: $depext
+  sudo apt-get install -qq pkg-config build-essential m4 $depext
+fi
+srcext=`opam install $pkg -e source,linux`
+if [ "$srcext" != "" ]; then
+  echo Ubuntu srcext: $srcext
+  curl -sL ${srcext} | bash
+fi
+
 opam install local-package --deps-only --build-test

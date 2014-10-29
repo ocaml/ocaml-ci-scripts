@@ -7,7 +7,7 @@ case "$OCAML_VERSION" in
 esac
 
 sudo add-apt-repository "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
-sudo add-apt-repository --yes ppa:$ppa
+sudo add-apt-repository --yes ppa:${ppa}
 sudo apt-get update -qq
 sudo apt-get install -y ocaml-compiler-libs ocaml-interp ocaml-base-nox ocaml-base ocaml ocaml-nox ocaml-native-compilers camlp4 camlp4-extra opam
 
@@ -16,19 +16,19 @@ export OPAMYES=1
 pkg=my-package
 
 opam init -a
-opam pin add $pkg . -n
+opam pin add ${pkg} . -n
 
-IPS='
+export IFS='
 '
-depext=`opam list --required-by $pkg -e ubuntu -s`
+depext=`opam list --required-by ${pkg} -e ubuntu -s`
 if [ "$depext" != "" ]; then
-  echo Ubuntu depexts: $depext
-  sudo apt-get install -qq $depext
+  echo Ubuntu depexts: "${depext}"
+  sudo apt-get install -qq ${depext}
 fi
-srcext=`opam list --required-by $pkg -e source,linux -s`
+srcext=`opam list --required-by ${pkg} -e source,linux -s`
 if [ "$srcext" != "" ]; then
-  echo Ubuntu srcext: $srcext
+  echo Ubuntu srcext: "${srcext}"
   curl -sL ${srcext} | bash
 fi
 
-opam install $pkg --deps-only --build-test
+opam install ${pkg} --deps-only --build-test

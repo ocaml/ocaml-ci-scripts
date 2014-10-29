@@ -18,12 +18,12 @@ pkg=my-package
 opam init -a
 opam pin add $pkg . -n
 
-depext=`opam install $pkg -e ubuntu`
+depext=`opam list $pkg -e ubuntu -s`
 if [ "$depext" != "" ]; then
   echo Ubuntu depexts: $depext
-  sudo apt-get install -qq pkg-config build-essential m4 $depext
+  sudo apt-get install -qq $depext
 fi
-srcext=`opam install $pkg -e source,linux`
+srcext=`opam list $pkg -e source,linux -s`
 if [ "$srcext" != "" ]; then
   echo Ubuntu srcext: $srcext
   curl -sL ${srcext} | bash

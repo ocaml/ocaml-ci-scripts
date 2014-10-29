@@ -18,14 +18,12 @@ pkg=my-package
 opam init -a
 opam pin add ${pkg} . -n
 
-export IFS='
-'
-depext=`opam list --required-by ${pkg} -e ubuntu -s`
+depext=`opam list --required-by ${pkg} --rec -e ubuntu -s | tr '\n' ' '`
 if [ "$depext" != "" ]; then
   echo Ubuntu depexts: "${depext}"
   sudo apt-get install -qq ${depext}
 fi
-srcext=`opam list --required-by ${pkg} -e source,linux -s`
+srcext=`opam list --required-by ${pkg} --rec -e source,linux -s | tr '\n' ' '`
 if [ "$srcext" != "" ]; then
   echo Ubuntu srcext: "${srcext}"
   curl -sL ${srcext} | bash

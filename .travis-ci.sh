@@ -2,7 +2,9 @@ wget https://raw.githubusercontent.com/samoht/ocaml-travisci-skeleton/master/.tr
 sh .travis-opam.sh
 
 eval `opam config env`
-./configure --enable-tests
+prefix=`opam config var prefix`
+
+./configure --prefix=$prefix --enable-tests
 make
 make test
 make install

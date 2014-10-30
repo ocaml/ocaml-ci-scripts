@@ -1,5 +1,3 @@
-cat .travis-opam.sh
-
 case "$OCAML_VERSION" in
 3.12) ppa=avsm/ocaml312+opam12 ;;
 4.00) ppa=avsm/ocaml40+opam12  ;;

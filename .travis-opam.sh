@@ -15,22 +15,28 @@ export OPAMYES=1
 
 pkg=my-package
 
+# Init opam
 opam init -a
 opam pin add ${pkg} . -n
 
+# Install the external dependencies
 depext=`opam list --required-by ${pkg} --rec -e ubuntu -s | tr '\n' ' ' | sed 's/ *$//'`
 if [ "$depext" != "" ]; then
   echo Ubuntu depexts: "${depext}"
   sudo apt-get install -qq ${depext}
 fi
+
+# Install the external source dependencies
 srcext=`opam list --required-by ${pkg} --rec -e source,linux -s | tr '\n' ' ' | sed 's/ *$//'`
 if [ "$srcext" != "" ]; then
   echo Ubuntu srcext: "${srcext}"
   curl -sL ${srcext} | bash
 fi
 
+# Install the OCaml dependencies
+opam install ${pkg} --deps-only --build-test
+
 if [ "$OPAM_INSTALL" != "false" ]; then
-    opam install ${pkg} --deps-only --build-test
     opam install ${pkg} -v -t
     opam remove ${pkg} -v
     opam install ${pkg}

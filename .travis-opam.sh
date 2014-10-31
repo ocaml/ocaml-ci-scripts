@@ -44,5 +44,6 @@ fi
 
 # Compile and run the tests as well
 if [ "$OPAM_TEST" != "false" ]; then
+    opam install ${pkg} --deps-only -t
     opam install ${pkg} -v -t
 fi

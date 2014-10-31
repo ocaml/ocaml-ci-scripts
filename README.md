@@ -15,9 +15,9 @@
     file contains only the line with `OCAML_VERSION=latest`):
 
     ````
-  - env OCAML_VERSION=3.12
-  - env OCAML_VERSION=4.00
-  - env OCAML_VERSION=4.01
-  - env OCAML_VERSION=4.02
-  - env OCAML_VERSION=latest
+  - OCAML_VERSION=3.12
+  - OCAML_VERSION=4.00
+  - OCAML_VERSION=4.01
+  - OCAML_VERSION=4.02
+  - OCAML_VERSION=latest
     ````

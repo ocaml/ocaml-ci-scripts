@@ -29,4 +29,9 @@ if [ "$srcext" != "" ]; then
   curl -sL ${srcext} | bash
 fi
 
-opam install ${pkg} --deps-only --build-test
+if [ "$OPAM_INSTALL" != "false" ]; then
+    opam install ${pkg} --deps-only --build-test
+    opam install ${pkg} -v -t
+    opam remove ${pkg} -v
+    opam install ${pkg}
+fi

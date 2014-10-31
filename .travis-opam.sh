@@ -34,10 +34,15 @@ if [ "$srcext" != "" ]; then
 fi
 
 # Install the OCaml dependencies
-opam install ${pkg} --deps-only --build-test
+opam install ${pkg} --deps-only
 
+# Simple installation/removal test
 if [ "$OPAM_INSTALL" != "false" ]; then
-    opam install ${pkg} -v -t
+    opam install ${pkg} -v
     opam remove ${pkg} -v
-    opam install ${pkg}
+fi
+
+# Compile and run the tests as well
+if [ "$OPAM_TEST" != "false" ]; then
+    opam install ${pkg} -v -t
 fi

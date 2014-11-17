@@ -21,3 +21,5 @@
   - OCAML_VERSION=4.02
   - OCAML_VERSION=latest
     ````
+
+5. (optional) Set `PACKAGE=<name of your package>`. By default, the script will use `my-package` as package name, which might not be what you want if your tests consist of installing reverse dependencies.

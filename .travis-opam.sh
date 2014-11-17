@@ -13,7 +13,7 @@ sudo apt-get install -y ocaml-compiler-libs ocaml-interp ocaml-base-nox ocaml-ba
 
 export OPAMYES=1
 
-pkg=my-package
+pkg=${PACKAGE:-my-package}
 
 # Init opam
 opam init -a

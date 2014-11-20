@@ -51,4 +51,6 @@ if [ "$OPAM_TEST" != "false" ]; then
     opam install ${pkg} --deps-only -t
     echo opam install ${pkg} -v -t
     opam install ${pkg} -v -t
+    echo "opam remove ${pkg} -v"
+    opam remove ${pkg} -v
 fi

@@ -17,6 +17,7 @@ pkg=${PACKAGE:-my-package}
 
 # Init opam
 opam init -a
+opam update
 opam pin add ${pkg} . -n
 
 # Install the external dependencies

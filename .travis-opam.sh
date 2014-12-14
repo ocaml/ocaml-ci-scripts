@@ -54,3 +54,15 @@ if [ "$OPAM_TEST" != "false" ]; then
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
 fi
+
+# Compile with optional dependencies
+if [ "$OPAM_DEPOPTS" != "" ]; then
+    echo "opam install ${DEPOPTS}"
+    opam install ${DEPOPTS}
+    echo opam install ${pkg} -v
+    opam install ${pkg} -v
+    echo "opam remove ${pkg} -v"
+    opam remove ${pkg} -v
+    echo "opam remove ${DEPOPTS}"
+    opam remove ${DEPOPTS}
+fi

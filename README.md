@@ -1,5 +1,7 @@
 ## Travis CI skeleton for OCaml projects
 
+Instructions:
+
 1. Create an `opam` file at the root of your project. If you use opam
    1.2, you can simply do `opam pin add PKG .` -- this will open an
    editor and propose you a template.
@@ -10,16 +12,73 @@
    `https://travis-ci.org/profile/<YOURGITHUBID>` (sign in with your
    Github account and click on `+` on top of the left pane).
 
-4. (optional) If you want to support multiple OCaml versions, update
-   `.travis.yml` to add some of the following lines (by default, the
-    file contains only the line with `OCAML_VERSION=latest`):
+And that's it! You can have more control over the things that Travis
+CI is testing by looking at the next sections.
 
-    ````
-  - OCAML_VERSION=3.12
-  - OCAML_VERSION=4.00
-  - OCAML_VERSION=4.01
-  - OCAML_VERSION=4.02
-  - OCAML_VERSION=latest
-    ````
 
-5. (optional) Set `PACKAGE=<name of your package>`. By default, the script will use `my-package` as package name, which might not be what you want if your tests consist of installing reverse dependencies.
+### Testing Multiple Compilers
+
+````shell
+env:
+  - OCAML_VERSION=3.12 [...]
+  - OCAML_VERSION=4.00 [...]
+  - OCAML_VERSION=4.01 [...]
+  - OCAML_VERSION=4.02 [...]
+  - OCAML_VERSION=latest [...]
+````
+
+Add one line per compiler version you want to test. `latest` is the
+latest stable version of OCaml. The `[...]` are other environments
+variables set for this Travis CI run (see next sections).
+
+
+### Setting the Package Name
+
+```shell
+env:
+  - [...] PACKAGE=<name of your package> [...]
+```
+
+By default, the script will use `my-package` as package name, which
+might not be what you want if your tests consist of installing reverse
+dependencies.
+
+
+### Basic Run
+
+```shell
+env:
+  - [...] INSTALL=<bool> [...]
+```
+
+By default, the script will start by doing a basic installation
+run. Use `INSTALL=false` to disable that run.
+
+
+### Optional Dependencies
+
+```shell
+env:
+  - [...] DEPOPTS="<list of space-separated package names>" [...]
+```
+
+The script will make a run where it will try to install all of the
+optional dependencies which are specified before installing the
+current package.
+
+TODO: read the optional dependencies from the `opam` file.
+
+
+### Running the Tests
+
+```shell
+env:
+  - [...] TESTS=<bool> [...]
+```
+
+By default, the script will finish by a test run. Use `TESTS=false` to
+disable that run. By sure to have a `build-test` field in your opam file,
+otherwise this step is useless.
+
+TODO: check if the `build-test` field is empty in the `opam` file to
+know if the tests have to run.

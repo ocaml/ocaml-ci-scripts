@@ -10,7 +10,7 @@ install_run=${INSTALL:-true}
 depopts_run=${DEPOPTS:-false}
 
 # Run the test step
-tests_run=${TESTS:-false}
+tests_run=${TESTS:-true}
 
 
 ### Script

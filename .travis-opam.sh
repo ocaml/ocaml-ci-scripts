@@ -63,7 +63,7 @@ else
 fi
 
 # Compile with optional dependencies
-if [ "${depopts_run}" == "true" ]; then
+if [ "${depopts_run}" != "false" ]; then
     echo "opam install ${DEPOPTS}"
     opam install ${DEPOPTS}
     echo opam install ${pkg} -v
@@ -77,7 +77,7 @@ else
 fi
 
 # Compile and run the tests as well
-if [ "${tests_run}" != "true" ]; then
+if [ "${tests_run}" == "true" ]; then
     echo "opam install ${pkg} --deps-only -t"
     opam install ${pkg} --deps-only -t
     echo opam install ${pkg} -v -t

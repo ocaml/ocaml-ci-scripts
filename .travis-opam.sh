@@ -4,13 +4,13 @@
 pkg=${PACKAGE:-my-package}
 
 # Run the basic installation step
-install=${INSTALL:-true}
+install_run=${INSTALL:-true}
 
 # Run the optional dependency step
-depopts=${DEPOPTS:-false}
+depopts_run=${DEPOPTS:-false}
 
 # Run the test step
-tests=${TESTS:-false}
+tests_run=${TESTS:-false}
 
 
 ### Script
@@ -53,7 +53,7 @@ echo "opam install ${pkg} --deps-only"
 opam install ${pkg} --deps-only
 
 # Simple installation/removal test
-if [ "${install}" == "true" ]; then
+if [ "${install_run}" == "true" ]; then
     echo "opam install ${pkg} -v"
     opam install ${pkg} -v
     echo "opam remove ${pkg} -v"
@@ -63,7 +63,7 @@ else
 fi
 
 # Compile with optional dependencies
-if [ "${depopts}" == "true" ]; then
+if [ "${depopts_run}" == "true" ]; then
     echo "opam install ${DEPOPTS}"
     opam install ${DEPOPTS}
     echo opam install ${pkg} -v
@@ -77,7 +77,7 @@ else
 fi
 
 # Compile and run the tests as well
-if [ "${tests}" != "true" ]; then
+if [ "${tests_run}" != "true" ]; then
     echo "opam install ${pkg} --deps-only -t"
     opam install ${pkg} --deps-only -t
     echo opam install ${pkg} -v -t

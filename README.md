@@ -12,6 +12,9 @@ Instructions:
    `https://travis-ci.org/profile/<YOURGITHUBID>` (sign in with your
    Github account and click on `+` on top of the left pane).
 
+And that's it! You can have more control over the things that Travis
+CI is testing by looking at the next sections.
+
 
 ### Testing Multiple Compilers
 
@@ -63,7 +66,7 @@ The script will make a run where it will try to install all of the
 optional dependencies which are specified before installing the
 current package.
 
-TODO: read the optional dependencies in the `opam` file.
+TODO: read the optional dependencies from the `opam` file.
 
 
 ### Running the Tests
@@ -74,4 +77,8 @@ env:
 ```
 
 By default, the script will finish by a test run. Use `TESTS=false` to
-disable that run.
+disable that run. By sure to have a `build-test` field in your opam file,
+otherwise this step is useless.
+
+TODO: check if the `build-test` field is empty in the `opam` file to
+know if the tests have to run.

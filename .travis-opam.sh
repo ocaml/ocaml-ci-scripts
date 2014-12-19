@@ -70,16 +70,18 @@ fi
 
 # Compile with optional dependencies
 if [ "${depopts_run}" != "false" ]; then
-    echo "opam install ${DEPOPTS}"
-    opam install ${DEPOPTS}
+    # pick from $DEPOPTS if set or query OPAM
+    depopts=${DEPOPTS:-$(opam show ${pkg} | grep -oP 'depopts: \K(.*)' | sed 's/ | / /g')}
+    echo "opam install ${depopts}"
+    opam install ${depopts}
     echo opam install ${pkg} -v
     install -v
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
-    echo "opam remove ${DEPOPTS}"
-    opam remove ${DEPOPTS}
+    echo "opam remove ${depopts}"
+    opam remove ${depopts}
 else
-    echo "DEPOPTS is empty, skipping the optional dependency run."
+    echo "DEPOPTS=false, skipping the optional dependency run."
 fi
 
 # Compile and run the tests as well

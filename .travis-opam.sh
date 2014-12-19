@@ -15,6 +15,12 @@ tests_run=${TESTS:-true}
 
 ### Script
 
+install() {
+  eval ${PRE_INSTALL_HOOK}
+  opam install ${pkg} $@
+  eval ${POST_INSTALL_HOOK}
+}
+
 case "$OCAML_VERSION" in
 3.12) ppa=avsm/ocaml312+opam12 ;;
 4.00) ppa=avsm/ocaml40+opam12  ;;
@@ -55,7 +61,7 @@ opam install ${pkg} --deps-only
 # Simple installation/removal test
 if [ "${install_run}" == "true" ]; then
     echo "opam install ${pkg} -v"
-    opam install ${pkg} -v
+    install -v
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
 else
@@ -67,7 +73,7 @@ if [ "${depopts_run}" != "false" ]; then
     echo "opam install ${DEPOPTS}"
     opam install ${DEPOPTS}
     echo opam install ${pkg} -v
-    opam install ${pkg} -v
+    install -v
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
     echo "opam remove ${DEPOPTS}"
@@ -81,7 +87,7 @@ if [ "${tests_run}" == "true" ]; then
     echo "opam install ${pkg} --deps-only -t"
     opam install ${pkg} --deps-only -t
     echo opam install ${pkg} -v -t
-    opam install ${pkg} -v -t
+    install -v -t
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
 else

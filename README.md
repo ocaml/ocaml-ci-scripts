@@ -82,3 +82,12 @@ otherwise this step is useless.
 
 TODO: check if the `build-test` field is empty in the `opam` file to
 know if the tests have to run.
+
+### Hooks
+
+If you want to execute some commands before or after the installation, use
+`PRE_INSTALL_HOOK="command1; command2"` or similarly `POST_INSTALL_HOOK`.
+These only get executed when installing your package, not the dependencies.
+
+The hook functionality might be useful for running commands like OASIS to
+generate build files which are not checked into the repository.

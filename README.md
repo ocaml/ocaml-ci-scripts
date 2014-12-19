@@ -18,14 +18,14 @@ CI is testing by looking at the next sections.
 
 ### Testing Multiple Compilers
 
-````shell
+```shell
 env:
   - OCAML_VERSION=3.12 [...]
   - OCAML_VERSION=4.00 [...]
   - OCAML_VERSION=4.01 [...]
   - OCAML_VERSION=4.02 [...]
   - OCAML_VERSION=latest [...]
-````
+```
 
 Add one line per compiler version you want to test. `latest` is the
 latest stable version of OCaml. The `[...]` are other environments
@@ -57,16 +57,20 @@ run. Use `INSTALL=false` to disable that run.
 
 ### Optional Dependencies
 
-```shell
-env:
-  - [...] DEPOPTS="<list of space-separated package names>" [...]
-```
-
 The script will make a run where it will try to install all of the
 optional dependencies which are specified before installing the
 current package.
 
-TODO: read the optional dependencies from the `opam` file.
+This information is read from the `opam` file per default, but it is also
+possible to specify sets of optional dependencies that will be tried instead,
+e.g. for testing multiple configurations with different set of dependencies.
+These package names do not need to be defined in the `opam` file, they can be
+any package in the OPAM repository.
+
+```shell
+env:
+  - [...] DEPOPTS="<list of space-separated package names>" [...]
+```
 
 
 ### Running the Tests
@@ -83,7 +87,14 @@ otherwise this step is useless.
 TODO: check if the `build-test` field is empty in the `opam` file to
 know if the tests have to run.
 
+
 ### Hooks
+
+```shell
+env:
+  - [...] PRE_INSTALL_HOOK="multiple; shell; commands" [...]
+  - [...] POST_INSTALL_HOOK="multiple; shell; commands" [...]
+```
 
 If you want to execute some commands before or after the installation, use
 `PRE_INSTALL_HOOK="command1; command2"` or similarly `POST_INSTALL_HOOK`.

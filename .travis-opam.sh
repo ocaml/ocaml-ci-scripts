@@ -16,9 +16,18 @@ tests_run=${TESTS:-true}
 ### Script
 
 install() {
+  if [ "$EXTRA_DEPS" != "" ]; then
+    opam install $EXTRA_DEPS
+  fi
+
   eval ${PRE_INSTALL_HOOK}
+  echo "opam install ${pkg} $@"
   opam install ${pkg} $@
   eval ${POST_INSTALL_HOOK}
+
+  if [ "$EXTRA_DEPS" != "" ]; then
+    opam remove $EXTRA_DEPS
+  fi
 }
 
 case "$OCAML_VERSION" in
@@ -60,7 +69,6 @@ opam install ${pkg} --deps-only
 
 # Simple installation/removal test
 if [ "${install_run}" == "true" ]; then
-    echo "opam install ${pkg} -v"
     install -v
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
@@ -74,7 +82,6 @@ if [ "${depopts_run}" != "false" ]; then
     depopts=${DEPOPTS:-$(opam show ${pkg} | grep -oP 'depopts: \K(.*)' | sed 's/ | / /g')}
     echo "opam install ${depopts}"
     opam install ${depopts}
-    echo opam install ${pkg} -v
     install -v
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v
@@ -88,7 +95,6 @@ fi
 if [ "${tests_run}" == "true" ]; then
     echo "opam install ${pkg} --deps-only -t"
     opam install ${pkg} --deps-only -t
-    echo opam install ${pkg} -v -t
     install -v -t
     echo "opam remove ${pkg} -v"
     opam remove ${pkg} -v

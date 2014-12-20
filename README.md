@@ -73,6 +73,19 @@ env:
 ```
 
 
+### Extra Dependencies
+
+Optional dependencies will be installed only in the optional dependencies run
+but are not available during the normal run. But there might be a case when a
+package is required but not part of the `opam` file. One example for this is
+`oasis`, which needs to be installed before attempting to build the package.
+
+```shell
+env:
+  - [...] EXTRA_DEPS="<list of space-separated package names>" [...]
+```
+
+
 ### Running the Tests
 
 ```shell

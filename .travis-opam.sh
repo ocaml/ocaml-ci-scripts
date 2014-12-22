@@ -48,6 +48,7 @@ export OPAMYES=1
 # Init opam
 opam init -a
 opam pin add ${pkg} . -n
+eval $(opam config env)
 
 # Install the external dependencies
 depext=`opam list --required-by ${pkg} --rec -e ubuntu -s | tr '\n' ' ' | sed 's/ *$//'`

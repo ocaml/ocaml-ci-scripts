@@ -12,8 +12,10 @@ depopts_run=${DEPOPTS:-false}
 # Run the test step
 tests_run=${TESTS:-true}
 
-
 ### Script
+
+set -ue
+unset TESTS
 
 install() {
   if [ "$EXTRA_DEPS" != "" ]; then

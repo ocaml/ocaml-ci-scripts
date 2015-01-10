@@ -12,6 +12,11 @@ depopts_run=${DEPOPTS:-false}
 # Run the test step
 tests_run=${TESTS:-true}
 
+# other variables
+EXTRA_DEPS=${EXTRA_DEPS:-""}
+PRE_INSTALL_HOOK=${PRE_INSTALL_HOOK:-""}
+POST_INSTALL_HOOK=${POST_INSTALL_HOOK:-""}
+
 ### Script
 
 set -ue

@@ -12,6 +12,9 @@ depopts_run=${DEPOPTS:-false}
 # Run the test step
 tests_run=${TESTS:-true}
 
+# Run the reverse dependency rebuild step
+revdep_run=${REVDEPS:-false}
+
 # other variables
 EXTRA_DEPS=${EXTRA_DEPS:-""}
 PRE_INSTALL_HOOK=${PRE_INSTALL_HOOK:-""}
@@ -108,4 +111,16 @@ if [ "${tests_run}" == "true" ]; then
     opam remove ${pkg} -v
 else
     echo "TESTS=false, skipping the test run."
+fi
+
+if [ "${revdep_run}" != "false" ]; then
+    packages=$(opam list --depends-on ${pkg} --short)
+    for dependency in $packages; do
+        echo "opam install ${dependency}"
+        opam install ${dependency}
+        echo "opam remove ${dependency}"
+        opam remove ${dependency}
+    done
+else
+    echo "REVDEPS=false, skipping the reverse dependency rebuild run."
 fi

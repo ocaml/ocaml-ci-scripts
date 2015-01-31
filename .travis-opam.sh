@@ -20,6 +20,9 @@ EXTRA_DEPS=${EXTRA_DEPS:-""}
 PRE_INSTALL_HOOK=${PRE_INSTALL_HOOK:-""}
 POST_INSTALL_HOOK=${POST_INSTALL_HOOK:-""}
 
+# the ocaml version to test
+OCAML_VERSION=$(OCAML_VERSION:-latest)
+
 ### Script
 
 set -ue

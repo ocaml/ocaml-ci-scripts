@@ -1,6 +1,6 @@
 ## mirage setup
 
-set -ue
+set -ex
 
 ## fetch+execute the OCaml/opam setup script
 wget https://raw.githubusercontent.com/mor1/ocaml-travisci-skeleton/master/.travis-ocaml.sh
@@ -35,7 +35,7 @@ if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
     git config --global user.name "Travis the Build Bot"
     git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment
 
-    DEPLOYD=${TRAVIS_REPO_SLUG#mirage/}
+    DEPLOYD=${TRAVIS_REPO_SLUG#mirage/}-deployment
     XENIMG=mir-${TRAVIS_REPO_SLUG#mirage/mirage-}.xen
     case "$MIRAGE_BACKEND" in
         xen)

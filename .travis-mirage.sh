@@ -35,10 +35,11 @@ if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
     git config --global user.name "Travis the Build Bot"
     git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment
 
+    DEPLOYD=${TRAVIS_REPO_SLUG#mirage/}
     XENIMG=mir-${TRAVIS_REPO_SLUG#mirage/mirage-}.xen
     case "$MIRAGE_BACKEND" in
         xen)
-            cd ${TRAVIS_REPO_SLUG}-deployment
+            cd $DEPLOYD
             rm -rf xen/$TRAVIS_COMMIT
             mkdir -p xen/$TRAVIS_COMMIT
             cp ../src/$XENIMG ../src/config.ml xen/$TRAVIS_COMMIT

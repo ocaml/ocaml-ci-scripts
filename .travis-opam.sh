@@ -40,7 +40,7 @@ install() {
   fi
 }
 
-wget https://github.com/mor1/ocaml-travisci-skeleton/.travis-ocaml.sh
+wget https://raw.githubusercontent.com/mor1/ocaml-travisci-skeleton/master/.travis-ocaml.sh
 sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)

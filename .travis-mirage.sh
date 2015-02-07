@@ -13,7 +13,7 @@ opam install mirage
 
 ## copy travis `config.ml` in place
 cp .travis-config.ml src/config.ml
-make configure
+NET=$MIRAGE_NET MODE=$MIRAGE_BACKEND make configure
 make build
 
 ## stash deployment build if specified

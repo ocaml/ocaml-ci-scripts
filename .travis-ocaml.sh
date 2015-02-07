@@ -1,6 +1,6 @@
 ## basic OCaml and opam installation
 
-set -ue
+set -uex
 
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}

@@ -37,6 +37,8 @@ if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
 
     DEPLOYD=${TRAVIS_REPO_SLUG#mirage/}-deployment
     XENIMG=mir-${TRAVIS_REPO_SLUG#mirage/mirage-}.xen
+    echo $PWD
+    find .. -name "mir-*.xen"
     case "$MIRAGE_BACKEND" in
         xen)
             cd $DEPLOYD

@@ -3,7 +3,7 @@
 set -ex
 
 ## fetch+execute the OCaml/opam setup script
-wget https://raw.githubusercontent.com/mor1/ocaml-travisci-skeleton/master/.travis-ocaml.sh
+wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-ocaml.sh
 sh .travis-ocaml.sh
 
 ## install mirage

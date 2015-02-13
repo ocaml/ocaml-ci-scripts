@@ -15,7 +15,9 @@ DEPLOY=$DEPLOY NET=$MIRAGE_NET MODE=$MIRAGE_BACKEND make configure
 make build
 
 ## stash deployment build if specified
-if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
+if [ "$DEPLOY" = "1" \
+               -a "$TRAVIS_PULL_REQUEST" = "false" \
+               -a -n "$SECRET_default_0" ]; then
     opam install travis-senv
     # get the secure key out for deployment
     mkdir -p ~/.ssh

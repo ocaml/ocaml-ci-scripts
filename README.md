@@ -1,4 +1,34 @@
-## Travis CI skeleton for OCaml projects
+# Travis CI skeleton for OCaml projects
+
+## Plain OCaml Install, `.travis-ocaml.sh`
+
+This is a helper script that simply installs the Ubuntu OCaml compiler packages,
+including Camlp4, plus OPAM. This is fetched and executed by the other Travis
+scripts in this repo. Set the `OCAML_VERSION` variable to the desired version,
+e.g.,
+
+```shell
+env:
+  - OCAML_VERSION=4.02 [...]
+```
+
+### Testing Multiple Compilers
+
+```shell
+env:
+  - OCAML_VERSION=3.12 [...]
+  - OCAML_VERSION=4.00 [...]
+  - OCAML_VERSION=4.01 [...]
+  - OCAML_VERSION=4.02 [...]
+  - OCAML_VERSION=latest [...]
+```
+
+Add one line per compiler version you want to test. `latest` is the latest
+stable version of OCaml. The `[...]` are other environments variables set for
+this Travis CI run.
+
+
+## OPAM Package, `.travis-opam.sh`
 
 Instructions:
 
@@ -14,22 +44,6 @@ Instructions:
 
 And that's it! You can have more control over the things that Travis
 CI is testing by looking at the next sections.
-
-
-### Testing Multiple Compilers
-
-```shell
-env:
-  - OCAML_VERSION=3.12 [...]
-  - OCAML_VERSION=4.00 [...]
-  - OCAML_VERSION=4.01 [...]
-  - OCAML_VERSION=4.02 [...]
-  - OCAML_VERSION=latest [...]
-```
-
-Add one line per compiler version you want to test. `latest` is the
-latest stable version of OCaml. The `[...]` are other environments
-variables set for this Travis CI run (see next sections).
 
 
 ### Setting the Package Name
@@ -115,3 +129,19 @@ These only get executed when installing your package, not the dependencies.
 
 The hook functionality might be useful for running commands like OASIS to
 generate build files which are not checked into the repository.
+
+## Mirage Unikernels, `.travis-mirage.sh`
+
+This causes Travis to build a repo as a Mirage unikernel. It assumes the
+existence of a `Makefile` at the root of the repo having targets `configure` and
+`build`. Configuration choices are passed to the `make configure` target via
+environment variables:
+
++ `DEPLOY=[1|...]`: if set to `1` then requests a deployment build
++ `MIRAGE_BACKEND=[unix|xen]`: selects Mirage backend mode
++ `MIRAGE_NET=[socket|direct]`: selects Mirage network stack
+
+If a deployment build is requested then the corresponding Mirage `-deployment`
+repo is cloned, the Xen VM image that was built is committed to it and the
+`latest` pointer updated, and then the keys embedded in the `.travis.yml` file
+are used to push the updated `-deployment` repo back to the `mirage` org.

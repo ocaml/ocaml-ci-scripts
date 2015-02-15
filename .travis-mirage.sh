@@ -19,7 +19,7 @@ make build
 ## stash deployment build if specified
 if [ "$DEPLOY" = "1" \
                -a "$TRAVIS_PULL_REQUEST" = "false" \
-               -a -n "$SECRET_default_0" ]; then
+               -a -n "$XSECRET_default_0" ]; then
     opam install travis-senv
     # get the secure key out for deployment
     mkdir -p ~/.ssh

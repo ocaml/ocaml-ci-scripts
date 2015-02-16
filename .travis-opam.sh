@@ -15,6 +15,9 @@ tests_run=${TESTS:-true}
 # Run the reverse dependency rebuild step
 revdep_run=${REVDEPS:-false}
 
+# If a fork of these scripts are specified, use that GitHub user instead
+fork_user=${FORK_USER:-ocaml}
+
 # other variables
 EXTRA_DEPS=${EXTRA_DEPS:-""}
 PRE_INSTALL_HOOK=${PRE_INSTALL_HOOK:-""}
@@ -40,7 +43,7 @@ install() {
   fi
 }
 
-wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-ocaml.sh
+wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/master/.travis-ocaml.sh
 sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)

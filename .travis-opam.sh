@@ -52,9 +52,8 @@ opam pin add ${pkg} . -n
 eval $(opam config env)
 
 # Install the external dependencies
-if [ "$depext" != "" ]; then
-  opam depext ${pkg}
-fi
+echo "opam depext ${pkg}"
+opam depext ${pkg}
 
 # Install the OCaml dependencies
 echo "opam install ${pkg} --deps-only"

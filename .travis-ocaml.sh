@@ -6,7 +6,7 @@ set -uex
 OCAML_VERSION=${OCAML_VERSION:-latest}
 
 case "$OCAML_VERSION" in
-    3.12) ppa=avsm/ocaml312+opam12 ;;
+    3.12) echo Pre 4.00 compilers are unsupported; exit 1 ;;
     4.00) ppa=avsm/ocaml40+opam12  ;;
     4.01) ppa=avsm/ocaml41+opam12  ;;
     4.02) ppa=avsm/ocaml42+opam12  ;;
@@ -27,6 +27,7 @@ export OPAMYES=1
 
 opam init -a git://github.com/ocaml/opam-repository
 eval $(opam config env)
+opam install depext
 
 opam --version
 opam --git-version

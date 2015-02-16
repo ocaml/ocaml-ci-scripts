@@ -15,6 +15,9 @@ tests_run=${TESTS:-true}
 # Run the reverse dependency rebuild step
 revdep_run=${REVDEPS:-false}
 
+# If a fork of these scripts are specified, use that GitHub user instead
+fork_user=${FORK_USER:-ocaml}
+
 # other variables
 EXTRA_DEPS=${EXTRA_DEPS:-""}
 PRE_INSTALL_HOOK=${PRE_INSTALL_HOOK:-""}
@@ -40,7 +43,7 @@ install() {
   fi
 }
 
-wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-ocaml.sh
+wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/master/.travis-ocaml.sh
 sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)
@@ -49,18 +52,8 @@ opam pin add ${pkg} . -n
 eval $(opam config env)
 
 # Install the external dependencies
-depext=`opam list --required-by ${pkg} --rec -e ubuntu -s | tr '\n' ' ' | sed 's/ *$//'`
-if [ "$depext" != "" ]; then
-  echo Ubuntu depexts: "${depext}"
-  sudo apt-get install -qq ${depext}
-fi
-
-# Install the external source dependencies
-srcext=`opam list --required-by ${pkg} --rec -e source,linux -s | tr '\n' ' ' | sed 's/ *$//'`
-if [ "$srcext" != "" ]; then
-  echo Ubuntu srcext: "${srcext}"
-  curl -sL ${srcext} | bash
-fi
+echo "opam depext ${pkg}"
+opam depext ${pkg}
 
 # Install the OCaml dependencies
 echo "opam install ${pkg} --deps-only"
@@ -104,6 +97,8 @@ fi
 if [ "${revdep_run}" != "false" ]; then
     packages=$(opam list --depends-on ${pkg} --short)
     for dependency in $packages; do
+        echo "opam depext ${dependency}"
+        opam depext ${dependency}
         echo "opam install ${dependency}"
         opam install ${dependency}
         echo "opam remove ${dependency}"

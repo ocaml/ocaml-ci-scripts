@@ -2,8 +2,11 @@
 
 set -ex
 
+# If a fork of these scripts are specified, use that GitHub user instead
+fork_user=${FORK_USER:-ocaml}
+
 ## fetch+execute the OCaml/opam setup script
-wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-ocaml.sh
+wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/master/.travis-ocaml.sh
 sh .travis-ocaml.sh
 
 ## install mirage

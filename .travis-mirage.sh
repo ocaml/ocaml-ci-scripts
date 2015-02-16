@@ -11,13 +11,15 @@ export OPAMYES=1
 eval $(opam config env)
 opam install mirage
 
-DEPLOY=$DEPLOY NET=$MIRAGE_NET MODE=$MIRAGE_BACKEND make configure
+DEPLOY=$DEPLOY MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
+      ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
+      make configure
 make build
 
 ## stash deployment build if specified
 if [ "$DEPLOY" = "1" \
                -a "$TRAVIS_PULL_REQUEST" = "false" \
-               -a -n "$SECRET_default_0" ]; then
+               -a -n "$XSECRET_default_0" ]; then
     opam install travis-senv
     # get the secure key out for deployment
     mkdir -p ~/.ssh

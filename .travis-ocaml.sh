@@ -6,11 +6,12 @@ set -uex
 OCAML_VERSION=${OCAML_VERSION:-latest}
 
 case "$OCAML_VERSION" in
-    3.12) echo Pre 4.00 compilers are unsupported; exit 1 ;;
+    3.12) ppa=avsm/ocaml312+opam12 ;;
     4.00) ppa=avsm/ocaml40+opam12  ;;
     4.01) ppa=avsm/ocaml41+opam12  ;;
     4.02) ppa=avsm/ocaml42+opam12  ;;
-    *)    ppa=avsm/ocaml42+opam12  ;;
+    latest) ppa=avsm/ppa-opam-experimental;;
+    *)    echo Unknown compiler version; exit 1;;
 esac
 
 sudo add-apt-repository \

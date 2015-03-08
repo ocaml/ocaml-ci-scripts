@@ -30,6 +30,7 @@ unset TESTS
 
 install() {
   if [ "$EXTRA_DEPS" != "" ]; then
+    opam depext $EXTRA_DEPS
     opam install $EXTRA_DEPS
   fi
 
@@ -72,6 +73,8 @@ fi
 if [ "${depopts_run}" != "false" ]; then
     # pick from $DEPOPTS if set or query OPAM
     depopts=${DEPOPTS:-$(opam show ${pkg} | grep -oP 'depopts: \K(.*)' | sed 's/ | / /g')}
+    echo "opam depext ${depopts}"
+    opam depext ${depopts}
     echo "opam install ${depopts}"
     opam install ${depopts}
     install -v

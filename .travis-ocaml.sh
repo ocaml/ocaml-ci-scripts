@@ -16,6 +16,8 @@ set -uex
 
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
+# any extra repote of dev packages?
+EXTRA_REMOTE=${EXTRA_REMOTE:-""}
 
 case "$OCAML_VERSION" in
     3.12) ppa=avsm/ocaml312+opam12 ;;
@@ -48,6 +50,11 @@ export OPAMYES=1
 
 opam init -a git://github.com/ocaml/opam-repository
 eval $(opam config env)
+
+if [ "$EXTRA_REMOTE" != "" ]; then
+  opam remote add extra $EXTRA_REMOTE
+fi
+
 opam install depext
 
 opam --version

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ## basic OCaml and opam installation
 
 full_apt_version () {
@@ -6,7 +8,7 @@ full_apt_version () {
   case "${version}" in
       latest) echo -n "${package}" ;;
       *) echo -n "${package}="
-         apt-cache show $package \
+         apt-cache show "${package}" \
              | sed -n "s/^Version: \(${version}\)/\1/p" \
              | head -1
   esac
@@ -31,15 +33,15 @@ sudo add-apt-repository \
 sudo add-apt-repository --yes ppa:${ppa}
 sudo apt-get update -qq
 sudo apt-get install -y \
-     $(full_apt_version ocaml $OCAML_VERSION) \
-     $(full_apt_version ocaml-base $OCAML_VERSION) \
-     $(full_apt_version ocaml-native-compilers $OCAML_VERSION) \
-     $(full_apt_version ocaml-compiler-libs $OCAML_VERSION) \
-     $(full_apt_version ocaml-interp $OCAML_VERSION) \
-     $(full_apt_version ocaml-base-nox $OCAML_VERSION) \
-     $(full_apt_version ocaml-nox $OCAML_VERSION) \
-     $(full_apt_version camlp4 $OCAML_VERSION) \
-     $(full_apt_version camlp4-extra $OCAML_VERSION) \
+     "$(full_apt_version ocaml "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-base "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-native-compilers "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-compiler-libs "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-interp "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-base-nox "${OCAML_VERSION}")" \
+     "$(full_apt_version ocaml-nox "${OCAML_VERSION}")" \
+     "$(full_apt_version camlp4 "${OCAML_VERSION}")" \
+     "$(full_apt_version camlp4-extra "${OCAML_VERSION}")" \
      opam
 
 ocaml -version
@@ -47,7 +49,7 @@ ocaml -version
 export OPAMYES=1
 
 opam init -a git://github.com/ocaml/opam-repository
-eval $(opam config env)
+eval "$(opam config env)"
 opam install depext
 
 opam --version

@@ -27,6 +27,17 @@ Add one line per compiler version you want to test. `latest` is the latest
 stable version of OCaml. The `[...]` are other environments variables set for
 this Travis CI run.
 
+### Changing the Base OPAM Remote
+
+```shell
+env:
+  - [...] BASE_REMOTE=<url> [...]
+```
+
+The bare-bones install script can be configured to initialize OPAM with
+a metadata repository that isn't the default community OPAM remote of
+[git://github.com/ocaml/opam-repository](git://github.com/ocaml/opam-repository).
+`BASE_REMOTE` initializes OPAM with a repository address of your choice.
 
 ## OPAM Package, `.travis-opam.sh`
 
@@ -108,21 +119,6 @@ env:
   - [...] EXTRA_DEPS="<list of space-separated package names>" [...]
 ```
 
-### Customizing the OPAM Pin Set
-
-```shell
-env:
-  - [...] PINS="<list of space-separated name:url pin pairs>" [...]
-```
-
-You can customize the development pins of an OPAM package test run with
-the `PINS` variable. Each pin specified will *only* result in that pin
-being added into OPAM's pin set -- no default installation will be
-performed. A pin of a package name without a colon (":") will result in
-that package being pinned to the URL in that package's `dev-repo`
-field. A pin of a `name:url` or `name.version:url` pair will pin the
-package to the given URL.
-
 ### Running the Tests
 
 ```shell
@@ -150,6 +146,21 @@ env:
   - [...] REVDEPS=<bool> [...]
 ```
 
+### Customizing the OPAM Pin Set
+
+```shell
+env:
+  - [...] PINS="<list of space-separated name:url pin pairs>" [...]
+```
+
+You can customize the development pins of an OPAM package test run with
+the `PINS` variable. Each pin specified will *only* result in that pin
+being added into OPAM's pin set -- no default installation will be
+performed. A pin of a package name without a colon (":") will result in
+that package being pinned to the URL in that package's `dev-repo`
+field. A pin of a `name:url` or `name.version:url` pair will pin the
+package to the given URL.
+
 ### Hooks
 
 ```shell
@@ -164,6 +175,18 @@ These only get executed when installing your package, not the dependencies.
 
 The hook functionality might be useful for running commands like OASIS to
 generate build files which are not checked into the repository.
+
+### Changing OPAM Remotes
+
+```shell
+env:
+  - [...] EXTRA_REMOTES="<list of space-separated URLs>" [...]
+```
+
+In addition to changing the `BASE_REMOTE` to configure an initialization
+repository, `.travis-opam.sh` users can layer additional OPAM remotes on top
+of the `BASE_REMOTE` with `EXTRA_REMOTES`. Remotes are added from left
+to right.
 
 ## Mirage Unikernels, `.travis-mirage.sh`
 

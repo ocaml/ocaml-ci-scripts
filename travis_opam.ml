@@ -24,6 +24,9 @@ open Yorick
 (* The package name *)
 let pkg = getenv_default "PACKAGE" "my-package"
 
+(* Extra remotes to stack on top of the initialization remote *)
+let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
+
 (* Any extra pins to use *)
 let pins = list (getenv_default "PINS" "")
 
@@ -45,6 +48,10 @@ let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
 let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
 (* Script *)
+
+let add_remote =
+  let layer = ref 0 in
+  fun remote -> ?|. "opam remote add extra%d %s" !layer remote; incr layer
 
 let pin pin = match pair pin with
   | (pkg,None)     -> ?|. "opam pin add %s --dev-repo -n" pkg
@@ -82,6 +89,8 @@ set "-ue";
 unset "TESTS";
 export "OPAMYES" "1";
 ?|  "eval $(opam config env)";
+
+List.iter add_remote extra_remotes;
 
 List.iter pin pins;
 ?|. "opam pin add %s . -n" pkg;

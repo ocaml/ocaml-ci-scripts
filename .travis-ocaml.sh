@@ -17,6 +17,9 @@ set -uex
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
 
+# the base opam repository to use for bootstrapping and catch-all namespace
+BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
+
 case "$OCAML_VERSION" in
     3.12) ppa=avsm/ocaml312+opam12 ;;
     4.00) ppa=avsm/ocaml40+opam12  ;;
@@ -46,7 +49,7 @@ ocaml -version
 
 export OPAMYES=1
 
-opam init -a git://github.com/ocaml/opam-repository
+opam init -a ${BASE_REMOTE}
 eval $(opam config env)
 opam install depext
 

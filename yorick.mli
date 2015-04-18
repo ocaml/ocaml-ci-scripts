@@ -62,6 +62,9 @@ val list : string -> string list
 (** [lines s] is [s] split by ['\n']. *)
 val lines : string -> string list
 
+(** [pair s] is [s] split by [':'] at most once. *)
+val pair : string -> string * string option
+
 (** [getenv_default ENV_VAR default] is this program's value for
     environment variable [ENV_VAR] (not including values {!export}ed)
     or [default] if no environment variable [ENV_VAR] exists. *)

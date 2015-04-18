@@ -64,6 +64,28 @@ let q = Printf.sprintf "\"%s\""
 
 let ql = map q
 
+(* Not tail recursive for "performance", please choose low values for
+   [max]. The idea is that max is always small because it's hard
+   code *)
+let split_char_bounded str ~on ~max =
+  let open String in
+  if str = "" then []
+  else if max = 1 then [str]
+  else
+    let rec loop offset tokens =
+      if tokens = max - 1
+      then [sub str offset (length str - offset)]
+      else
+        try
+          let index = index_from str offset on in
+          if index = offset then
+            ""::(loop (offset + 1) (tokens + 1))
+          else
+            let token = String.sub str offset (index - offset) in
+            token::(loop (index + 1) (tokens + 1))
+        with Not_found -> [sub str offset (length str - offset)]
+    in loop 0 0
+
 let split_char_unbounded_no_trailer str ~on =
   let open String in
   if str = "" then []
@@ -84,6 +106,10 @@ let split_char_unbounded_no_trailer str ~on =
 let some = function "" -> None | x -> Some x
 let list = split_char_unbounded_no_trailer ~on:' '
 let lines = split_char_unbounded_no_trailer ~on:'\n'
+let pair s = match split_char_bounded s ~on:':' ~max:2 with
+  | []      -> ("",None)
+  | [x]     -> (x, None)
+  | x::y::_ -> (x, Some y)
 
 let getenv_default var default = try Sys.getenv var with Not_found -> default
 

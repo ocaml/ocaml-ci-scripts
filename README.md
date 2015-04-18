@@ -108,6 +108,20 @@ env:
   - [...] EXTRA_DEPS="<list of space-separated package names>" [...]
 ```
 
+### Customizing the OPAM Pin Set
+
+```shell
+env:
+  - [...] PINS="<list of space-separated name:url pin pairs>" [...]
+```
+
+You can customize the development pins of an OPAM package test run with
+the `PINS` variable. Each pin specified will *only* result in that pin
+being added into OPAM's pin set -- no default installation will be
+performed. A pin of a package name without a colon (":") will result in
+that package being pinned to the URL in that package's `dev-repo`
+field. A pin of a `name:url` or `name.version:url` pair will pin the
+package to the given URL.
 
 ### Running the Tests
 

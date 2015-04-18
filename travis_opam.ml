@@ -24,6 +24,9 @@ open Yorick
 (* The package name *)
 let pkg = getenv_default "PACKAGE" "my-package"
 
+(* Any extra pins to use *)
+let pins = list (getenv_default "PINS" "")
+
 (* Run the basic installation step *)
 let install_run = bool_of_string (getenv_default "INSTALL" "true")
 
@@ -42,6 +45,10 @@ let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
 let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
 (* Script *)
+
+let pin pin = match pair pin with
+  | (pkg,None)     -> ?|. "opam pin add %s --dev-repo -n" pkg
+  | (pkg,Some url) -> ?|. "opam pin add %s %s -n" pkg url
 
 let install args =
   begin match extra_deps with
@@ -76,6 +83,7 @@ unset "TESTS";
 export "OPAMYES" "1";
 ?|  "eval $(opam config env)";
 
+List.iter pin pins;
 ?|. "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
 

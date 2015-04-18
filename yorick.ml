@@ -64,7 +64,7 @@ let q = Printf.sprintf "\"%s\""
 
 let ql = map q
 
-let split_char_unbounded str ~on =
+let split_char_unbounded_no_trailer str ~on =
   let open String in
   if str = "" then []
   else
@@ -72,7 +72,8 @@ let split_char_unbounded str ~on =
       try begin
         let index = rindex_from str offset on in
         if index = offset then
-          loop (""::acc) (index - 1)
+          (*loop (""::acc) (index - 1) -- no_trailer modified *)
+          loop acc (index - 1)
         else
           let token = sub str (index + 1) (offset - index) in
           loop (token::acc) (index - 1)
@@ -81,8 +82,8 @@ let split_char_unbounded str ~on =
     in loop [] (length str - 1)
 
 let some = function "" -> None | x -> Some x
-let list = split_char_unbounded ~on:' '
-let lines = split_char_unbounded ~on:'\n'
+let list = split_char_unbounded_no_trailer ~on:' '
+let lines = split_char_unbounded_no_trailer ~on:'\n'
 
 let getenv_default var default = try Sys.getenv var with Not_found -> default
 

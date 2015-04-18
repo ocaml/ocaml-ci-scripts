@@ -124,6 +124,18 @@ TODO: check if the `build-test` field is empty in the `opam` file to
 know if the tests have to run.
 
 
+### Reverse Dependency Tests
+
+Finally, the build of immediate reverse dependencies of the package under test
+may be tested. Disabled with 'false' by default, set `REVDEPS=true`
+to build each dependent package. To test only specific packages, use the
+`POST_INSTALL_HOOK` feature described below.
+
+```shell
+env:
+  - [...] REVDEPS=<bool> [...]
+```
+
 ### Hooks
 
 ```shell

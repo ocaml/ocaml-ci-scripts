@@ -86,6 +86,15 @@ env:
   - [...] DEPOPTS="<list of space-separated package names>" [...]
 ```
 
+All optional dependencies declared in the `opam` file may be installed
+with
+
+```shell
+env:
+  - [...] DEPOPTS="*" [...]
+```
+
+An empty value or the value "false" will disable the optional dependency run.
 
 ### Extra Dependencies
 

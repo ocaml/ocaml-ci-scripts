@@ -82,6 +82,9 @@ let install_with_depopts args depopts =
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" depopts
 
+let is_installable package =
+  match ?|? "opam install --dry-run %s" package with 0 -> true | _ -> false
+
 ;;
 (* Go go go *)
 
@@ -134,9 +137,14 @@ end;
 if revdep_run
 then
   let packages = lines (?|> "opam list --depends-on %s --short" pkg) in
-  List.iter (fun dependency ->
-    ?|~ "opam depext %s" dependency;
-    ?|~ "opam install %s" dependency;
-    ?|~ "opam remove %s" dependency;
+  List.iter (fun dependent ->
+    echo "Checking installability of revdep %s" dependent;
+    if is_installable dependent
+    then begin
+      ?|~ "opam depext %s" dependent;
+      ?|~ "opam install %s" dependent;
+      ?|~ "opam remove %s" dependent;
+    end
+    else echo "%s found not installable. Skipping." dependent
   ) packages
 else echo "REVDEPS=false, skipping the reverse dependency rebuild run."

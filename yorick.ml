@@ -52,6 +52,10 @@ let (?|>) fmt = Printf.ksprintf (fun command ->
   with End_of_file -> close_in stdout; Buffer.contents buf
 ) fmt
 
+let (?|?) fmt = Printf.ksprintf (fun command ->
+  Sys.command (apply_env command)
+) fmt
+
 let export k v = Hashtbl.replace env k (Some v)
 
 let set opts = set := opts

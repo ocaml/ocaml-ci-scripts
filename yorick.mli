@@ -19,7 +19,7 @@
 val ( *~ ) : string list -> string -> string
 
 (** [?|  command] executes [command] successfully. *)
-val ( ?| ) : string -> unit
+val ( ?|  ) : string -> unit
 
 (** [?|. command_pattern] is a function of [command_pattern] parameters
    which executes [command_pattern ...] successfully. *)
@@ -33,6 +33,11 @@ val ( ?|~ ) : ('a, unit, string, unit) format4 -> 'a
     parameters which returns a string of the stdout from
     [command_pattern ...]'s execution. *)
 val ( ?|> ) : ('a, unit, string, string) format4 -> 'a
+
+(** [?|? command_pattern] is a function of [command_pattern]
+    parameters which returns an int of the exit code from
+    [command_pattern ...]'s execution. *)
+val ( ?|? ) : ('a, unit, string, int) format4 -> 'a
 
 (** [export ENV_VAR value] exports [ENV_VAR=value] for all subsequent
     executions. *)

@@ -18,49 +18,15 @@
 (* Brevity is the soul of wit. *)
 
 let env = Hashtbl.create 8
-let set = ref ""
-
-let ( *~ ) list sep = String.concat sep list
-
-let apply_env command =
-  let set = match !set with
-    | "" -> " "
-    | opts -> " set "^opts^"; "
-  in
-  ((Hashtbl.fold (fun k v list -> match v with
-     | Some v -> (k^"="^v^" export "^k^";")::list
-     | None -> ("unset "^k^";")::list
-   ) env []) *~ " ") ^ set ^ command
-
-let (?| ) command = match Sys.command (apply_env command) with
-  | 0 -> ()
-  | x ->
-    Printf.eprintf "'%s' exited %d. Terminating with %d\n" command x x;
-    exit x
-
-let (?|.) fmt = Printf.ksprintf (?|) fmt
-
-let (?|~) fmt = Printf.ksprintf (fun command ->
-  print_endline command;
-  ?|  command
-) fmt
-
-let (?|>) fmt = Printf.ksprintf (fun command ->
-  let buf = Buffer.create (5*80) in
-  let stdout = Unix.open_process_in command in
-  try while true do Buffer.add_channel buf stdout 1 done; ""
-  with End_of_file -> close_in stdout; Buffer.contents buf
-) fmt
-
-let (?|?) fmt = Printf.ksprintf (fun command ->
-  Sys.command (apply_env command)
-) fmt
+let shell_set = ref ""
 
 let export k v = Hashtbl.replace env k (Some v)
 
-let set opts = set := opts
+let set opts = shell_set := opts
 
 let unset k = Hashtbl.replace env k None
+
+let getenv_default var default = try Sys.getenv var with Not_found -> default
 
 let map = List.map
 
@@ -115,18 +81,56 @@ let pair s = match split_char_bounded s ~on:':' ~max:2 with
   | [x]     -> (x, None)
   | x::y::_ -> (x, Some y)
 
-let getenv_default var default = try Sys.getenv var with Not_found -> default
-
-let (?$) = function
-  | "@" -> List.(ql (tl (Array.to_list Sys.argv))) *~ " "
-  | v -> match some (getenv_default v "") with
-    | Some v -> v
-    | None ->
-      Printf.eprintf "I don't know what variable '%s' means and I give up.\n" v;
-      exit 1
-
 let fuzzy_bool_of_string s = match String.lowercase s with
   | "false" | "0" -> false
   | _ -> true
 
 let echo fmt = Printf.ksprintf print_endline fmt
+
+module Quips = struct
+  let ( *~ ) list sep = String.concat sep list
+
+  let apply_env command =
+    let set = match !shell_set with
+      | "" -> " "
+      | opts -> " set "^opts^"; "
+    in
+    ((Hashtbl.fold (fun k v list -> match v with
+       | Some v -> (k^"="^v^" export "^k^";")::list
+       | None -> ("unset "^k^";")::list
+     ) env []) *~ " ") ^ set ^ command
+
+  let (?| ) command = match Sys.command (apply_env command) with
+    | 0 -> ()
+    | x ->
+      Printf.eprintf "'%s' exited %d. Terminating with %d\n" command x x;
+      exit x
+
+  let (?|.) fmt = Printf.ksprintf (?|) fmt
+
+  let (?|~) fmt = Printf.ksprintf (fun command ->
+    print_endline command;
+    ?|  command
+  ) fmt
+
+  let (?|>) fmt = Printf.ksprintf (fun command ->
+    let buf = Buffer.create (5*80) in
+    let stdout = Unix.open_process_in command in
+    try while true do Buffer.add_channel buf stdout 1 done; ""
+    with End_of_file -> close_in stdout; Buffer.contents buf
+  ) fmt
+
+  let (?|?) fmt = Printf.ksprintf (fun command ->
+    Sys.command (apply_env command)
+  ) fmt
+
+  let (?$) = function
+    | "@" -> List.(ql (tl (Array.to_list Sys.argv))) *~ " "
+    | v -> match some (getenv_default v "") with
+      | Some v -> v
+      | None ->
+        Printf.eprintf "I don't know what variable '%s' means and I give up.\n" v;
+        exit 1
+end
+
+include Quips

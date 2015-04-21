@@ -15,29 +15,39 @@
  *
  *)
 
-(** [tokens *~ sep] is the string of [tokens] separated by [sep]. *)
-val ( *~ ) : string list -> string -> string
+(** Some shell-like operators *)
+module Quips : sig
+  (** [tokens *~ sep] is the string of [tokens] separated by [sep]. *)
+  val ( *~ ) : string list -> string -> string
 
-(** [?|  command] executes [command] successfully. *)
-val ( ?|  ) : string -> unit
+  (** [?|  command] executes [command] successfully. *)
+  val ( ?|  ) : string -> unit
 
-(** [?|. command_pattern] is a function of [command_pattern] parameters
-   which executes [command_pattern ...] successfully. *)
-val ( ?|. ) : ('a, unit, string, unit) format4 -> 'a
+  (** [?|. command_pattern] is a function of [command_pattern] parameters
+      which executes [command_pattern ...] successfully. *)
+  val ( ?|. ) : ('a, unit, string, unit) format4 -> 'a
 
-(** [?|~ command_pattern] is a function of [command_pattern] parameters
-   which prints [command_pattern ...] and then executes it successfully. *)
-val ( ?|~ ) : ('a, unit, string, unit) format4 -> 'a
+  (** [?|~ command_pattern] is a function of [command_pattern] parameters
+      which prints [command_pattern ...] and then executes it successfully. *)
+  val ( ?|~ ) : ('a, unit, string, unit) format4 -> 'a
 
-(** [?|> command_pattern] is a function of [command_pattern]
-    parameters which returns a string of the stdout from
-    [command_pattern ...]'s execution. *)
-val ( ?|> ) : ('a, unit, string, string) format4 -> 'a
+  (** [?|> command_pattern] is a function of [command_pattern]
+      parameters which returns a string of the stdout from
+      [command_pattern ...]'s execution. *)
+  val ( ?|> ) : ('a, unit, string, string) format4 -> 'a
 
-(** [?|? command_pattern] is a function of [command_pattern]
-    parameters which returns an int of the exit code from
-    [command_pattern ...]'s execution. *)
-val ( ?|? ) : ('a, unit, string, int) format4 -> 'a
+  (** [?|? command_pattern] is a function of [command_pattern]
+      parameters which returns an int of the exit code from
+      [command_pattern ...]'s execution. *)
+  val ( ?|? ) : ('a, unit, string, int) format4 -> 'a
+
+  (** [?$ ENV_VAR] looks up environment variable [ENV_VAR] like
+      {!getenv_default} but terminates execution with an error if
+      [ENV_VAR] is not found. [?$ "@"] is this program's arguments. *)
+  val ( ?$ ) : string -> string
+end
+
+include module type of Quips
 
 (** [export ENV_VAR value] exports [ENV_VAR=value] for all subsequent
     executions. *)
@@ -74,11 +84,6 @@ val pair : string -> string * string option
     environment variable [ENV_VAR] (not including values {!export}ed)
     or [default] if no environment variable [ENV_VAR] exists. *)
 val getenv_default : string -> string -> string
-
-(** [?$ ENV_VAR] looks up environment variable [ENV_VAR] like
-    {!getenv_default} but terminates execution with an error if
-    [ENV_VAR] is not found. [?$ "@"] is this program's arguments. *)
-val ( ?$ ) : string -> string
 
 (** [fuzzy_bool_of_string tRuE111] is true if [tRuE111] isn't ["false"]. *)
 val fuzzy_bool_of_string : string -> bool

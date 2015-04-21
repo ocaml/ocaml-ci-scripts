@@ -51,7 +51,7 @@ let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
 let add_remote =
   let layer = ref 0 in
-  fun remote -> ?|. "opam remote add extra%d %s" !layer remote; incr layer
+  fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
 
 let pin pin = match pair pin with
   | (pkg,None)     -> ?|. "opam pin add %s --dev-repo -n" pkg

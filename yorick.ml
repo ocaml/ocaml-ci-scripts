@@ -125,6 +125,8 @@ let (?$) = function
       Printf.eprintf "I don't know what variable '%s' means and I give up.\n" v;
       exit 1
 
-let fuzzy_bool_of_string = function "false" -> false | _ -> true
+let fuzzy_bool_of_string s = match String.lowercase s with
+  | "false" | "0" -> false
+  | _ -> true
 
 let echo fmt = Printf.ksprintf print_endline fmt

@@ -31,13 +31,13 @@ let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
 let pins = list (getenv_default "PINS" "")
 
 (* Run the basic installation step *)
-let install_run = bool_of_string (getenv_default "INSTALL" "true")
+let install_run = fuzzy_bool_of_string (getenv_default "INSTALL" "true")
 
 (* Run the optional dependency step *)
 let depopts_run = list (getenv_default "DEPOPTS" "")
 
 (* Run the test step *)
-let tests_run = bool_of_string (getenv_default "TESTS" "true")
+let tests_run = fuzzy_bool_of_string (getenv_default "TESTS" "true")
 
 (* Run the reverse dependency rebuild step *)
 let revdep_run = fuzzy_bool_of_string (getenv_default "REVDEPS" "false")

@@ -15,6 +15,8 @@
  *
  *)
 
+type ('a,'b) exec = ('a, unit, string, 'b) format4 -> 'a
+
 (** Some shell-like operators *)
 module Quips : sig
   (** [tokens *~ sep] is the string of [tokens] separated by [sep]. *)
@@ -25,21 +27,21 @@ module Quips : sig
 
   (** [?|. command_pattern] is a function of [command_pattern] parameters
       which executes [command_pattern ...] successfully. *)
-  val ( ?|. ) : ('a, unit, string, unit) format4 -> 'a
+  val ( ?|. ) : ('a, unit) exec
 
   (** [?|~ command_pattern] is a function of [command_pattern] parameters
       which prints [command_pattern ...] and then executes it successfully. *)
-  val ( ?|~ ) : ('a, unit, string, unit) format4 -> 'a
+  val ( ?|~ ) : ('a, unit) exec
 
   (** [?|> command_pattern] is a function of [command_pattern]
       parameters which returns a string of the stdout from
       [command_pattern ...]'s execution. *)
-  val ( ?|> ) : ('a, unit, string, string) format4 -> 'a
+  val ( ?|> ) : ('a, string) exec
 
   (** [?|? command_pattern] is a function of [command_pattern]
       parameters which returns an int of the exit code from
       [command_pattern ...]'s execution. *)
-  val ( ?|? ) : ('a, unit, string, int) format4 -> 'a
+  val ( ?|? ) : ('a, int) exec
 
   (** [?$ ENV_VAR] looks up environment variable [ENV_VAR] like
       {!getenv_default} but terminates execution with an error if

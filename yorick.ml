@@ -17,6 +17,8 @@
 
 (* Brevity is the soul of wit. *)
 
+type ('a,'b) exec = ('a, unit, string, 'b) format4 -> 'a
+
 let env = Hashtbl.create 8
 let shell_set = ref ""
 

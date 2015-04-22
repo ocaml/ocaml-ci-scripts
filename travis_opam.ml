@@ -137,14 +137,20 @@ end;
 if revdep_run
 then
   let packages = lines (?|> "opam list --depends-on %s --short" pkg) in
-  List.iter (fun dependent ->
-    echo "Checking installability of revdep %s" dependent;
-    if is_installable dependent
-    then begin
-      ?|~ "opam depext %s" dependent;
-      ?|~ "opam install %s" dependent;
-      ?|~ "opam remove %s" dependent;
-    end
-    else echo "%s found not installable. Skipping." dependent
-  ) packages
+  let revdep_count = List.length packages in
+  echo "\nREVDEPS %d total" revdep_count;
+  let installable = List.fold_left (fun acc pkg ->
+    if is_installable pkg then pkg::acc
+    else (echo "Skipping uninstallable REVDEP %s" pkg; acc)
+  ) [] packages in
+  let installable_count = List.length installable in
+  echo "%d/%d REVDEPS installable" installable_count revdep_count;
+
+  ignore (List.fold_left (fun i dependent ->
+    echo "\nInstalling %s (REVDEP %d/%d)" dependent i installable_count;
+    ?|~ "opam depext %s" dependent;
+    ?|~ "opam install %s" dependent;
+    ?|~ "opam remove %s" dependent;
+    i + 1
+  ) 1 packages)
 else echo "REVDEPS=false, skipping the reverse dependency rebuild run."

@@ -21,6 +21,8 @@ type ('a,'b) exec = ('a, unit, string, 'b) format4 -> 'a
 
 let env = Hashtbl.create 8
 let shell_set = ref ""
+let suppress_failure = ref false
+let last_status = ref 0
 
 let export k v = Hashtbl.replace env k (Some v)
 
@@ -89,6 +91,27 @@ let fuzzy_bool_of_string s = match String.lowercase s with
 
 let echo fmt = Printf.ksprintf print_endline fmt
 
+let same_fds f = Unix.(f ~stdin ~stdout ~stderr)
+
+let shell command ~stdin ~stdout ~stderr =
+  Unix.create_process "sh" [|"sh";"-c";command|] stdin stdout stderr
+
+let after pid = Unix.(match waitpid [] pid with
+  | (_,WEXITED k) -> last_status := k; k
+  | (_,WSIGNALED _) -> failwith "child unexpectedly signaled"
+  | (_,WSTOPPED _) -> failwith "child unexpectedly stopped"
+)
+
+let after_shell command ~stdin ~stdout ~stderr =
+  match after (shell command ~stdin ~stdout ~stderr) with
+  | 0 -> ()
+  | x ->
+    if not !suppress_failure
+    then begin
+      Printf.eprintf "'%s' exited %d. Terminating with %d\n" command x x;
+      exit x
+    end
+
 module Quips = struct
   let ( *~ ) list sep = String.concat sep list
 
@@ -102,11 +125,7 @@ module Quips = struct
        | None -> ("unset "^k^";")::list
      ) env []) *~ " ") ^ set ^ command
 
-  let (?| ) command = match Sys.command (apply_env command) with
-    | 0 -> ()
-    | x ->
-      Printf.eprintf "'%s' exited %d. Terminating with %d\n" command x x;
-      exit x
+  let (?| ) command = same_fds (after_shell (apply_env command))
 
   let (?|.) fmt = Printf.ksprintf (?|) fmt
 
@@ -117,17 +136,32 @@ module Quips = struct
 
   let (?|>) fmt = Printf.ksprintf (fun command ->
     let buf = Buffer.create (5*80) in
-    let stdout = Unix.open_process_in command in
+    let rstdout, stdout = Unix.pipe () in
+    Unix.set_close_on_exec rstdout;
+    let stdin = Unix.stdin in
+    let stderr = Unix.stderr in
+    after_shell (apply_env command) ~stdin ~stdout ~stderr;
+    Unix.close stdout;
+    let stdout = Unix.in_channel_of_descr rstdout in
     try while true do Buffer.add_channel buf stdout 1 done; ""
     with End_of_file -> close_in stdout; Buffer.contents buf
   ) fmt
 
+  let (!??) (quip:('a,'b) exec) fmt = Printf.ksprintf (fun command ->
+    suppress_failure := true;
+    let r = quip "%s" command in
+    suppress_failure := false;
+    r
+  ) fmt
+
   let (?|?) fmt = Printf.ksprintf (fun command ->
-    Sys.command (apply_env command)
+    !?? (?|.) "%s" command;
+    !last_status
   ) fmt
 
   let (?$) = function
     | "@" -> List.(ql (tl (Array.to_list Sys.argv))) *~ " "
+    | "?" -> string_of_int !last_status
     | v -> match some (getenv_default v "") with
       | Some v -> v
       | None ->

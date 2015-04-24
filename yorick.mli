@@ -43,9 +43,19 @@ module Quips : sig
       [command_pattern ...]'s execution. *)
   val ( ?|? ) : ('a, int) exec
 
+  (** [!?? quip command_pattern] is a function of [command_pattern]
+      parameters which behaves as [quip] but does not terminate if
+      [quip command_pattern ...] returns a non-zero exit code. The
+      exit code can be retrieved with [{?$} "?"]. *)
+  val ( !?? ) : (string -> 'b,'b) exec -> ('a,'b) exec
+
   (** [?$ ENV_VAR] looks up environment variable [ENV_VAR] like
       {!getenv_default} but terminates execution with an error if
-      [ENV_VAR] is not found. [?$ "@"] is this program's arguments. *)
+      [ENV_VAR] is not found.
+
+      - [?$ "@"] is this program's arguments.
+      - [?$ "?"] is the last subprocess's exit code.
+  *)
   val ( ?$ ) : string -> string
 end
 

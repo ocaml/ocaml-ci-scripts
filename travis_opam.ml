@@ -82,8 +82,17 @@ let install_with_depopts args depopts =
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" depopts
 
-let is_installable package =
-  match ?|? "opam install --dry-run %s" package with 0 -> true | _ -> false
+let max_version package =
+  let rec next_version last =
+    match ?|? "opam install --dry-run %s.%s > /dev/null" package last with
+    | 0 -> Some (package^"."^last)
+    | _ ->
+      let v = !?? (?|>) "opam show -f version \'%s<%s\'" package last in
+      match ?$ "?" with
+      | "0" -> next_version (String.trim v)
+      | _ -> None
+  in
+  next_version (String.trim (?|> "opam show -f version %s" package))
 
 ;;
 (* Go go go *)
@@ -140,8 +149,9 @@ then
   let revdep_count = List.length packages in
   echo "\nREVDEPS %d total" revdep_count;
   let installable = List.fold_left (fun acc pkg ->
-    if is_installable pkg then pkg::acc
-    else (echo "Skipping uninstallable REVDEP %s" pkg; acc)
+    match max_version pkg with
+    | Some pkgv -> pkgv::acc
+    | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
   ) [] packages in
   let installable_count = List.length installable in
   echo "%d/%d REVDEPS installable" installable_count revdep_count;

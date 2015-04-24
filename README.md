@@ -136,14 +136,15 @@ know if the tests have to run.
 
 ### Reverse Dependency Tests
 
-Finally, the build of immediate reverse dependencies of the package under test
-may be tested. Disabled with 'false' by default, set `REVDEPS=true`
-to build each dependent package. To test only specific packages, use the
-`POST_INSTALL_HOOK` feature described below.
+Finally, the build of immediate reverse dependencies of the package
+under test may be tested. Disabled with 'false' by default, set
+`REVDEPS=*` to build the freshest version of every dependent package
+allowed by constraints. If you desire to test only specific dependent
+packages, they may be provided in a space-separated list.
 
 ```shell
 env:
-  - [...] REVDEPS=<bool> [...]
+  - [...] REVDEPS="<list of space-separated package names>" [...]
 ```
 
 ### Customizing the OPAM Pin Set

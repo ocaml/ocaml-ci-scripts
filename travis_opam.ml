@@ -40,7 +40,7 @@ let depopts_run = list (getenv_default "DEPOPTS" "")
 let tests_run = fuzzy_bool_of_string (getenv_default "TESTS" "true")
 
 (* Run the reverse dependency rebuild step *)
-let revdep_run = fuzzy_bool_of_string (getenv_default "REVDEPS" "false")
+let revdep_run = list (getenv_default "REVDEPS" "")
 
 (* other variables *)
 let extra_deps = some (getenv_default "EXTRA_DEPS" "")
@@ -143,9 +143,15 @@ begin match depopts_run with
   | depopts -> install_with_depopts ["-v"] (depopts *~ " ")
 end;
 
-if revdep_run
-then
-  let packages = lines (?|> "opam list --depends-on %s --short" pkg) in
+let revdeps = match revdep_run with
+  | [] | ["false"] | ["0"] -> []
+  | ["*"] | ["true"] | ["1"] ->
+    lines (?|> "opam list --depends-on %s --short" pkg)
+  | packages -> packages
+in
+match revdeps with
+| [] -> echo "REVDEPS=false, skipping the reverse dependency rebuild run."
+| packages ->
   let revdep_count = List.length packages in
   echo "\nREVDEPS %d total" revdep_count;
   let installable = List.fold_left (fun acc pkg ->
@@ -163,4 +169,3 @@ then
     ?|~ "opam remove %s" dependent;
     i + 1
   ) 1 packages)
-else echo "REVDEPS=false, skipping the reverse dependency rebuild run."

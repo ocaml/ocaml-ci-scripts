@@ -154,12 +154,12 @@ match revdeps with
 | packages ->
   let revdep_count = List.length packages in
   echo "\nREVDEPS %d total" revdep_count;
-  let installable = List.fold_left (fun acc pkg ->
+  let packages = List.fold_left (fun acc pkg ->
     match max_version pkg with
     | Some pkgv -> pkgv::acc
     | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
   ) [] packages in
-  let installable_count = List.length installable in
+  let installable_count = List.length packages in
   echo "%d/%d REVDEPS installable" installable_count revdep_count;
 
   ignore (List.fold_left (fun i dependent ->

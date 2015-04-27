@@ -87,9 +87,8 @@ let max_version package =
     match ?|? "opam install --dry-run %s.%s > /dev/null" package last with
     | 0 -> Some (package^"."^last)
     | _ ->
-      let v = !?? (?|>) "opam show -f version \'%s<%s\'" package last in
-      match ?$ "?" with
-      | "0" -> next_version (String.trim v)
+      match !?* (?|>) "opam show -f version \'%s<%s\'" package last with
+      | v, 0 -> next_version (String.trim v)
       | _ -> None
   in
   next_version (String.trim (?|> "opam show -f version %s" package))
@@ -144,14 +143,22 @@ begin match depopts_run with
 end;
 
 let revdeps = match revdep_run with
-  | [] | ["false"] | ["0"] -> []
+  | [] | ["false"] | ["0"] -> None
   | ["*"] | ["true"] | ["1"] ->
-    lines (?|> "opam list --depends-on %s --short" pkg)
-  | packages -> packages
+    let revdep_cmd = ~~ "opam list --depends-on %s --short" in
+    (match !?* (?|>) revdep_cmd pkg with
+     | ls, 0 -> Some (lines ls)
+     | ls, 1 when lines ls = [] -> Some []
+     | _,  x ->
+       Printf.eprintf "'%(%s%)' exited %d. Terminating with %d\n"
+         revdep_cmd pkg x x;
+       exit x
+    )
+  | packages -> Some packages
 in
 match revdeps with
-| [] -> echo "REVDEPS=false, skipping the reverse dependency rebuild run."
-| packages ->
+| None -> echo "REVDEPS=false, skipping the reverse dependency rebuild run."
+| Some packages ->
   let revdep_count = List.length packages in
   echo "\nREVDEPS %d total" revdep_count;
   let packages = List.fold_left (fun acc pkg ->

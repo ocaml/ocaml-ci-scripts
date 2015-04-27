@@ -22,6 +22,10 @@ module Quips : sig
   (** [tokens *~ sep] is the string of [tokens] separated by [sep]. *)
   val ( *~ ) : string list -> string -> string
 
+  (** [~~ fmt] is {!Pervasives.format_of_string} [fmt]. *)
+  val ( ~~ ) :
+    ('a, 'b, 'c, 'd, 'e, 'f) format6 -> ('a, 'b, 'c, 'd, 'e, 'f) format6
+
   (** [?|  command] executes [command] successfully. *)
   val ( ?|  ) : string -> unit
 
@@ -48,6 +52,12 @@ module Quips : sig
       [quip command_pattern ...] returns a non-zero exit code. The
       exit code can be retrieved with [{?$} "?"]. *)
   val ( !?? ) : (string -> 'b,'b) exec -> ('a,'b) exec
+
+  (** [!?* quip command_pattern] is a function of [command_pattern]
+      parameters which behaves as [quip] but does not terminate if
+      [quip command_pattern ...] returns a non-zero exit code. The
+      exit code is the second element of the returned pair. *)
+  val ( !?* ) : (string -> 'b,'b) exec -> ('a,'b * int) exec
 
   (** [?$ ENV_VAR] looks up environment variable [ENV_VAR] like
       {!getenv_default} but terminates execution with an error if

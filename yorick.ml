@@ -115,6 +115,8 @@ let after_shell command ~stdin ~stdout ~stderr =
 module Quips = struct
   let ( *~ ) list sep = String.concat sep list
 
+  let (~~) = format_of_string
+
   let apply_env command =
     let set = match !shell_set with
       | "" -> " "
@@ -152,6 +154,11 @@ module Quips = struct
     let r = quip "%s" command in
     suppress_failure := false;
     r
+  ) fmt
+
+  let (!?*) quip fmt = Printf.ksprintf (fun command ->
+    let r = !?? quip "%s" command in
+    r, !last_status
   ) fmt
 
   let (?|?) fmt = Printf.ksprintf (fun command ->

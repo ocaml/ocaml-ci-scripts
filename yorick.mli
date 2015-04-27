@@ -113,3 +113,7 @@ val fuzzy_bool_of_string : string -> bool
 (** [echo pattern] is a function of [pattern] parameters which prints
     [pattern ...] to standard output followed by a newline. *)
 val echo : ('a, unit, string, unit) format4 -> 'a
+
+(** [trim s] is a copy of [s] without the leading or trailing
+    whitespace characters `' '`, `'\012'`, `'\n'`, `'\r'`, or `'\t'`. *)
+val trim : string -> string

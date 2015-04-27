@@ -91,6 +91,19 @@ let fuzzy_bool_of_string s = match String.lowercase s with
 
 let echo fmt = Printf.ksprintf print_endline fmt
 
+let is_space = function ' ' | '\012' | '\n' | '\r' | '\t' -> true | _ -> false
+
+let trim s =
+  let open String in
+  let len = length s in
+  let i = ref 0 in
+  while !i < len && is_space (unsafe_get s !i) do incr i done;
+  let j = ref (len - 1) in
+  while !j >= !i && is_space (unsafe_get s !j) do decr j done;
+  if !j >= !i
+  then sub s !i (!j - !i + 1)
+  else ""
+
 let same_fds f = Unix.(f ~stdin ~stdout ~stderr)
 
 let shell command ~stdin ~stdout ~stderr =

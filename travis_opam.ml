@@ -88,10 +88,10 @@ let max_version package =
     | 0 -> Some (package^"."^last)
     | _ ->
       match !?* (?|>) "opam show -f version \'%s<%s\'" package last with
-      | v, 0 -> next_version (String.trim v)
+      | v, 0 -> next_version (trim v)
       | _ -> None
   in
-  next_version (String.trim (?|> "opam show -f version %s" package))
+  next_version (trim (?|> "opam show -f version %s" package))
 
 ;;
 (* Go go go *)

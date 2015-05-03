@@ -30,18 +30,18 @@ if [ "$DEPLOY" = "1" \
     travis-senv decrypt > $SSH_DEPLOY_KEY
     chmod 600 $SSH_DEPLOY_KEY
 
-    echo "Host mir-deploy github.com" >> ~/.ssh/config
-    echo "   Hostname github.com" >> ~/.ssh/config
-    echo "   StrictHostKeyChecking no" >> ~/.ssh/config
-    echo "   CheckHostIP no" >> ~/.ssh/config
+    echo "Host mir-deploy github.com"      >> ~/.ssh/config
+    echo "   Hostname github.com"          >> ~/.ssh/config
+    echo "   StrictHostKeyChecking no"     >> ~/.ssh/config
+    echo "   CheckHostIP no"               >> ~/.ssh/config
     echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
     git config --global user.email "travis@openmirage.org"
     git config --global user.name "Travis the Build Bot"
     git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment
 
-    DEPLOYD=${TRAVIS_REPO_SLUG#mirage/}-deployment
-    XENIMG=mir-${TRAVIS_REPO_SLUG#mirage/mirage-}.xen
+    DEPLOYD=${TRAVIS_REPO_SLUG#*/}-deployment
+    XENIMG=mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen
     case "$MIRAGE_BACKEND" in
         xen)
             cd $DEPLOYD

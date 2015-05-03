@@ -42,12 +42,13 @@ if [ "$DEPLOY" = "1" \
 
     DEPLOYD=${TRAVIS_REPO_SLUG#*/}-deployment
     XENIMG=mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen
+    MIRDIR=${MIRDIR:-src}
     case "$MIRAGE_BACKEND" in
         xen)
             cd $DEPLOYD
             rm -rf xen/$TRAVIS_COMMIT
             mkdir -p xen/$TRAVIS_COMMIT
-            cp ../src/$XENIMG ../src/config.ml xen/$TRAVIS_COMMIT
+            cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT
             bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG
             echo $TRAVIS_COMMIT > xen/latest
             git add xen/$TRAVIS_COMMIT xen/latest

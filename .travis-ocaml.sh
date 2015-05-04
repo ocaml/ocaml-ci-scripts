@@ -16,6 +16,8 @@ set -uex
 
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
+# any extra repote of dev packages?
+EXTRA_REMOTE=${EXTRA_REMOTE:-""}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
@@ -51,6 +53,11 @@ export OPAMYES=1
 
 opam init -a ${BASE_REMOTE}
 eval $(opam config env)
+
+if [ "$EXTRA_REMOTE" != "" ]; then
+  opam remote add extra $EXTRA_REMOTE
+fi
+
 opam install depext
 
 opam --version

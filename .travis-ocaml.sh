@@ -45,6 +45,16 @@ sudo apt-get install -y \
      $(full_apt_version camlp4-extra $OCAML_VERSION) \
      opam
 
+if [ x$UPDATE_GCC_BINUTILS != x ] ; then
+    echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
+    sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+    sudo apt-get -qq update
+    sudo apt-get install -y gcc-4.8
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+    wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
+    sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
+fi
+
 ocaml -version
 
 export OPAMYES=1

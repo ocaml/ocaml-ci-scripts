@@ -45,7 +45,7 @@ sudo apt-get install -y \
      $(full_apt_version camlp4-extra $OCAML_VERSION) \
      opam
 
-if [ x$UPDATE_GCC_BINUTILS != x ] ; then
+if [ -n "$UPDATE_GCC_BINUTILS" ] ; then
     echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
     sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
     sudo apt-get -qq update

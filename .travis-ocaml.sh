@@ -20,6 +20,9 @@ OCAML_VERSION=${OCAML_VERSION:-latest}
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
 
+# whether we need a new gcc and binutils
+UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
+
 case "$OCAML_VERSION" in
     3.12) ppa=avsm/ocaml312+opam12 ;;
     4.00) ppa=avsm/ocaml40+opam12  ;;
@@ -45,7 +48,7 @@ sudo apt-get install -y \
      $(full_apt_version camlp4-extra $OCAML_VERSION) \
      opam
 
-if [ -n "$UPDATE_GCC_BINUTILS" ] ; then
+if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
     echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
     sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
     sudo apt-get -qq update

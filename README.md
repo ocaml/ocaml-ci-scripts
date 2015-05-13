@@ -105,7 +105,9 @@ env:
   - [...] DEPOPTS="*" [...]
 ```
 
-An empty value or the value "false" will disable the optional dependency run.
+An empty value or the value "false" will disable the optional dependency
+run. If `TESTS` is `true` (default, see below), the package's tests will
+be run during the optional dependency run as well.
 
 ### Extra Dependencies
 

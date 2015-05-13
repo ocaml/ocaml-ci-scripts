@@ -131,15 +131,17 @@ end else echo "TESTS=false, skipping the test run."
 ;
 
 (* Compile with optional dependencies *)
-begin match depopts_run with
+begin
+  let args = if tests_run then ["-v"; "-t"] else ["-v"] in
+  match depopts_run with
   | [] | ["false"] ->
     echo "DEPOPTS=false, skipping the optional dependency run."
   | ["*"] -> (* query OPAM *)
     let depopts =
       ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
     in
-    install_with_depopts ["-v"] depopts
-  | depopts -> install_with_depopts ["-v"] (depopts *~ " ")
+    install_with_depopts args depopts
+  | depopts -> install_with_depopts args (depopts *~ " ")
 end;
 
 let revdeps = match revdep_run with

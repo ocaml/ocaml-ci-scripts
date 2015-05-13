@@ -189,6 +189,18 @@ repository, `.travis-opam.sh` users can layer additional OPAM remotes on top
 of the `BASE_REMOTE` with `EXTRA_REMOTES`. Remotes are added from left
 to right.
 
+## GCC and binutils
+
+```shell
+env:
+ - [...] UPDATE_GCC_BINUTILS=1 [...]
+```
+
+Travis has a rather arcane `gcc` (4.6.3) and `binutils` (2.22). Some
+pieces of C code require newer versions (e.g. intrinsics for
+RDSEED). If `UPDATE_GCC_BINUTILS` is set to a non-zero value,
+`gcc-4.8` and `binutils-2.24` are installed before running the build.
+
 ## Mirage Unikernels, `.travis-mirage.sh`
 
 This causes Travis to build a repo as a Mirage unikernel. It assumes the

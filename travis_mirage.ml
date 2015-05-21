@@ -28,6 +28,14 @@ let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
 (* Any extra pins to use *)
 let pins = list (getenv_default "PINS" "")
 
+(* Mirage deployment environment *)
+let deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
+let travis_pr =
+  getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
+let secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
+
+;;
+
 (* Script *)
 
 let add_remote =
@@ -56,12 +64,7 @@ List.iter pin pins;
 ?| "DEPLOY=$DEPLOY MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
     ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
     make configure";
-?| "make build";
-
-let deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
-let travis_pr =
-  getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
-let secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
+?| "make build"
 ;;
 
 if deploy && travis_pr && secret then begin

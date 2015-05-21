@@ -49,7 +49,6 @@ export "OPAMYES" "1";
 List.iter add_remote extra_remotes;
 
 List.iter pin pins;
-?|. "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
 
 ?| "opam update -u";

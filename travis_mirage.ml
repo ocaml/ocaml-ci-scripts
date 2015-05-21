@@ -65,9 +65,7 @@ List.iter pin pins;
 ?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
     ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
     make configure";
-?| "make build";
-?| "echo $DEPLOY $TRAVIS_PULL_REQUEST $XSECRET_default_0 $MIRAGE_BACKEND";
-?| "env"
+?| "make build"
 ;;
 
 if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin

@@ -29,11 +29,12 @@ let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
 let pins = list (getenv_default "PINS" "")
 
 (* Mirage deployment environment *)
-let deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
-let travis_pr =
+let is_deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
+let is_travis_pr =
   getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
-let secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
-
+let have_secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
+let is_xen =
+  getenv_default "MIRAGE_BACKEND" "" |> function "xen" -> true | _ -> false
 ;;
 
 (* Script *)
@@ -57,24 +58,27 @@ export "OPAMYES" "1";
 List.iter add_remote extra_remotes;
 
 List.iter pin pins;
-?|  "eval $(opam config env)";
+?| "eval $(opam config env)";
 
 ?| "opam update -u";
 ?| "opam install mirage";
 ?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
     ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
     make configure";
-?| "make build"
+?| "make build";
+?| "echo $DEPLOY $TRAVIS_PULL_REQUEST $XSECRET_default_0 $MIRAGE_BACKEND";
+?| "env"
 ;;
 
-if deploy && travis_pr && secret then begin
-  let mirage_backend = getenv_default "MIRAGE_BACKEND" "unix" in
+if is_deploy && is_travis_pr && have_secret && is_xen then begin
   let ssh_config = "Host mir-deploy github.com
                    \  Hostname github.com
                    \  StrictHostKeyChecking no
                    \  CheckHostIP no
                    \  UserKnownHostsFile=/dev/null"
   in
+  export "XENIMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
+  export "MIRDIR" "${MIRDIR:-src}";
   ?|  "opam install travis-senv";
   ?|  "mkdir -p ~/.ssh";
   ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
@@ -83,20 +87,13 @@ if deploy && travis_pr && secret then begin
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
-  (match mirage_backend with
-   | "xen" -> begin
-       export "XENIMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
-       export "MIRDIR" "${MIRDIR:-src}";
-       ?| "cd ${TRAVIS_REPO_SLUG#*/}-deployment";
-       ?| "rm -rf xen/$TRAVIS_COMMIT";
-       ?| "mkdir -p xen/$TRAVIS_COMMIT";
-       ?| "cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT";
-       ?| "bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG";
-       ?| "echo $TRAVIS_COMMIT > xen/latest";
-       ?| "git add xen/$TRAVIS_COMMIT xen/latest";
-       ?| "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
-       ?| "git push"
-     end
-   | x -> Printf.eprintf "Unknown deployment backend %s" x; exit 1
-  )
+  ?|  "cd ${TRAVIS_REPO_SLUG#*/}-deployment";
+  ?|  "rm -rf xen/$TRAVIS_COMMIT";
+  ?|  "mkdir -p xen/$TRAVIS_COMMIT";
+  ?|  "cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT";
+  ?|  "bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG";
+  ?|  "echo $TRAVIS_COMMIT > xen/latest";
+  ?|  "git add xen/$TRAVIS_COMMIT xen/latest";
+  ?|  "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
+  ?|  "git push"
 end

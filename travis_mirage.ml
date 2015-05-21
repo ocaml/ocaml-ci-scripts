@@ -58,49 +58,41 @@ List.iter pin pins;
     make configure";
 ?| "make build";
 
-(*
+let deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
+let travis_pr =
+  getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
+let secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
+;;
 
-## stash deployment build if specified
-if [ "$DEPLOY" = "1" \
-               -a "$TRAVIS_PULL_REQUEST" = "false" \
-               -a -n "$XSECRET_default_0" ]; then
-    opam install travis-senv
-    # get the secure key out for deployment
-    mkdir -p ~/.ssh
-    SSH_DEPLOY_KEY=~/.ssh/id_dsa
-    travis-senv decrypt > $SSH_DEPLOY_KEY
-    chmod 600 $SSH_DEPLOY_KEY
-
-    echo "Host mir-deploy github.com"      >> ~/.ssh/config
-    echo "   Hostname github.com"          >> ~/.ssh/config
-    echo "   StrictHostKeyChecking no"     >> ~/.ssh/config
-    echo "   CheckHostIP no"               >> ~/.ssh/config
-    echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
-    git config --global user.email "travis@openmirage.org"
-    git config --global user.name "Travis the Build Bot"
-    git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment
-
-    DEPLOYD=${TRAVIS_REPO_SLUG#*/}-deployment
-    XENIMG=mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen
-    MIRDIR=${MIRDIR:-src}
-    case "$MIRAGE_BACKEND" in
-        xen)
-            cd $DEPLOYD
-            rm -rf xen/$TRAVIS_COMMIT
-            mkdir -p xen/$TRAVIS_COMMIT
-            cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT
-            bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG
-            echo $TRAVIS_COMMIT > xen/latest
-            git add xen/$TRAVIS_COMMIT xen/latest
-            ;;
-(*        *)
-            echo unsupported deploy mode: $MIRAGE_BACKEND
-            exit 1
-            ;;
-    esac
-    git commit -m "adding $TRAVIS_COMMIT for $MIRAGE_BACKEND"
-    git push
-fi
-
-*)
+if deploy && travis_pr && secret then begin
+  let mirage_backend = getenv_default "MIRAGE_BACKEND" "unix" in
+  let ssh_config = "Host mir-deploy github.com
+                   \  Hostname github.com
+                   \  StrictHostKeyChecking no
+                   \  CheckHostIP no
+                   \  UserKnownHostsFile=/dev/null"
+  in
+  ?|  "opam install travis-senv";
+  ?|  "mkdir -p ~/.ssh";
+  ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
+  ?|  "chmod 600 ~/.ssh/id_dsa";
+  ?|~ "echo %s > ~/.ssh/config" ssh_config;
+  ?|  "git config --global user.email 'travis@openmirage.org'";
+  ?|  "git config --global user.name 'Travis the Build Bot'";
+  ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
+  (match mirage_backend with
+   | "xen" -> begin
+       export "XENIMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
+       export "MIRDIR" "${MIRDIR:-src}";
+       ?| "cd ${TRAVIS_REPO_SLUG#*/}-deployment";
+       ?| "rm -rf xen/$TRAVIS_COMMIT";
+       ?| "mkdir -p xen/$TRAVIS_COMMIT";
+       ?| "cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT";
+       ?| "bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG";
+       ?| "echo $TRAVIS_COMMIT > xen/latest";
+       ?| "git add xen/$TRAVIS_COMMIT xen/latest";
+       ?| "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
+       ?| "git push"
+    end
+  | x -> Printf.eprintf "Unknown deployment backend %s" x; exit 1
+  )

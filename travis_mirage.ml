@@ -96,6 +96,7 @@ if deploy && travis_pr && secret then begin
        ?| "git add xen/$TRAVIS_COMMIT xen/latest";
        ?| "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
        ?| "git push"
-    end
-  | x -> Printf.eprintf "Unknown deployment backend %s" x; exit 1
+     end
+   | x -> Printf.eprintf "Unknown deployment backend %s" x; exit 1
   )
+end

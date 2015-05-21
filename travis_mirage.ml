@@ -50,7 +50,7 @@ let pin pin = match pair pin with
 
 (* Go go go *)
 
-set "-ue";
+set "-e";
 export "OPAMYES" "1";
 ?| "eval $(opam config env)";
 
@@ -61,7 +61,7 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install mirage";
-?| "DEPLOY=$DEPLOY MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
+?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
     ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
     make configure";
 ?| "make build"

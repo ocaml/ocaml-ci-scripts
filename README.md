@@ -27,6 +27,17 @@ Add one line per compiler version you want to test. `latest` is the latest
 stable version of OCaml. The `[...]` are other environments variables set for
 this Travis CI run.
 
+### Changing the Base OPAM Remote
+
+```shell
+env:
+  - [...] BASE_REMOTE=<url> [...]
+```
+
+The bare-bones install script can be configured to initialize OPAM with
+a metadata repository that isn't the default community OPAM remote of
+[git://github.com/ocaml/opam-repository](git://github.com/ocaml/opam-repository).
+`BASE_REMOTE` initializes OPAM with a repository address of your choice.
 
 ## OPAM Package, `.travis-opam.sh`
 
@@ -86,6 +97,15 @@ env:
   - [...] DEPOPTS="<list of space-separated package names>" [...]
 ```
 
+All optional dependencies declared in the `opam` file may be installed
+with
+
+```shell
+env:
+  - [...] DEPOPTS="*" [...]
+```
+
+An empty value or the value "false" will disable the optional dependency run.
 
 ### Extra Dependencies
 
@@ -98,7 +118,6 @@ package is required but not part of the `opam` file. One example for this is
 env:
   - [...] EXTRA_DEPS="<list of space-separated package names>" [...]
 ```
-
 
 ### Running the Tests
 
@@ -115,6 +134,34 @@ TODO: check if the `build-test` field is empty in the `opam` file to
 know if the tests have to run.
 
 
+### Reverse Dependency Tests
+
+Finally, the build of immediate reverse dependencies of the package
+under test may be tested. Disabled with 'false' by default, set
+`REVDEPS=*` to build the freshest version of every dependent package
+allowed by constraints. If you desire to test only specific dependent
+packages, they may be provided in a space-separated list.
+
+```shell
+env:
+  - [...] REVDEPS="<list of space-separated package names>" [...]
+```
+
+### Customizing the OPAM Pin Set
+
+```shell
+env:
+  - [...] PINS="<list of space-separated name:url pin pairs>" [...]
+```
+
+You can customize the development pins of an OPAM package test run with
+the `PINS` variable. Each pin specified will *only* result in that pin
+being added into OPAM's pin set -- no default installation will be
+performed. A pin of a package name without a colon (":") will result in
+that package being pinned to the URL in that package's `dev-repo`
+field. A pin of a `name:url` or `name.version:url` pair will pin the
+package to the given URL.
+
 ### Hooks
 
 ```shell
@@ -129,6 +176,30 @@ These only get executed when installing your package, not the dependencies.
 
 The hook functionality might be useful for running commands like OASIS to
 generate build files which are not checked into the repository.
+
+### Changing OPAM Remotes
+
+```shell
+env:
+  - [...] EXTRA_REMOTES="<list of space-separated URLs>" [...]
+```
+
+In addition to changing the `BASE_REMOTE` to configure an initialization
+repository, `.travis-opam.sh` users can layer additional OPAM remotes on top
+of the `BASE_REMOTE` with `EXTRA_REMOTES`. Remotes are added from left
+to right.
+
+## GCC and binutils
+
+```shell
+env:
+ - [...] UPDATE_GCC_BINUTILS=1 [...]
+```
+
+Travis has a rather arcane `gcc` (4.6.3) and `binutils` (2.22). Some
+pieces of C code require newer versions (e.g. intrinsics for
+RDSEED). If `UPDATE_GCC_BINUTILS` is set to a non-zero value,
+`gcc-4.8` and `binutils-2.24` are installed before running the build.
 
 ## Mirage Unikernels, `.travis-mirage.sh`
 

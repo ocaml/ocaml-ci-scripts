@@ -17,6 +17,12 @@ set -uex
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
 
+# the base opam repository to use for bootstrapping and catch-all namespace
+BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
+
+# whether we need a new gcc and binutils
+UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
+
 case "$OCAML_VERSION" in
     3.12) ppa=avsm/ocaml312+opam12 ;;
     4.00) ppa=avsm/ocaml40+opam12  ;;
@@ -42,11 +48,21 @@ sudo apt-get install -y \
      $(full_apt_version camlp4-extra $OCAML_VERSION) \
      opam
 
+if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
+    echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
+    sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+    sudo apt-get -qq update
+    sudo apt-get install -y gcc-4.8
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+    wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
+    sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
+fi
+
 ocaml -version
 
 export OPAMYES=1
 
-opam init -a git://github.com/ocaml/opam-repository
+opam init -a ${BASE_REMOTE}
 eval $(opam config env)
 opam install depext
 

@@ -70,7 +70,7 @@ List.iter pin pins;
 ?| "env"
 ;;
 
-if is_deploy && is_travis_pr && have_secret && is_xen then begin
+if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   let ssh_config = "Host mir-deploy github.com
                    \  Hostname github.com
                    \  StrictHostKeyChecking no

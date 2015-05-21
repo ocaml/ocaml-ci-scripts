@@ -1,63 +1,37 @@
-## mirage setup
-
-set -ex
-
-# If a fork of these scripts are specified, use that GitHub user instead
+# If a fork of these scripts is specified, use that GitHub user instead
 fork_user=${FORK_USER:-ocaml}
 
-## fetch+execute the OCaml/opam setup script
-wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/master/.travis-ocaml.sh
-sh .travis-ocaml.sh
+# If a branch of these scripts is specified, use that branch instead of 'master'
+fork_branch=${FORK_BRANCH:-master}
 
-## install mirage
+### Bootstrap
+
+set -uex
+unset TESTS
+
+get() {
+  wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/${fork_branch}/$@
+}
+
+TMP_BUILD=$(mktemp -d)
+cd ${TMP_BUILD}
+
+get .travis-ocaml.sh
+get yorick.mli
+get yorick.ml
+get travis_mirage.ml
+
+sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)
-opam install mirage
 
-DEPLOY=$DEPLOY MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
-      ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
-      make configure
-make build
+# This could be removed with some OPAM variable plumbing into build commands
+opam install ocamlfind
 
-## stash deployment build if specified
-if [ "$DEPLOY" = "1" \
-               -a "$TRAVIS_PULL_REQUEST" = "false" \
-               -a -n "$XSECRET_default_0" ]; then
-    opam install travis-senv
-    # get the secure key out for deployment
-    mkdir -p ~/.ssh
-    SSH_DEPLOY_KEY=~/.ssh/id_dsa
-    travis-senv decrypt > $SSH_DEPLOY_KEY
-    chmod 600 $SSH_DEPLOY_KEY
+ocamlc.opt yorick.mli
+ocamlfind ocamlc -c yorick.ml
 
-    echo "Host mir-deploy github.com"      >> ~/.ssh/config
-    echo "   Hostname github.com"          >> ~/.ssh/config
-    echo "   StrictHostKeyChecking no"     >> ~/.ssh/config
-    echo "   CheckHostIP no"               >> ~/.ssh/config
-    echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+ocamlfind ocamlc -o travis-mirage -package unix -linkpkg yorick.cmo travis_mirage.ml
+cd -
 
-    git config --global user.email "travis@openmirage.org"
-    git config --global user.name "Travis the Build Bot"
-    git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment
-
-    DEPLOYD=${TRAVIS_REPO_SLUG#*/}-deployment
-    XENIMG=mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen
-    MIRDIR=${MIRDIR:-src}
-    case "$MIRAGE_BACKEND" in
-        xen)
-            cd $DEPLOYD
-            rm -rf xen/$TRAVIS_COMMIT
-            mkdir -p xen/$TRAVIS_COMMIT
-            cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT
-            bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG
-            echo $TRAVIS_COMMIT > xen/latest
-            git add xen/$TRAVIS_COMMIT xen/latest
-            ;;
-        *)
-            echo unsupported deploy mode: $MIRAGE_BACKEND
-            exit 1
-            ;;
-    esac
-    git commit -m "adding $TRAVIS_COMMIT for $MIRAGE_BACKEND"
-    git push
-fi
+${TMP_BUILD}/travis-mirage

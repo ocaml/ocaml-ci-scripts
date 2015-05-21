@@ -67,7 +67,7 @@ export OPAMYES=1
 
 opam init -a ${BASE_REMOTE}
 
-f [ "$DEV_REMOTE" != "" ] ; then
+if [ "$DEV_REMOTE" != "" ] ; then
     opam remote add $DEV_REMOTE
     opam update -u
 fi

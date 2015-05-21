@@ -20,6 +20,9 @@ OCAML_VERSION=${OCAML_VERSION:-latest}
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
 
+# add a development remote as well
+DEV_REMOTE=${DEV_REMOTE}
+
 # whether we need a new gcc and binutils
 UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
 
@@ -63,6 +66,12 @@ ocaml -version
 export OPAMYES=1
 
 opam init -a ${BASE_REMOTE}
+
+if [ "$DEV_REMOTE" != "" ] ; then
+    opam remote add dev $DEV_REMOTE
+    opam update -u
+fi
+
 eval $(opam config env)
 opam install depext
 

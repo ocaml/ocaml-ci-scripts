@@ -81,7 +81,7 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   ?|  "mkdir -p ~/.ssh";
   ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
   ?|  "chmod 600 ~/.ssh/id_dsa";
-  ?|~ "echo %s > ~/.ssh/config" ssh_config;
+  ?|~ "echo '%s' > ~/.ssh/config" ssh_config;
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";

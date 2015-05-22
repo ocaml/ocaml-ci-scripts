@@ -75,22 +75,28 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
                    \  CheckHostIP no
                    \  UserKnownHostsFile=/dev/null"
   in
-  export "XENIMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
+  export "XENIMG" "mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
   export "MIRDIR" "${MIRDIR:-src}";
+  (* setup ssh *)
   ?|  "opam install travis-senv";
   ?|  "mkdir -p ~/.ssh";
   ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
   ?|  "chmod 600 ~/.ssh/id_dsa";
   ?|~ "echo '%s' > ~/.ssh/config" ssh_config;
+  (* configure git for github *)
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";
+  (* clone deployment repo *)
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
   ?|  "cd ${TRAVIS_REPO_SLUG#*/}-deployment";
+  ?|  "pwd ; ls -l ; ls -l .. ; echo \"$MIRDIR\" ; echo \"$XENIMG\"";
+  (* remove and recreate any existing image for this commit *)
   ?|  "rm -rf xen/$TRAVIS_COMMIT";
   ?|  "mkdir -p xen/$TRAVIS_COMMIT";
   ?|  "cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT";
   ?|  "bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG";
   ?|  "echo $TRAVIS_COMMIT > xen/latest";
+  (* commit and push changes *)
   ?|  "git add xen/$TRAVIS_COMMIT xen/latest";
   ?|  "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
   ?|  "git push"

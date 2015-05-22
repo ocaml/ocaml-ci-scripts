@@ -51,7 +51,7 @@ let pin pin = match pair pin with
 
 (* Go go go *)
 
-set "-e";
+set "-ex";
 export "OPAMYES" "1";
 ?| "eval $(opam config env)";
 
@@ -88,6 +88,7 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   (* configure git for github *)
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";
+  ?|  "git config --global push.default simple";
   (* clone deployment repo *)
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
   (* remove and recreate any existing image for this commit *)

@@ -77,6 +77,8 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   in
   export "XENIMG" "mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
   export "MIRDIR" "${MIRDIR:-src}";
+  export "DEPLOYD" "${TRAVIS_REPO_SLUG#*/}-deployment";
+
   (* setup ssh *)
   ?|  "opam install travis-senv";
   ?|  "mkdir -p ~/.ssh";
@@ -88,16 +90,15 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   ?|  "git config --global user.name 'Travis the Build Bot'";
   (* clone deployment repo *)
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
-  ?|  "cd ${TRAVIS_REPO_SLUG#*/}-deployment";
-  ?|  "pwd ; ls -l ; ls -l .. ; echo \"$MIRDIR\" ; echo \"$XENIMG\"";
   (* remove and recreate any existing image for this commit *)
-  ?|  "rm -rf xen/$TRAVIS_COMMIT";
-  ?|  "mkdir -p xen/$TRAVIS_COMMIT";
-  ?|  "cp ../$MIRDIR/$XENIMG ../$MIRDIR/config.ml xen/$TRAVIS_COMMIT";
-  ?|  "bzip2 -9 xen/$TRAVIS_COMMIT/$XENIMG";
-  ?|  "echo $TRAVIS_COMMIT > xen/latest";
+  ?|  "rm -rf $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "mkdir -p $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "cp $MIRDIR/$XENIMG $MIRDIR/config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "bzip2 -9 $DEPLOYD/xen/$TRAVIS_COMMIT/$XENIMG";
+  ?|  "echo $TRAVIS_COMMIT > $DEPLOYD/xen/latest";
   (* commit and push changes *)
-  ?|  "git add xen/$TRAVIS_COMMIT xen/latest";
-  ?|  "git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\"";
-  ?|  "git push"
+  ?|  "cd $DEPLOYD &&\
+       \ git add xen/$TRAVIS_COMMIT xen/latest &&\
+       \ git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\" &&\
+       \ git push"
 end

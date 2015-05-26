@@ -91,6 +91,8 @@ let fuzzy_bool_of_string s = match String.lowercase s with
 
 let echo fmt = Printf.ksprintf print_endline fmt
 
+let cd = Unix.chdir
+
 let is_space = function ' ' | '\012' | '\n' | '\r' | '\t' -> true | _ -> false
 
 let trim s =

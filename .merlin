@@ -1,4 +1,3 @@
 PKG unix
-
 SRC .
-B .
+B _build

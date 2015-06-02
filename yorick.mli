@@ -112,7 +112,10 @@ val fuzzy_bool_of_string : string -> bool
 
 (** [echo pattern] is a function of [pattern] parameters which prints
     [pattern ...] to standard output followed by a newline. *)
-val echo : ('a, unit, string, unit) format4 -> 'a
+val echo : ('a, unit) exec
+
+(** [cd dir] changes the process's current working directory to [dir]. *)
+val cd : string -> unit
 
 (** [trim s] is a copy of [s] without the leading or trailing
     whitespace characters `' '`, `'\012'`, `'\n'`, `'\r'`, or `'\t'`. *)

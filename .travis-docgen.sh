@@ -21,9 +21,9 @@ rm -rf $DOCDIR
 # Error out if $GH_TOKEN is empty or unset
 : ${GH_TOKEN:?"GH_TOKEN need to be uploaded via travis-encrypt"}
 
-git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/simonjbeaumont/ocaml-pci $DOCDIR > /dev/null
+git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} $DOCDIR > /dev/null
 
-cp _build/pci.docdir/* $DOCDIR
+cp _build/*.docdir/* $DOCDIR
 
 git -C $DOCDIR config user.email "travis@travis-ci.org"
 git -C $DOCDIR config user.name "Travis"

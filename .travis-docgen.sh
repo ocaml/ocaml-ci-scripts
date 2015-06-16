@@ -30,4 +30,4 @@ git -C $DOCDIR config user.email "travis@travis-ci.org"
 git -C $DOCDIR config user.name "Travis"
 git -C $DOCDIR add .
 git -C $DOCDIR commit --allow-empty -m "Travis build $TRAVIS_BUILD_NUMBER pushed docs to gh-pages"
-git -C $DOCDIR push origin gh-pages > /dev/null
+git -C $DOCDIR push origin gh-pages &2>1 > /dev/null

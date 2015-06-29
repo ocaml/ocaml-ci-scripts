@@ -35,7 +35,7 @@ let is_travis_pr =
 let have_secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
 let is_xen =
   getenv_default "MIRAGE_BACKEND" "" |> function "xen" -> true | _ -> false
-;;
+let travis_branch = getenv_default "TRAVIS_BRANCH" ""
 
 (* Script *)
 
@@ -68,7 +68,9 @@ List.iter pin pins;
 ?| "make build"
 ;;
 
-if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
+if is_deploy && is_xen && have_secret && (not is_travis_pr) &&
+   travis_branch = "master"
+then begin
   let ssh_config = "Host mir-deploy github.com
                    \  Hostname github.com
                    \  StrictHostKeyChecking no

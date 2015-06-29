@@ -68,9 +68,7 @@ List.iter pin pins;
 ?| "make build"
 ;;
 
-if is_deploy && is_xen && have_secret && (not is_travis_pr) &&
-   travis_branch = "master"
-then begin
+if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   let ssh_config = "Host mir-deploy github.com
                    \  Hostname github.com
                    \  StrictHostKeyChecking no
@@ -87,6 +85,7 @@ then begin
   ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
   ?|  "chmod 600 ~/.ssh/id_dsa";
   ?|~ "echo '%s' > ~/.ssh/config" ssh_config;
+  ?|~ "echo travis-branch: %S" travis_branch;
   (* configure git for github *)
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";

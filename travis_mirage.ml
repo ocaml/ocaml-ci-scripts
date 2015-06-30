@@ -65,10 +65,13 @@ List.iter pin pins;
 ?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
     ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
     make configure";
-?| "make build"
+?| "make build";
+?| "echo TRAVIS_BRANCH=$TRAVIS_BRANCH"
 ;;
 
-if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
+if is_deploy && is_xen && have_secret && (not is_travis_pr) &&
+   travis_branch = "master"
+then begin
   let ssh_config = "Host mir-deploy github.com
                    \  Hostname github.com
                    \  StrictHostKeyChecking no
@@ -85,7 +88,6 @@ if is_deploy && is_xen && have_secret && (not is_travis_pr) then begin
   ?|  "travis-senv decrypt > ~/.ssh/id_dsa";
   ?|  "chmod 600 ~/.ssh/id_dsa";
   ?|~ "echo '%s' > ~/.ssh/config" ssh_config;
-  ?|~ "echo travis-branch: %S" travis_branch;
   (* configure git for github *)
   ?|  "git config --global user.email 'travis@openmirage.org'";
   ?|  "git config --global user.name 'Travis the Build Bot'";

@@ -7,7 +7,6 @@ fork_branch=${FORK_BRANCH:-master}
 ### Bootstrap
 
 set -uex
-unset TESTS
 
 get() {
   wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/${fork_branch}/$@

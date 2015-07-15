@@ -62,9 +62,7 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install mirage";
-?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
-    ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
-    make configure";
+?| "MODE=$MIRAGE_BACKEND make configure";
 ?| "make build";
 ?| "echo TRAVIS_BRANCH=$TRAVIS_BRANCH"
 ;;

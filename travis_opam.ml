@@ -49,8 +49,6 @@ let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
 (* Script *)
 
-let some x = Some x
-
 let add_remote =
   let layer = ref 0 in
   fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
@@ -142,8 +140,10 @@ begin (* optioanal dependencies *)
   let depopts_run = match depopts_run with
     | [] | ["false"] -> None
     | ["*"] -> (* query OPAM *)
-      ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
-      |>  some
+      let d =
+        ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
+      in
+      Some d
     | depopts -> Some (depopts *~ " ")
   in
   match depopts_run with

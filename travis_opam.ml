@@ -49,6 +49,8 @@ let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
 (* Script *)
 
+let some x = Some x
+
 let add_remote =
   let layer = ref 0 in
   fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
@@ -75,10 +77,10 @@ let install args =
       ?|. "opam remove %s" deps
   end
 
-let install_with_depopts args depopts =
+let install_with_depopts depopts =
   ?|~ "opam depext %s" depopts;
   ?|~ "opam install %s" depopts;
-  install args;
+  install ["-v"];
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" depopts
 
@@ -117,38 +119,39 @@ List.iter pin pins;
 (* Install the OCaml dependencies *)
 ?|~ "opam install %s --deps-only" pkg;
 
-(* Simple installation/removal test *)
-if install_run then (
-  install ["-v"];
-  ?|~ "opam remove %s -v" pkg
-) else
-  echo "INSTALL=false, skipping the basic installation run.";
-
-(* Compile and run the tests as well *)
-if tests_run then
-  with_opambuildtest (fun () ->
-      ?|~ "opam depext %s" pkg;
-      ?|~ "opam install %s --deps-only" pkg;
-      install ["-v";"-t"];
-      ?|~ "opam remove %s -v" pkg)
-else
-  echo "TESTS=false, skipping the test run.";
-
-begin
-  let args = if tests_run then ["-v"; "-t"] else ["-v"] in
-  match depopts_run with
-  | [] | ["false"] ->
-    echo "DEPOPTS=false, skipping the optional dependency run."
-  | ["*"] -> (* query OPAM *)
-    let depopts =
-      ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
-    in
-    with_opambuildtest (fun () -> install_with_depopts args depopts)
-  | depopts ->
-    with_opambuildtest (fun () -> install_with_depopts args (depopts *~ " "))
+begin (* Simple installation/removal test *)
+  if install_run then (
+    install ["-v"];
+    ?|~ "opam remove %s -v" pkg
+  ) else
+    echo "INSTALL=false, skipping the basic installation run.";
 end;
 
-begin
+begin (* tests *)
+  if tests_run then
+    with_opambuildtest (fun () ->
+        ?|~ "opam depext %s" pkg;
+        ?|~ "opam install %s --deps-only" pkg;
+        install ["-v";"-t"];
+        ?|~ "opam remove %s -v" pkg)
+  else
+    echo "TESTS=false, skipping the test run.";
+end;
+
+begin (* optioanal dependencies *)
+  let depopts_run = match depopts_run with
+    | [] | ["false"] -> None
+    | ["*"] -> (* query OPAM *)
+      ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
+      |>  some
+    | depopts -> Some (depopts *~ " ")
+  in
+  match depopts_run with
+  | None   -> echo "DEPOPTS=false, skipping the optional dependency run.";
+  | Some d -> install_with_depopts d
+end;
+
+begin (* reverse dependencies *)
   let revdeps = match revdep_run with
     | [] | ["false"] | ["0"] -> None
     | ["*"] | ["true"] | ["1"] ->

@@ -218,3 +218,30 @@ If a deployment build is requested then the corresponding Mirage `-deployment`
 repo is cloned, the Xen VM image that was built is committed to it and the
 `latest` pointer updated, and then the keys embedded in the `.travis.yml` file
 are used to push the updated `-deployment` repo back to the `mirage` org.
+
+### Changing the version of OPAM
+
+```shell
+  - [...] OPAM_VERSION="1.1.1"
+```
+
+By default, the latest stable version of OPAM will be used. The scripts supports
+these version:
+
+- `OPAM_VERSION=1.1.1` only when the OS is `unix` (default)
+- `OPAM_VERSION=1.2.0` only when the OS is `unix` (default)
+- `OPAM_VERSION=1.2.2` when the OS is either `unix` or `osx`
+- `OPAM_VERSION=1.3.0` only when the OS is `osx`
+
+### Testing on different OS
+
+See http://docs.travis-ci.com/user/multi-os/
+
+You first need to enable multi-OS support for your repository by sending an
+email to Travis CI support. Then add to your `.travis.yml`:
+
+```shell
+os:
+  - linux
+  - osx
+```

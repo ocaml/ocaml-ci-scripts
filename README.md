@@ -222,13 +222,13 @@ are used to push the updated `-deployment` repo back to the `mirage` org.
 ### Changing the version of OPAM
 
 ```shell
-  - [...] OPAM_VERSION="1.1.1"
+  - [...] OPAM_VERSION="1.1.2"
 ```
 
 By default, the latest stable version of OPAM will be used. The scripts supports
 these version:
 
-- `OPAM_VERSION=1.1.1` only when the OS is `unix` (default)
+- `OPAM_VERSION=1.1.2` only when the OS is `unix` (default)
 - `OPAM_VERSION=1.2.0` only when the OS is `unix` (default)
 - `OPAM_VERSION=1.2.2` when the OS is either `unix` or `osx`
 - `OPAM_VERSION=1.3.0` only when the OS is `osx`

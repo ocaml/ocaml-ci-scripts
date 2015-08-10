@@ -15,7 +15,7 @@ full_apt_version () {
 set -uex
 
 # the ocaml version to test
-OCAML_VERSION=${OCAML_VERSION:-4.02}
+OCAML_VERSION=${OCAML_VERSION:-latest}
 OPAM_VERSION=${OPAM_VERSION:-1.2.2}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
@@ -23,6 +23,10 @@ BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
 
 # whether we need a new gcc and binutils
 UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
+
+case "$OCAML_VERSION" in
+    latest) OCAML_VERSION=4.02;;
+esac
 
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
@@ -33,7 +37,6 @@ install_on_linux () {
     4.02,1.2.0) ppa=avsm/ocaml42+opam120 ;;
     4.02,1.2.1) ppa=avsm/ocaml42+opam121 ;;
     4.02,1.2.2) ppa=avsm/ocaml42+opam12 ;;
-    latest,1.2.2) ppa=avsm/ocaml42+opam12 ;;
     4.03,1.2.2) OCAML_VERSION=4.02; OCAML_SWITCH="4.03.0dev+trunk"; ppa=avsm/ocaml42+opam12 ;;
     *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
@@ -72,8 +75,6 @@ install_on_osx () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     4.02,1.2.2) brew update; brew install opam ;;
     4.02,1.3.0) brew update; brew install opam --HEAD ;;
-    latest,1.2.2) brew update; brew install opam ;;
-    latest,1.3.0) brew update; brew install opam --HEAD ;;
     4.03,1.2.2) brew update; brew install ocaml --HEAD; brew install opam ;;
     *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac

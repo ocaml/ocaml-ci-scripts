@@ -17,6 +17,7 @@ set -uex
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
 OPAM_VERSION=${OPAM_VERSION:-1.2.2}
+OPAM_INIT=${OPAM_INIT:-true}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
@@ -86,12 +87,15 @@ case $TRAVIS_OS_NAME in
 esac
 
 ocaml -version
+opam --version
+opam --git-version
 
 export OPAMYES=1
 
-opam init -a ${BASE_REMOTE}
-eval $(opam config env)
-opam install depext
-
-opam --version
-opam --git-version
+case $OPAM_INIT in
+  true)
+      opam init -a ${BASE_REMOTE}
+      eval $(opam config env)
+      opam install depext
+      ;;
+esac

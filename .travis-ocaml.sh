@@ -91,10 +91,6 @@ case $TRAVIS_OS_NAME in
     linux) install_on_linux ;;
 esac
 
-ocaml -version
-opam --version
-opam --git-version
-
 export OPAMYES=1
 
 case $OPAM_INIT in
@@ -104,3 +100,7 @@ case $OPAM_INIT in
       opam install depext
       ;;
 esac
+
+ocaml -version
+opam --version
+opam --git-version

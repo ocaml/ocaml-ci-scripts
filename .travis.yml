@@ -8,5 +8,5 @@ env:
   - OCAML_VERSION=4.01
   - OCAML_VERSION=4.02
 os:
-  - unix
+  - linux
   - osx

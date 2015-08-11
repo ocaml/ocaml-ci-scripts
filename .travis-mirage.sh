@@ -16,10 +16,6 @@ TMP_BUILD=$(mktemp -d)
 cd ${TMP_BUILD}
 
 get .travis-ocaml.sh
-get yorick.mli
-get yorick.ml
-get travis_mirage.ml
-
 sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)
@@ -27,9 +23,12 @@ eval $(opam config env)
 # This could be removed with some OPAM variable plumbing into build commands
 opam install ocamlfind
 
+get yorick.mli
+get yorick.ml
 ocamlc.opt yorick.mli
 ocamlfind ocamlc -c yorick.ml
 
+get travis_mirage.ml
 ocamlfind ocamlc -o travis-mirage -package unix -linkpkg yorick.cmo travis_mirage.ml
 cd -
 

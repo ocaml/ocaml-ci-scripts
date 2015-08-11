@@ -32,7 +32,8 @@ let pins = list (getenv_default "PINS" "")
 let is_deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
 let is_travis_pr =
   getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
-let have_secret = getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
+let have_secret =
+  getenv_default "XSECRET_default_0" "false" |> fuzzy_bool_of_string
 let is_xen =
   getenv_default "MIRAGE_BACKEND" "" |> function "xen" -> true | _ -> false
 let travis_branch = getenv_default "TRAVIS_BRANCH" ""
@@ -62,9 +63,7 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install mirage";
-?| "MODE=$MIRAGE_BACKEND NET=$MIRAGE_NET \
-    ADDR=$MIRAGE_ADDR MASK=$MIRAGE_MASK GWS=$MIRAGE_GWS \
-    make configure";
+?| "MODE=$MIRAGE_BACKEND make configure";
 ?| "make build";
 ?| "echo TRAVIS_BRANCH=$TRAVIS_BRANCH"
 ;;

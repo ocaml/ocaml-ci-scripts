@@ -245,3 +245,24 @@ os:
   - linux
   - osx
 ```
+
+## Pushing OCamldoc docs to Github page, `.travis-docgen.sh`
+
+This relies on the existence of a `configure` script and `Makefile` such that
+the docs are built as follows:
+
+```shell
+./configure --enable-docs
+make doc
+```
+
+It also relies on you uploading an OAuth token to your Travis job. To do this,
+create a token on your Github account settings page and upload it as follows:
+
+```shell
+gem install travis
+travis encrypt GH_TOKEN=<token> --add
+```
+
+It will then push the contents of the resulting `<lib>.docdir` to the Github
+pages branch of your repo.

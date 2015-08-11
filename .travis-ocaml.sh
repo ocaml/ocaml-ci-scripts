@@ -18,6 +18,7 @@ set -uex
 OCAML_VERSION=${OCAML_VERSION:-latest}
 OPAM_VERSION=${OPAM_VERSION:-1.2.2}
 OPAM_INIT=${OPAM_INIT:-true}
+OPAM_SWITCH=${OPAM_SWITCH:-system}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
@@ -38,7 +39,7 @@ install_on_linux () {
     4.02,1.2.0) ppa=avsm/ocaml42+opam120 ;;
     4.02,1.2.1) ppa=avsm/ocaml42+opam121 ;;
     4.02,1.2.2) ppa=avsm/ocaml42+opam12 ;;
-    4.03,1.2.2) OCAML_VERSION=4.02; OCAML_SWITCH="4.03.0dev+trunk"; ppa=avsm/ocaml42+opam12 ;;
+    4.03,1.2.2) OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0dev+trunk"; ppa=avsm/ocaml42+opam12 ;;
     *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
@@ -73,10 +74,14 @@ install_on_osx () {
   curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
   sudo hdiutil attach XQuartz-2.7.6.dmg
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+  brew update &> /dev/null
   case "$OCAML_VERSION,$OPAM_VERSION" in
-    4.02,1.2.2) brew update; brew install opam ;;
-    4.02,1.3.0) brew update; brew install opam --HEAD ;;
-    4.03,1.2.2) brew update; brew install ocaml --HEAD; brew install opam ;;
+    3.12,1.2.2) OPAM_SWITCH=3.12.1; brew install opam ;;
+    4.00,1.2.2) OPAM_SWITCH=4.00.1; brew install opam ;;
+    4.01,1.2.2) OPAM_SWITCH=4.01.0; brew install opam ;;
+    4.02,1.2.2) brew install ocaml; brew install opam ;;
+    4.02,1.3.0) brew install ocaml; brew install opam --HEAD ;;
+    4.03,1.2.2) brew install ocaml --HEAD; brew install opam ;;
     *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
@@ -94,7 +99,7 @@ export OPAMYES=1
 
 case $OPAM_INIT in
   true)
-      opam init -a ${BASE_REMOTE}
+      opam init -a ${BASE_REMOTE} --comp=${OPAM_SWITCH}
       eval $(opam config env)
       opam install depext
       ;;

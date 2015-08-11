@@ -1,4 +1,6 @@
 #!/bin/sh
+# From https://github.com/simonjbeaumont/ocaml-travis-gh-pages
+
 set -e
 # Make sure we're not echoing any sensitive data
 set +x

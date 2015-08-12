@@ -40,7 +40,7 @@ install_on_linux () {
     4.02,1.2.1) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam121 ;;
     4.02,1.2.2) ppa=avsm/ocaml42+opam12 ;;
     4.03,1.2.2)
-       OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0dev+trunk";
+       OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0+trunk";
        ppa=avsm/ocaml42+opam12 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;

@@ -101,6 +101,9 @@ case $OPAM_INIT in
       ;;
 esac
 
+echo OCAML_VERSION=$OCAML_VERSION >  .travis-ocaml.env
+echo OPAM_SWITCH=$OPAM_SWITCH     >> .travis-ocaml.env
+
 ocaml -version
 opam --version
 opam --git-version

@@ -6,7 +6,7 @@ full_apt_version () {
   case "${version}" in
       latest) echo -n "${package}" ;;
       *) echo -n "${package}="
-         apt-cache show $package \
+         apt-cache show "$package" \
              | sed -n "s/^Version: \(${version}\)/\1/p" \
              | head -1
   esac
@@ -39,8 +39,11 @@ install_on_linux () {
     4.02,1.2.0) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam120 ;;
     4.02,1.2.1) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam121 ;;
     4.02,1.2.2) ppa=avsm/ocaml42+opam12 ;;
-    4.03,1.2.2) OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0dev+trunk"; ppa=avsm/ocaml42+opam12 ;;
-    *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+    4.03,1.2.2)
+       OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0dev+trunk";
+       ppa=avsm/ocaml42+opam12 ;;
+    *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
+       exit 1 ;;
   esac
 
   sudo add-apt-repository \
@@ -48,15 +51,15 @@ install_on_linux () {
   sudo add-apt-repository --yes ppa:${ppa}
   sudo apt-get update -qq
   sudo apt-get install -y \
-     $(full_apt_version ocaml $OCAML_VERSION) \
-     $(full_apt_version ocaml-base $OCAML_VERSION) \
-     $(full_apt_version ocaml-native-compilers $OCAML_VERSION) \
-     $(full_apt_version ocaml-compiler-libs $OCAML_VERSION) \
-     $(full_apt_version ocaml-interp $OCAML_VERSION) \
-     $(full_apt_version ocaml-base-nox $OCAML_VERSION) \
-     $(full_apt_version ocaml-nox $OCAML_VERSION) \
-     $(full_apt_version camlp4 $OCAML_VERSION) \
-     $(full_apt_version camlp4-extra $OCAML_VERSION) \
+     "$(full_apt_version ocaml $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-base $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-native-compilers $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-compiler-libs $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-interp $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-base-nox $OCAML_VERSION)" \
+     "$(full_apt_version ocaml-nox $OCAML_VERSION)" \
+     "$(full_apt_version camlp4 $OCAML_VERSION)" \
+     "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
      opam
 
   if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
@@ -82,7 +85,8 @@ install_on_osx () {
     4.02,1.2.2) brew install ocaml; brew install opam ;;
     4.02,1.3.0) brew install ocaml; brew install opam --HEAD ;;
     4.03,1.2.2) brew install ocaml --HEAD; brew install opam ;;
-    *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+    *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
+       exit 1 ;;
   esac
 }
 
@@ -95,7 +99,7 @@ export OPAMYES=1
 
 case $OPAM_INIT in
   true)
-      opam init -a ${BASE_REMOTE} --comp=${OPAM_SWITCH}
+      opam init -a "$BASE_REMOTE" --comp="$OPAM_SWITCH"
       eval $(opam config env)
       opam install depext
       ;;

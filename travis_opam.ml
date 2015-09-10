@@ -105,7 +105,15 @@ unset "TESTS";
 export "OPAMYES" "1";
 ?| "eval $(opam config env)";
 
-List.iter add_remote extra_remotes;
+begin (* remotes *)
+  let remotes =
+    ?|> "opam remote list --short | grep -v default | tr \"\\n\" \" \""
+  in
+  if remotes <> "" then begin
+    ?|. "opam remote remove %s" remotes
+  end;
+  List.iter add_remote extra_remotes
+end;
 
 List.iter pin pins;
 ?|. "opam pin add %s . -n" pkg;

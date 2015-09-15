@@ -61,6 +61,8 @@ install_on_linux () {
      "$(full_apt_version camlp4 $OCAML_VERSION)" \
      "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
      opam
+  sudo add-apt-repository -r \
+     "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
 
   if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
     echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"

@@ -26,6 +26,9 @@ BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
 # whether we need a new gcc and binutils
 UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
 
+# Install Trusty remotes
+UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
+
 case "$OCAML_VERSION" in
     latest) OCAML_VERSION=4.02;;
 esac
@@ -60,8 +63,9 @@ install_on_linux () {
      "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
      opam
 
+  TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
+
   if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
-    TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
     echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
     sudo add-apt-repository "${TRUSTY}"
     sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
@@ -72,6 +76,13 @@ install_on_linux () {
     sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
     sudo add-apt-repository -r "${TRUSTY}"
   fi
+
+  if [ "$UBUNTU_TRUSTY" != "0" ] ; then
+    echo "Adding Ubuntu Trusty mirrors"
+    sudo add-apt-repository "${TRUSTY}"
+    sudo apt-get -qq update
+  fi
+
 }
 
 install_on_osx () {

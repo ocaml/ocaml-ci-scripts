@@ -203,6 +203,19 @@ pieces of C code require newer versions (e.g. intrinsics for
 RDSEED). If `UPDATE_GCC_BINUTILS` is set to a non-zero value,
 `gcc-4.8` and `binutils-2.24` are installed before running the build.
 
+## Ubuntu Trusty
+
+By default, Travis CI is using Ubuntu Precise. To add the PPA for
+Ubuntu Trusty, use:
+
+```shell
+env:
+  - [...] UBUNTU_TRUSTY=1 [...]
+```
+
+*Note:* mixing Trusty and Precise PPAs might cause some issues with
+ `apt-get update -u` when using some external dependencies.
+
 ## Mirage Unikernels, `.travis-mirage.sh`
 
 This causes Travis to build a repo as a Mirage unikernel. It assumes the

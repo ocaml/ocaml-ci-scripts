@@ -118,6 +118,7 @@ end;
 List.iter pin pins;
 ?|. "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
+?|  "opam install depext";
 
 (* Install the external dependencies *)
 ?|~ "opam depext %s" pkg;

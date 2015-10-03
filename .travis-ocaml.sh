@@ -113,7 +113,6 @@ case $OPAM_INIT in
   true)
       opam init -a "$BASE_REMOTE" --comp="$OPAM_SWITCH"
       eval $(opam config env)
-      opam install depext
       ;;
 esac
 

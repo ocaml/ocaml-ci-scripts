@@ -29,6 +29,7 @@ let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
 let pins = list (getenv_default "PINS" "")
 
 (* Mirage deployment environment *)
+let (|>) a b = b a
 let is_deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
 let is_travis_pr =
   getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string

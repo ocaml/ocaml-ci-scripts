@@ -7,4 +7,4 @@ authors: [
   "David Sheets"
 ]
 
-build: ["echo" "OK!"]
+build: [make]

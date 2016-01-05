@@ -1,0 +1,4 @@
+bin: [
+  "?_build/travis_opam.byte" {"travis-opam"}
+  "?_build/travis_mirage.byte" {"travis-mirage"}
+]

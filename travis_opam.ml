@@ -145,7 +145,7 @@ begin (* tests *)
     echo "TESTS=false, skipping the test run.";
 end;
 
-begin (* optioanal dependencies *)
+begin (* optional dependencies *)
   let depopts_run = match depopts_run with
     | [] | ["false"] -> None
     | ["*"] -> (* query OPAM *)

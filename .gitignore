@@ -3,3 +3,4 @@ travis-opam
 /_build/
 *.byte
 *.native
+*~

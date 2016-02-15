@@ -61,7 +61,7 @@ let install args =
   begin match extra_deps with
     | None -> ()
     | Some deps ->
-      ?|. "opam depext %s" deps;
+      ?|. "opam depext -u %s" deps;
       ?|. "opam install %s" deps
   end;
 
@@ -76,7 +76,7 @@ let install args =
   end
 
 let install_with_depopts depopts =
-  ?|~ "opam depext %s" depopts;
+  ?|~ "opam depext -u %s" depopts;
   ?|~ "opam install %s" depopts;
   install ["-v"];
   ?|~ "opam remove %s -v" pkg;
@@ -122,7 +122,7 @@ List.iter pin pins;
 ?|  "opam install depext";
 
 (* Install the external dependencies *)
-?|~ "opam depext %s" pkg;
+?|~ "opam depext -u %s" pkg;
 
 (* Install the OCaml dependencies *)
 ?|~ "opam install %s --deps-only" pkg;

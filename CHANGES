@@ -1,3 +1,7 @@
+1.0.2 (2016-02-15):
+* Docker: Update package metadata before installing depexts (#80)
+* Docker: Refresh origin OPAM repository to latest master upon build (#79)
+
 1.0.1 (2016-01-08):
 * Lint opam file before pinning to avoid edit loops (#75)
 

@@ -116,7 +116,7 @@ begin (* remotes *)
 end;
 
 List.iter pin pins;
-?|~ "opam lint";
+?|~ "if [[ -d opam ]]; then opam lint opam; else opam lint; fi";
 ?|~ "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
 ?|  "opam install depext";

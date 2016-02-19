@@ -16,7 +16,7 @@ echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list
 
 # build a local image to trigger any ONBUILDs
 echo FROM ocaml/opam:${DISTRO}_ocaml-${OCAML_VERSION} > Dockerfile
-echo RUN git pull origin master >> Dockerfile
+echo RUN git -C /home/opam/opam-repository pull origin master >> Dockerfile
 echo RUN opam update -u -y >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile

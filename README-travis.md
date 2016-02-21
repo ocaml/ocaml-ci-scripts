@@ -47,7 +47,8 @@ Instructions:
    1.2, you can simply do `opam pin add PKG .` -- this will open an
    editor and propose you a template.
 
-2. Copy `.travis.yml` at the root of your project.
+2. Copy [.travis.yml](https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis.yml)
+   at the root of your project.
 
 3. Enable Travis runs on
    `https://travis-ci.org/profile/<YOURGITHUBID>` (sign in with your

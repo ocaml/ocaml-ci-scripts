@@ -115,8 +115,20 @@ begin (* remotes *)
   List.iter add_remote extra_remotes
 end;
 
+let (/) = Filename.concat in
+
+let opam =
+  if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
+  else if Sys.file_exists "opam"
+       && Sys.is_directory "opam"
+       && Sys.file_exists ("opam" / "opam")
+  then ("opam" / "opam")
+  else if Sys.file_exists "opam" then "opam"
+  else failwith "No opam file found, aborting."
+in
+
 List.iter pin pins;
-?|~ "if [ -d opam ]; then opam lint opam; else opam lint; fi";
+?|~ "opam lint %s" opam;
 ?|~ "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
 ?|  "opam install depext";

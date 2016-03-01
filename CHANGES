@@ -1,6 +1,9 @@
-1.0.2 (2016-02-15):
+1.0.2 (2016-03-01):
 * Docker: Update package metadata before installing depexts (#80)
 * Docker: Refresh origin OPAM repository to latest master upon build (#79)
+* Better detection of `opam` files. Some repos can contain multiple `opam`
+  files (e.g. mirage/mirage contains mirage and mirage-types), so we need
+  to look for `<pkg>.opam`.
 
 1.0.1 (2016-01-08):
 * Lint opam file before pinning to avoid edit loops (#75)

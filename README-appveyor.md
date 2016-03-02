@@ -10,11 +10,11 @@ Instructions:
    at the root of your project.
 
 3. Enable Appveyor runs on
-   `https://ci.appveyor.com/projects` (sign in with your
+   https://ci.appveyor.com/projects (sign in with your
    Github account and click on `+` on the top pane).
 
 And that's it!
 
 Currently, the CI simply pin the local repository and try to compile it with
-[mingw-w64](https://fdopen.github.io/opam-repository-mingw/). There is no
+[fdopen's mingw-w64 port](https://fdopen.github.io/opam-repository-mingw/). There is no
 depots, tests, etc.. options as for Travis CI scripts (yet).

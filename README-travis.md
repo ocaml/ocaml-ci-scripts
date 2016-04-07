@@ -7,14 +7,14 @@ including Camlp4, plus OPAM. This is fetched and executed by the other Travis
 scripts in this repo. Set the `OCAML_VERSION` variable to the desired version,
 e.g.,
 
-```shell
+```yaml
 env:
   - OCAML_VERSION=4.02 [...]
 ```
 
 ### Testing Multiple Compilers
 
-```shell
+```yaml
 env:
   - OCAML_VERSION=3.12 [...]
   - OCAML_VERSION=4.00 [...]
@@ -29,7 +29,7 @@ this Travis CI run.
 
 ### Changing the Base OPAM Remote
 
-```shell
+```yaml
 env:
   - [...] BASE_REMOTE=<url> [...]
 ```
@@ -60,7 +60,7 @@ CI is testing by looking at the next sections.
 
 ### Setting the Package Name
 
-```shell
+```yaml
 env:
   - [...] PACKAGE=<name of your package> [...]
 ```
@@ -72,7 +72,7 @@ dependencies.
 
 ### Basic Run
 
-```shell
+```yaml
 env:
   - [...] INSTALL=<bool> [...]
 ```
@@ -93,7 +93,7 @@ e.g. for testing multiple configurations with different set of dependencies.
 These package names do not need to be defined in the `opam` file, they can be
 any package in the OPAM repository.
 
-```shell
+```yaml
 env:
   - [...] DEPOPTS="<list of space-separated package names>" [...]
 ```
@@ -101,7 +101,7 @@ env:
 All optional dependencies declared in the `opam` file may be installed
 with
 
-```shell
+```yaml
 env:
   - [...] DEPOPTS="*" [...]
 ```
@@ -117,14 +117,14 @@ but are not available during the normal run. But there might be a case when a
 package is required but not part of the `opam` file. One example for this is
 `oasis`, which needs to be installed before attempting to build the package.
 
-```shell
+```yaml
 env:
   - [...] EXTRA_DEPS="<list of space-separated package names>" [...]
 ```
 
 ### Running the Tests
 
-```shell
+```yaml
 env:
   - [...] TESTS=<bool> [...]
 ```
@@ -145,14 +145,14 @@ under test may be tested. Disabled with 'false' by default, set
 allowed by constraints. If you desire to test only specific dependent
 packages, they may be provided in a space-separated list.
 
-```shell
+```yaml
 env:
   - [...] REVDEPS="<list of space-separated package names>" [...]
 ```
 
 ### Customizing the OPAM Pin Set
 
-```shell
+```yaml
 env:
   - [...] PINS="<list of space-separated name:url pin pairs>" [...]
 ```
@@ -167,7 +167,7 @@ package to the given URL.
 
 ### Hooks
 
-```shell
+```yaml
 env:
   - [...] PRE_INSTALL_HOOK="multiple; shell; commands" [...]
   - [...] POST_INSTALL_HOOK="multiple; shell; commands" [...]
@@ -182,7 +182,7 @@ generate build files which are not checked into the repository.
 
 ### Changing OPAM Remotes
 
-```shell
+```yaml
 env:
   - [...] EXTRA_REMOTES="<list of space-separated URLs>" [...]
 ```
@@ -194,7 +194,7 @@ to right.
 
 ## GCC and binutils
 
-```shell
+```yaml
 env:
  - [...] UPDATE_GCC_BINUTILS=1 [...]
 ```
@@ -209,7 +209,7 @@ RDSEED). If `UPDATE_GCC_BINUTILS` is set to a non-zero value,
 By default, Travis CI is using Ubuntu Precise. To add the PPA for
 Ubuntu Trusty, use:
 
-```shell
+```yaml
 env:
   - [...] UBUNTU_TRUSTY=1 [...]
 ```
@@ -235,7 +235,7 @@ are used to push the updated `-deployment` repo back to the `mirage` org.
 
 ### Changing the version of OPAM
 
-```shell
+```yaml
   - [...] OPAM_VERSION="1.1.2"
 ```
 
@@ -254,7 +254,7 @@ See http://docs.travis-ci.com/user/multi-os/
 You first need to enable multi-OS support for your repository by sending an
 email to Travis CI support. Then add to your `.travis.yml`:
 
-```shell
+```yaml
 os:
   - linux
   - osx

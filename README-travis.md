@@ -251,8 +251,7 @@ these version:
 
 See http://docs.travis-ci.com/user/multi-os/
 
-You first need to enable multi-OS support for your repository by sending an
-email to Travis CI support. Then add to your `.travis.yml`:
+Add the following to your `.travis.yml`:
 
 ```yaml
 os:

@@ -9,7 +9,7 @@ fork_branch=${FORK_BRANCH:-master}
 set -uex
 
 get() {
-  wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/${fork_branch}/$@
+  wget https://raw.githubusercontent.com/${fork_user}/ocaml-ci-scripts/${fork_branch}/$@
 }
 
 TMP_BUILD=$(mktemp -d)

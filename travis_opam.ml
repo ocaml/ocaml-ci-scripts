@@ -57,6 +57,15 @@ let pin pin = match pair pin with
   | (pkg,None)     -> ?|. "opam pin add %s --dev-repo -n" pkg
   | (pkg,Some url) -> ?|. "opam pin add %s %s -n" pkg url
 
+let is_base pkg =
+  match trim (?|> "opam show -f version %s" pkg) with
+  | "base" -> true
+  | _ -> false
+
+let filter_base pkgs =
+  let baseless = List.filter (fun pkg -> not (is_base pkg)) (list pkgs) in
+  baseless *~ " "
+
 let install args =
   begin match extra_deps with
     | None -> ()
@@ -72,7 +81,7 @@ let install args =
   begin match extra_deps with
     | None -> ()
     | Some deps ->
-      ?|. "opam remove %s" deps
+      ?|. "opam remove %s" (filter_base deps)
   end
 
 let install_with_depopts depopts =
@@ -80,7 +89,7 @@ let install_with_depopts depopts =
   ?|~ "opam install %s" depopts;
   install ["-v"];
   ?|~ "opam remove %s -v" pkg;
-  ?|~ "opam remove %s" depopts
+  ?|~ "opam remove %s" (filter_base depopts)
 
 let max_version package =
   let rec next_version last =

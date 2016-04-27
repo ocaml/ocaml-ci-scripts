@@ -9,4 +9,8 @@ authors: [
   "David Sheets"
 ]
 
+depends: [
+  "ocamlbuild" {build}
+]
+
 build: [make]

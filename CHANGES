@@ -1,3 +1,6 @@
+1.0.3 (trunk):
+* Don't attempt to remove base-* packages which will always fail (#93)
+
 1.0.2 (2016-03-01):
 * Docker: Update package metadata before installing depexts (#80)
 * Docker: Refresh origin OPAM repository to latest master upon build (#79)

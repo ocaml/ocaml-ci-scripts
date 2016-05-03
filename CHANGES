@@ -1,5 +1,6 @@
 1.0.3 (trunk):
 * Don't attempt to remove base-* packages which will always fail (#93)
+* Complete the Appveyor CI scripts to be on-par with those for Travis CI (#101)
 
 1.0.2 (2016-03-01):
 * Docker: Update package metadata before installing depexts (#80)

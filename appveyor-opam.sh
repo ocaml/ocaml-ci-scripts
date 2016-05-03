@@ -35,7 +35,7 @@ curl -fsSL -o "${OPAM_ARCH}.tar.xz" "${OPAM_URL}"
 tar -xf "${OPAM_ARCH}.tar.xz"
 "${OPAM_ARCH}/install.sh"
 
-opam init -a mingw "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
+opam init -a default "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
 eval $(opam config env)
 ocaml_system="$(ocamlc -config | awk '/^system:/ { print $2 }')"
 case "$ocaml_system" in
@@ -62,8 +62,8 @@ get yorick.ml
 
 ocamlc.opt yorick.mli
 ocamlfind ocamlc -c yorick.ml
-ocamlfind ocamlc -o ci-opam -package unix -linkpkg yorick.cmo ci_opam.ml
+ocamlfind ocamlc -o ci-opam.exe -package unix -linkpkg yorick.cmo ci_opam.ml
 
 cd "${APPVEYOR_BUILD_FOLDER}"
 
-${TMP_BUILD}/ci-opam
+${TMP_BUILD}/ci-opam.exe

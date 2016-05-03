@@ -42,6 +42,9 @@ let tests_run = fuzzy_bool_of_string (getenv_default "TESTS" "true")
 (* Run the reverse dependency rebuild step *)
 let revdep_run = list (getenv_default "REVDEPS" "")
 
+(* run opam lint *)
+let opam_lint = fuzzy_bool_of_string (getenv_default "OPAM_LINT" "true")
+
 (* other variables *)
 let extra_deps = some (getenv_default "EXTRA_DEPS" "")
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
@@ -137,7 +140,7 @@ let opam =
 in
 
 List.iter pin pins;
-?|~ "opam lint %s" opam;
+(if opam_lint then ?|~ "opam lint %s" opam);
 ?|~ "opam pin add %s . -n" pkg;
 ?|  "eval $(opam config env)";
 ?|  "opam install depext";

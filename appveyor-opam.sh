@@ -21,6 +21,7 @@ if [ $# -gt 0 ] && [ -n "$1" ]; then
     SWITCH=$1
 fi
 
+export OPAM_LINT="false"
 export CYGWIN='winsymlinks:native'
 export OPAMYES=1
 

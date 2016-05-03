@@ -18,6 +18,10 @@ fi
 export CYGWIN='winsymlinks:native'
 export OPAMYES=1
 
+get() {
+  wget https://raw.githubusercontent.com/${fork_user}/ocaml-ci-scripts/${fork_branch}/$@
+}
+
 set -eu
 
 curl -fsSL -o "${OPAM_ARCH}.tar.xz" "${OPAM_URL}"
@@ -39,8 +43,20 @@ case "$ocaml_system" in
     *)
         echo "ocamlc reports a dubious system: ${ocaml_system}. Good luck!" >&2
 esac
-opam install depext-cygwinports depext
+opam install depext-cygwinports depext ocamlfind
 eval $(opam config env)
-opam pin add my-pkg "${APPVEYOR_BUILD_FOLDER}" -n -k path
-opam depext  my-pkg
-opam install my-pkg
+
+TMP_BUILD=$(mktemp -d 2>/dev/null || mktemp -d -t 'citmpdir')
+cd "${TMP_BUILD}"
+
+get ci_opam.ml
+get yorick.mli
+get yorick.ml
+
+ocamlc.opt yorick.mli
+ocamlfind ocamlc -c yorick.ml
+ocamlfind ocamlc -o ci-opam -package unix -linkpkg yorick.cmo ci_opam.ml
+
+cd "${APPVEYOR_BUILD_FOLDER}"
+
+${TMP_BUILD}/ci-opam

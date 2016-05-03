@@ -15,6 +15,6 @@ Instructions:
 
 And that's it!
 
-Currently, the CI simply pin the local repository and try to compile it with
-[fdopen's mingw-w64 port](https://fdopen.github.io/opam-repository-mingw/). There is no
-depots, tests, etc.. options as for Travis CI scripts (yet).
+### Options
+
+Most of the options detailed in TravisCI scripts are valid.

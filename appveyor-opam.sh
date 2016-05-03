@@ -43,4 +43,4 @@ opam install depext-cygwinports depext
 eval $(opam config env)
 opam pin add my-pkg "${APPVEYOR_BUILD_FOLDER}" -n -k path
 opam depext  my-pkg
-opam install my-pkg
+opam install -t my-pkg

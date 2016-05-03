@@ -35,7 +35,7 @@ curl -fsSL -o "${OPAM_ARCH}.tar.xz" "${OPAM_URL}"
 tar -xf "${OPAM_ARCH}.tar.xz"
 "${OPAM_ARCH}/install.sh"
 
-opam init -a mingw "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
+opam init -a default "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
 eval $(opam config env)
 ocaml_system="$(ocamlc -config | awk '/^system:/ { print $2 }')"
 case "$ocaml_system" in

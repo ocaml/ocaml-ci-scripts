@@ -62,8 +62,8 @@ get yorick.ml
 
 ocamlc.opt yorick.mli
 ocamlfind ocamlc -c yorick.ml
-ocamlfind ocamlc -o ci-opam -package unix -linkpkg yorick.cmo ci_opam.ml
+ocamlfind ocamlc -o ci-opam.exe -package unix -linkpkg yorick.cmo ci_opam.ml
 
 cd "${APPVEYOR_BUILD_FOLDER}"
 
-${TMP_BUILD}/ci-opam
+${TMP_BUILD}/ci-opam.exe

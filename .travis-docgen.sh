@@ -24,7 +24,7 @@ rm -rf $DOCDIR
 # Error out if $GH_TOKEN is empty or unset
 : ${GH_TOKEN:?"GH_TOKEN need to be uploaded via travis-encrypt"}
 
-git clone --quiet https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} $DOCDIR
+git clone https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} $DOCDIR 2>&1 | sed -e "s/$GH_TOKEN/!REDACTED!/g"
 git -C $DOCDIR checkout gh-pages || git -C $DOCDIR checkout --orphan gh-pages
 
 cp _build/*.docdir/* $DOCDIR
@@ -33,4 +33,4 @@ git -C $DOCDIR config user.email "travis@travis-ci.org"
 git -C $DOCDIR config user.name "Travis"
 git -C $DOCDIR add .
 git -C $DOCDIR commit --allow-empty -m "Travis build $TRAVIS_BUILD_NUMBER pushed docs to gh-pages"
-git -C $DOCDIR push origin gh-pages 2>&1 > /dev/null
+git -C $DOCDIR push origin gh-pages 2>&1 | sed -e "s/$GH_TOKEN/!REDACTED!/g"

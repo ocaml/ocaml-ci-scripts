@@ -4,6 +4,7 @@
 set -e
 # Make sure we're not echoing any sensitive data
 set +x
+set -o errexit -o nounset
 
 eval `opam config env`
 ./configure --enable-docs

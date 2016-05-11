@@ -29,6 +29,9 @@ UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
 # Install Trusty remotes
 UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
 
+# Install XQuartz on OSX
+INSTALL_XQUARTZ=${INSTALL_XQUARTZ:-"true"}
+
 case "$OCAML_VERSION" in
     latest) OCAML_VERSION=4.02;;
 esac
@@ -86,9 +89,13 @@ install_on_linux () {
 }
 
 install_on_osx () {
-  curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
-  sudo hdiutil attach XQuartz-2.7.6.dmg
-  sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+  case $INSTALL_XQUARTZ in
+      true)
+        curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
+        sudo hdiutil attach XQuartz-2.7.6.dmg
+        sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+        ;;
+  esac
   brew update &> /dev/null
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2) OPAM_SWITCH=3.12.1; brew install opam ;;

@@ -104,6 +104,8 @@ then begin
   ?|  "cd $DEPLOYD &&\
        \ git add xen/$TRAVIS_COMMIT xen/latest &&\
        \ git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\" &&\
+       \ git status &&\
+       \ git clean -fdx &&\
        \ git pull --rebase &&\
        \ git push"
 end

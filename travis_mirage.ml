@@ -102,8 +102,8 @@ then begin
   ?|  "echo $TRAVIS_COMMIT > $DEPLOYD/xen/latest";
   (* commit and push changes *)
   ?|  "cd $DEPLOYD &&\
-       \ git pull --rebase &&\
        \ git add xen/$TRAVIS_COMMIT xen/latest &&\
        \ git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\" &&\
+       \ git pull --rebase &&\
        \ git push"
 end

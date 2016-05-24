@@ -95,7 +95,6 @@ then begin
   (* clone deployment repo *)
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
   (* remove and recreate any existing image for this commit *)
-  ?|  "rm -rf $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "mkdir -p $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "cp $MIRDIR/$XENIMG $MIRDIR/config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "bzip2 -9 $DEPLOYD/xen/$TRAVIS_COMMIT/$XENIMG";

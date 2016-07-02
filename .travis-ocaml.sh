@@ -38,8 +38,20 @@ esac
 
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
-    3.12,1.2.2) ppa=avsm/ocaml312+opam12 ;;
-    4.00,1.2.2) ppa=avsm/ocaml40+opam12 ;;
+    3.12,1.2.2)
+       if [ "$UBUNTU_TRUSTY" != "0" ] ; then
+         OCAML_VERSION=4.02; OPAM_SWITCH="3.12.1";
+         ppa=avsm/ocaml42+opam12 ;
+       else
+         ppa=avsm/ocaml312+opam12 ;
+       fi;;
+    4.00,1.2.2)
+       if [ "$UBUNTU_TRUSTY" != "0" ] ; then
+         OCAML_VERSION=4.02; OPAM_SWITCH="4.00.1";
+         ppa=avsm/ocaml42+opam12 ;
+       else
+         ppa=avsm/ocaml40+opam12 ;
+       fi;;
     4.01,1.2.2) ppa=avsm/ocaml41+opam12 ;;
     4.02,1.1.2) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam11 ;;
     4.02,1.2.0) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam120 ;;

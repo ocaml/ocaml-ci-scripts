@@ -11,6 +11,7 @@ authors: [
 
 depends: [
   "ocamlbuild" {build}
+  "ocamlfind"  {build}
 ]
 
 build: [make]

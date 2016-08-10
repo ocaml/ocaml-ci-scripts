@@ -54,6 +54,9 @@ install_on_linux () {
     4.03,1.2.2)
        OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0";
        ppa=avsm/ocaml42+opam12 ;;
+    4.04,1.2.2)
+        OCAML_VERSION=4.02; OPAM_SWITCH="4.04.0+beta1"
+        ppa=avsm/ocaml42+opam12 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;
   esac
@@ -108,6 +111,7 @@ install_on_osx () {
     4.02,1.2.2) OPAM_SWITCH=4.02.3; brew install opam ;;
     4.02,1.3.0) OPAM_SWITCH=4.02.3; brew install opam --HEAD ;;
     4.03,1.2.2) OPAM_SWITCH=system; brew install ocaml; brew install opam ;;
+    4.04,1.2.2) OPAM_SWITCH=4.04.0+beta1; brew install opam ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;
   esac

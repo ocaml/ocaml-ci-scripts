@@ -97,6 +97,7 @@ then begin
   (* remove and recreate any existing image for this commit *)
   ?|  "mkdir -p $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "cp $MIRDIR/$XENIMG $MIRDIR/config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "rm -f $DEPLOYD/xen/$TRAVIS_COMMIT/${XENIMG}.bz2";
   ?|  "bzip2 -9 $DEPLOYD/xen/$TRAVIS_COMMIT/$XENIMG";
   ?|  "echo $TRAVIS_COMMIT > $DEPLOYD/xen/latest";
   (* commit and push changes *)

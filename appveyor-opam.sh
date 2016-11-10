@@ -7,7 +7,7 @@ fork_user=${FORK_USER:-ocaml}
 fork_branch=${FORK_BRANCH:-master}
 
 # default setttings
-SWITCH=${OPAM_SWITCH:-'4.02.3+mingw64c'}
+SWITCH=${OPAM_SWITCH:-'4.03.0+mingw64c'}
 OPAM_URL='https://dl.dropboxusercontent.com/s/b2q2vjau7if1c1b/opam64.tar.xz'
 OPAM_ARCH=opam64
 

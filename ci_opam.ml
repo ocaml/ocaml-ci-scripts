@@ -162,7 +162,7 @@ end;
 begin (* tests *)
   if tests_run then
     with_opambuildtest (fun () ->
-        ?|~ "opam depext %s" pkg;
+        ?|~ "opam depext -u %s" pkg;
         ?|~ "opam install %s --deps-only" pkg;
         install ["-v";"-t"];
         ?|~ "opam remove %s -v" pkg)
@@ -215,7 +215,7 @@ begin (* reverse dependencies *)
 
     ignore (List.fold_left (fun i dependent ->
         echo "\nInstalling %s (REVDEP %d/%d)" dependent i installable_count;
-        ?|~ "opam depext %s" dependent;
+        ?|~ "opam depext -u %s" dependent;
         ?|~ "opam install %s" dependent;
         ?|~ "opam remove %s" dependent;
         i + 1

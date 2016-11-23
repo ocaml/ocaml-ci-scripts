@@ -37,8 +37,16 @@ echo WORKDIR /repo >> Dockerfile
 docker build -t local-build .
 echo -en 'travis_fold:end:script.1\\r'
 
-# run travis-opam with the local repo volume mounted
+echo -n 'travis_fold:start:dockerfile\\r'
+echo Dockerfile:
+cat Dockerfile
+echo env.list:
+cat env.list
+echo Command:
 OS=~/build/$TRAVIS_REPO_SLUG
+echo docker run --env-file=env.list -v ${OS}:/repo local-build travis-opam
+echo -n 'travis_fold:end:dockerfile\\r'
+
+# run travis-opam with the local repo volume mounted
 chmod -R a+w $OS
 docker run --env-file=env.list -v ${OS}:/repo local-build travis-opam
-

@@ -1,4 +1,5 @@
-1.0.3 (trunk):
+1.0.3 (2016-11-23):
+* Always run `depext -u` to update the base OS (#138)
 * Don't attempt to remove base-* packages which will always fail (#93)
 * Complete the Appveyor CI scripts to be on-par with those for Travis CI (#101)
 

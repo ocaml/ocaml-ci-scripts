@@ -7,7 +7,6 @@ default_branch=master
 fork_user=${FORK_USER:-$default_user}
 fork_branch=${FORK_BRANCH:-$default_branch}
 
-echo -en 'travis_fold:start:script.1\\r'
 # create env file
 echo PACKAGE="$PACKAGE" > env.list
 echo EXTRA_REMOTES="$EXTRA_REMOTES" >> env.list
@@ -35,9 +34,7 @@ echo RUN opam update -u -y >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile
 docker build -t local-build .
-echo -en 'travis_fold:end:script.1\\r'
 
-echo -n 'travis_fold:start:dockerfile\\r'
 echo Dockerfile:
 cat Dockerfile
 echo env.list:
@@ -45,7 +42,6 @@ cat env.list
 echo Command:
 OS=~/build/$TRAVIS_REPO_SLUG
 echo docker run --env-file=env.list -v ${OS}:/repo local-build travis-opam
-echo -n 'travis_fold:end:dockerfile\\r'
 
 # run travis-opam with the local repo volume mounted
 chmod -R a+w $OS

@@ -1,3 +1,4 @@
 PKG unix
 SRC .
 B _build
+FLG -w A

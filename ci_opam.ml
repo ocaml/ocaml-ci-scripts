@@ -82,7 +82,8 @@ let install ?(depopts="") ?(tests=false) args =
        * Even if we'd run it without OPAMBUILDTEST the test-only
        * dependencies would still run their tests during installataion *)
       let deps = with_opambuildtest (fun () ->
-          ?|> "opam list --short --recursive --required-by %s" pkg |> lines
+          let output = ?|> "opam list --short --recursive --required-by %s" pkg in
+          lines output
         ) in
       (extra_deps :: depopts :: ql deps) *~ " "
     else extra_deps in

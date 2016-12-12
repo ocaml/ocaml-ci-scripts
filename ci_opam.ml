@@ -46,7 +46,7 @@ let revdep_run = list (getenv_default "REVDEPS" "")
 let opam_lint = fuzzy_bool_of_string (getenv_default "OPAM_LINT" "true")
 
 (* other variables *)
-let extra_deps = some (getenv_default "EXTRA_DEPS" "")
+let extra_deps = getenv_default "EXTRA_DEPS" ""
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
 let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
@@ -75,39 +75,41 @@ let with_opambuildtest fn =
   unset "OPAMBUILDTEST";
   res
 
-let install args =
-  begin match extra_deps with
+let install ?(depopts="") ?(tests=false) args =
+  let install_deps = if tests then
+      (* 'opam install --deps-only' would run the tests too,
+       * which we don't want.
+       * Even if we'd run it without OPAMBUILDTEST the test-only
+       * dependencies would still run their tests during installataion *)
+      let deps = with_opambuildtest (fun () ->
+          ?|> "opam list --short --recursive --required-by %s" pkg |> lines
+        ) in
+      (extra_deps :: depopts :: ql deps) *~ " "
+    else extra_deps in
+  begin match some install_deps with
     | None -> ()
     | Some deps ->
-      ?|. "opam depext -u %s" deps;
-      ?|. "opam install %s" deps
+      let install_depext () = ?|. "opam depext -u %s" deps in
+      if tests then
+        with_opambuildtest install_depext
+      else install_depext ();
+      ?|~ "opam install %s" deps
   end;
-  if tests_run then
-    let deps = with_opambuildtest (fun () ->
-        ?|~ "opam depext -u %s" pkg;
-        ?|>  "opam list --short --recursive --required-by %s" pkg |> lines
-      ) in
-    (* 'opam install --deps-only' would run the tests too,
-     * which we don't want.
-     * Even if we'd run it without OPAMBUILDTEST the test-only
-     * dependencies would still run their tests during installataion *)
-    (* install dependencies, but do not run their tests *)
-    ?|~ "opam install %s" (ql deps *~ " ");
+
+  let args = if tests_run then "-t" :: args else args in
 
   ?|  pre_install_hook;
   ?|~ "opam install %s %s" pkg (ql args *~ " ");
   ?|  post_install_hook;
 
-  begin match extra_deps with
+  begin match some extra_deps with
     | None -> ()
     | Some deps ->
       ?|. "opam remove %s" (filter_base deps)
   end
 
 let install_with_depopts depopts =
-  ?|~ "opam depext -u %s" depopts;
-  ?|~ "opam install %s" depopts;
-  install ("-v" :: if tests_run then ["-t"] else []);
+  install ~tests:tests_run ~depopts ["-v"];
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" (filter_base depopts)
 
@@ -174,7 +176,7 @@ end;
 begin (* tests *)
   if tests_run then begin
     (* run tests only for this package *)
-    install ["-v";"-t"];
+    install ~tests:true ["-v"];
     ?|~ "opam remove %s -v" pkg
   end else
     echo "TESTS=false, skipping the test run.";

@@ -69,6 +69,12 @@ let filter_base pkgs =
   let baseless = List.filter (fun pkg -> not (is_base pkg)) (list pkgs) in
   baseless *~ " "
 
+let with_opambuildtest fn =
+  export "OPAMBUILDTEST" "1";
+  let res = fn () in
+  unset "OPAMBUILDTEST";
+  res
+
 let install args =
   begin match extra_deps with
     | None -> ()
@@ -76,6 +82,17 @@ let install args =
       ?|. "opam depext -u %s" deps;
       ?|. "opam install %s" deps
   end;
+  if tests_run then
+    let deps = with_opambuildtest (fun () ->
+        ?|~ "opam depext -u %s" pkg;
+        ?|>  "opam list --short --required-by %s" pkg |> lines
+      ) in
+    (* 'opam install --deps-only' would run the tests too,
+     * which we don't want.
+     * Even if we'd run it without OPAMBUILDTEST the test-only
+     * dependencies would still run their tests during installataion *)
+    (* install dependencies, but do not run their tests *)
+    ?|~ "opam install %s" (ql deps *~ " ");
 
   ?|  pre_install_hook;
   ?|~ "opam install %s %s" pkg (ql args *~ " ");
@@ -104,11 +121,6 @@ let max_version package =
       | _ -> None
   in
   next_version (trim (?|> "opam show -f version %s" package))
-
-let with_opambuildtest fn =
-  export "OPAMBUILDTEST" "1";
-  fn ();
-  unset "OPAMBUILDTEST"
 
 ;; (* Go go go *)
 
@@ -160,13 +172,11 @@ begin (* Simple installation/removal test *)
 end;
 
 begin (* tests *)
-  if tests_run then
-    with_opambuildtest (fun () ->
-        ?|~ "opam depext -u %s" pkg;
-        ?|~ "opam install %s --deps-only" pkg;
-        install ["-v";"-t"];
-        ?|~ "opam remove %s -v" pkg)
-  else
+  if tests_run then begin
+    (* run tests only for this package *)
+    install ["-v";"-t"];
+    ?|~ "opam remove %s -v" pkg
+  end else
     echo "TESTS=false, skipping the test run.";
 end;
 

@@ -46,7 +46,7 @@ let revdep_run = list (getenv_default "REVDEPS" "")
 let opam_lint = fuzzy_bool_of_string (getenv_default "OPAM_LINT" "true")
 
 (* other variables *)
-let extra_deps = getenv_default "EXTRA_DEPS" ""
+let extra_deps = some (getenv_default "EXTRA_DEPS" "")
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
 let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
@@ -69,48 +69,28 @@ let filter_base pkgs =
   let baseless = List.filter (fun pkg -> not (is_base pkg)) (list pkgs) in
   baseless *~ " "
 
-let with_opambuildtest fn =
-  export "OPAMBUILDTEST" "1";
-  let res = fn () in
-  unset "OPAMBUILDTEST";
-  res
-
-let install ?(depopts="") ?(tests=false) args =
-  let install_deps = if tests then
-      (* 'opam install --deps-only' would run the tests too,
-       * which we don't want.
-       * Even if we'd run it without OPAMBUILDTEST the test-only
-       * dependencies would still run their tests during installataion *)
-      let deps = with_opambuildtest (fun () ->
-          let output = ?|> "opam list --short --recursive --required-by %s" pkg in
-          lines output
-        ) in
-      (extra_deps :: depopts :: ql deps) *~ " "
-    else extra_deps in
-  begin match some install_deps with
+let install args =
+  begin match extra_deps with
     | None -> ()
     | Some deps ->
-      let install_depext () = ?|. "opam depext -u %s" deps in
-      if tests then
-        with_opambuildtest install_depext
-      else install_depext ();
-      ?|~ "opam install %s" deps
+      ?|. "opam depext -u %s" deps;
+      ?|. "opam install %s" deps
   end;
-
-  let args = if tests_run then "-t" :: args else args in
 
   ?|  pre_install_hook;
   ?|~ "opam install %s %s" pkg (ql args *~ " ");
   ?|  post_install_hook;
 
-  begin match some extra_deps with
+  begin match extra_deps with
     | None -> ()
     | Some deps ->
       ?|. "opam remove %s" (filter_base deps)
   end
 
 let install_with_depopts depopts =
-  install ~tests:tests_run ~depopts ["-v"];
+  ?|~ "opam depext -u %s" depopts;
+  ?|~ "opam install %s" depopts;
+  install ["-v"];
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" (filter_base depopts)
 
@@ -124,6 +104,11 @@ let max_version package =
       | _ -> None
   in
   next_version (trim (?|> "opam show -f version %s" package))
+
+let with_opambuildtest fn =
+  export "OPAMBUILDTEST" "1";
+  fn ();
+  unset "OPAMBUILDTEST"
 
 ;; (* Go go go *)
 
@@ -175,11 +160,13 @@ begin (* Simple installation/removal test *)
 end;
 
 begin (* tests *)
-  if tests_run then begin
-    (* run tests only for this package *)
-    install ~tests:true ["-v"];
-    ?|~ "opam remove %s -v" pkg
-  end else
+  if tests_run then
+    with_opambuildtest (fun () ->
+        ?|~ "opam depext -u %s" pkg;
+        ?|~ "opam install %s --deps-only" pkg;
+        install ["-v";"-t"];
+        ?|~ "opam remove %s -v" pkg)
+  else
     echo "TESTS=false, skipping the test run.";
 end;
 

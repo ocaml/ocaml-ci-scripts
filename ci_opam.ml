@@ -85,7 +85,7 @@ let install args =
   if tests_run then
     let deps = with_opambuildtest (fun () ->
         ?|~ "opam depext -u %s" pkg;
-        ?|>  "opam list --short --required-by %s" pkg |> lines
+        ?|>  "opam list --short --recursive --required-by %s" pkg |> lines
       ) in
     (* 'opam install --deps-only' would run the tests too,
      * which we don't want.
@@ -107,7 +107,7 @@ let install args =
 let install_with_depopts depopts =
   ?|~ "opam depext -u %s" depopts;
   ?|~ "opam install %s" depopts;
-  install ["-v"];
+  install ("-v" :: if tests_run then ["-t"] else []);
   ?|~ "opam remove %s -v" pkg;
   ?|~ "opam remove %s" (filter_base depopts)
 

@@ -118,7 +118,12 @@ let install ?(depopts="") ?(tests=false) args =
 let install_with_depopts depopts =
   install ~tests:tests_run ~depopts ["-v"];
   ?|~ "opam remove %s -v" pkg;
-  ?|~ "opam remove -a %s" (filter_base depopts)
+  ?|~ "opam remove -a %s" (filter_base depopts);
+  if tests_run then begin
+    install ~tests:false ~depopts ["-v"];
+    ?|~ "opam remove %s -v" pkg;
+    ?|~ "opam remove -a %s" (filter_base depopts);
+  end
 
 let max_version package =
   let rec next_version last =

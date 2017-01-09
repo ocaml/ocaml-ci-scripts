@@ -1,6 +1,7 @@
 #!/bin/sh -e
 # To use this, run `opam travis --help`
 
+echo -en "travis_fold:start:prepare.ci\r"
 default_user=ocaml
 default_branch=master
 
@@ -47,4 +48,5 @@ echo docker run --env-file=env.list -v ${OS}:/repo local-build travis-opam
 
 # run ci-opam with the local repo volume mounted
 chmod -R a+w $OS
+echo -en "travis_fold:end:prepare.ci\r"
 docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam

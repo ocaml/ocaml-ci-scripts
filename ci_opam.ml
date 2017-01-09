@@ -115,15 +115,23 @@ let install ?(depopts="") ?(tests=false) args =
       ?|. "opam remove -a %s" (filter_base ((ql deps) *~ " "))
   end
 
+let with_fold name f =
+  Printf.printf "travis_fold:start:%s\r%!" name;
+  f ();
+  Printf.printf "travis_fold:end:%s\r%!" name
+
 let install_with_depopts depopts =
-  install ~tests:tests_run ~depopts ["-v"];
-  ?|~ "opam remove %s -v" pkg;
-  ?|~ "opam remove -a %s" (filter_base depopts);
-  if tests_run then begin
-    install ~tests:false ~depopts ["-v"];
-    ?|~ "opam remove %s -v" pkg;
-    ?|~ "opam remove -a %s" (filter_base depopts);
-  end
+  with_fold "Installing.DEPOPTS" (fun () ->
+      install ~tests:tests_run ~depopts ["-v"];
+      ?|~ "opam remove %s -v" pkg;
+      ?|~ "opam remove -a %s" (filter_base depopts);
+    );
+  if tests_run then with_fold "Installing.DEPOPTS.notests" begin
+      fun () ->
+        install ~tests:false ~depopts ["-v"];
+        ?|~ "opam remove %s -v" pkg;
+        ?|~ "opam remove -a %s" (filter_base depopts);
+    end
 
 let max_version package =
   let rec next_version last =
@@ -138,54 +146,58 @@ let max_version package =
 
 ;; (* Go go go *)
 
-set "-ue";
-unset "TESTS";
-export "OPAMYES" "1";
-?| "eval $(opam config env)";
+with_fold "Prepare" (fun () ->
+    set "-ue";
+    unset "TESTS";
+    export "OPAMYES" "1";
+    ?| "eval $(opam config env)";
 
-begin (* remotes *)
-  let remotes =
-    ?|> "opam remote list --short | grep -v default | tr \"\\n\" \" \""
-  in
-  if remotes <> "" then begin
-    ?|. "opam remote remove %s" remotes
-  end;
-  List.iter add_remote extra_remotes
-end;
+    begin (* remotes *)
+      let remotes =
+        ?|> "opam remote list --short | grep -v default | tr \"\\n\" \" \""
+      in
+      if remotes <> "" then begin
+        ?|. "opam remote remove %s" remotes
+      end;
+      List.iter add_remote extra_remotes
+    end;
 
-let (/) = Filename.concat in
+    let (/) = Filename.concat in
 
-let opam =
-  if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
-  else if Sys.file_exists "opam"
-       && Sys.is_directory "opam"
-       && Sys.file_exists ("opam" / "opam")
-  then ("opam" / "opam")
-  else if Sys.file_exists "opam" then "opam"
-  else failwith "No opam file found, aborting."
-in
+    let opam =
+      if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
+      else if Sys.file_exists "opam"
+           && Sys.is_directory "opam"
+           && Sys.file_exists ("opam" / "opam")
+      then ("opam" / "opam")
+      else if Sys.file_exists "opam" then "opam"
+      else failwith "No opam file found, aborting."
+    in
 
-List.iter pin pins;
-(if opam_lint then ?|~ "opam lint %s" opam);
-?|~ "opam pin add %s . -n" pkg;
-?|  "eval $(opam config env)";
-?|  "opam install depext";
+    List.iter pin pins;
+    (if opam_lint then ?|~ "opam lint %s" opam);
+    ?|~ "opam pin add %s . -n" pkg;
+    ?|  "eval $(opam config env)";
+    ?|  "opam install depext";
+  );
 
-(* Install the external dependencies *)
-?|~ "opam depext -u %s" pkg;
+with_fold "Simple" (fun () ->
+    (* Install the external dependencies *)
+    ?|~ "opam depext -u %s" pkg;
 
-(* Install the OCaml dependencies *)
-?|~ "opam install %s --deps-only" pkg;
+    (* Install the OCaml dependencies *)
+    ?|~ "opam install %s --deps-only" pkg;
 
-begin (* Simple installation/removal test *)
-  if install_run then (
-    install ["-v"];
-    ?|~ "opam remove %s -v" pkg
-  ) else
-    echo "INSTALL=false, skipping the basic installation run.";
-end;
+    begin (* Simple installation/removal test *)
+      if install_run then (
+        install ["-v"];
+        ?|~ "opam remove %s -v" pkg
+      ) else
+        echo "INSTALL=false, skipping the basic installation run.";
+    end;
+  );
 
-begin (* tests *)
+with_fold "Simple.test" begin fun () ->
   if tests_run then begin
     (* run tests only for this package *)
     install ~tests:true ["-v"];
@@ -209,7 +221,7 @@ begin (* optional dependencies *)
   | Some d -> install_with_depopts d
 end;
 
-begin (* reverse dependencies *)
+with_fold "Reverse.dependencies" begin fun () ->
   let revdeps = match revdep_run with
     | [] | ["false"] | ["0"] -> None
     | ["*"] | ["true"] | ["1"] ->

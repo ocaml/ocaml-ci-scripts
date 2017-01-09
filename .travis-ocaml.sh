@@ -73,6 +73,7 @@ install_on_linux () {
      "$(full_apt_version ocaml-nox $OCAML_VERSION)" \
      "$(full_apt_version camlp4 $OCAML_VERSION)" \
      "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
+     jq \
      opam
 
   TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
@@ -115,6 +116,7 @@ install_on_osx () {
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;
   esac
+  brew install jq
 }
 
 case $TRAVIS_OS_NAME in

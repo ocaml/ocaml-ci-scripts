@@ -14,4 +14,15 @@ depends: [
   "ocamlfind"  {build}
 ]
 
+depexts: [
+  [["alpine"] ["jq"]]
+  [["centos"] ["jq"]]
+  [["debian"] ["jq"]]
+  [["fedora"] ["jq"]]
+  [["homebrew" "osx"] ["jq"]]
+  [["opensuse"] ["jq"]]
+  [["oraclelinux"] ["jq"]]
+  [["ubuntu"] ["jq"]]
+]
+
 build: [make]

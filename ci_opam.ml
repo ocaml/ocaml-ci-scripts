@@ -100,7 +100,7 @@ let install ?(depopts="") ?(tests=false) args =
     if tests then
       with_opambuildtest install_depext
     else install_depext ();
-    ?|~ "opam install %s" deps
+    ?|~ "opam install --unset-root %s" deps
   end;
 
   let args = if tests then "-t" :: args else args in
@@ -112,13 +112,13 @@ let install ?(depopts="") ?(tests=false) args =
   begin match extra_deps with
     | [] -> ()
     | deps ->
-      ?|. "opam remove %s" (filter_base ((ql deps) *~ " "))
+      ?|. "opam remove -a %s" (filter_base ((ql deps) *~ " "))
   end
 
 let install_with_depopts depopts =
   install ~tests:tests_run ~depopts ["-v"];
   ?|~ "opam remove %s -v" pkg;
-  ?|~ "opam remove %s" (filter_base depopts)
+  ?|~ "opam remove -a %s" (filter_base depopts)
 
 let max_version package =
   let rec next_version last =

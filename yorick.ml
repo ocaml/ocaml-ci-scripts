@@ -147,7 +147,10 @@ module Quips = struct
   let (?|.) fmt = Printf.ksprintf (?|) fmt
 
   let (?|~) fmt = Printf.ksprintf (fun command ->
-    print_endline command;
+    (* Both Travis and AppVeyor support ANSI colors. *)
+    print_string "\027[36m";
+    print_string command;
+    print_endline "\027[0m";
     ?|  command
   ) fmt
 

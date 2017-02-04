@@ -76,7 +76,7 @@ let with_opambuildtest fn =
   res
 
 let get_package_versions_from_json file =
-  let cmd = ~~ "jq -r '.[] | .[] | .install | select(. != null) | select(.name != \"%s\") |[.name, .version] | join(\".\")' <%s" in
+  let cmd = ~~ "jq -r '.[]? | .[]? | .install? | select(. != null) | select(.name? != \"%s\") |[.name, .version] | join(\".\")' %s" in
   lines (?|> cmd pkg file)
 
 let install ?(depopts="") ?(tests=false) args =

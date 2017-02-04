@@ -50,6 +50,9 @@ let extra_deps = list (getenv_default "EXTRA_DEPS" "")
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
 let post_install_hook = getenv_default "POST_INSTALL_HOOK" ""
 
+let run_on_appveyor =
+  try ignore(Sys.getenv "APPVEYOR"); true with Not_found -> false
+
 (* Script *)
 
 let add_remote =
@@ -115,10 +118,20 @@ let install ?(depopts="") ?(tests=false) args =
       ?|. "opam remove -a %s" (filter_base ((ql deps) *~ " "))
   end
 
-let with_fold name f =
+let with_fold_travis name f =
   Printf.printf "travis_fold:start:%s\r%!" name;
   f ();
   Printf.printf "travis_fold:end:%s\r%!" name
+
+let with_fold_appveyor name f =
+  (* AppVeyor does not support folds in the log.  Use titles with ANSI
+     colors. *)
+  Printf.printf "\027[33;1m*\n* START %s\n*\n\027[0m%!" name;
+  f ();
+  Printf.printf "\027[33;1m*\n* END %s\n*\n\027[0m%!" name
+
+let with_fold =
+  if run_on_appveyor then with_fold_appveyor else with_fold_travis
 
 let install_with_depopts depopts =
   with_fold "Installing.DEPOPTS" (fun () ->

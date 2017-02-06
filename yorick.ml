@@ -79,7 +79,17 @@ let split_char_unbounded_no_trailer str ~on =
 
 let some = function "" -> None | x -> Some x
 let list = split_char_unbounded_no_trailer ~on:' '
-let lines = split_char_unbounded_no_trailer ~on:'\n'
+
+let lines =
+  (* On AppVeyor, lines will end with "\r\n". *)
+  let rm_trailing_CR s =
+    let len = String.length s in
+    if len > 0 && s.[len - 1] = '\r' then String.sub s 0 (len - 1)
+    else s in
+  fun str ->
+    let l = split_char_unbounded_no_trailer ~on:'\n' str in
+    List.map rm_trailing_CR l
+
 let pair s = match split_char_bounded s ~on:':' ~max:2 with
   | []      -> ("",None)
   | [x]     -> (x, None)

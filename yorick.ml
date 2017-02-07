@@ -79,7 +79,17 @@ let split_char_unbounded_no_trailer str ~on =
 
 let some = function "" -> None | x -> Some x
 let list = split_char_unbounded_no_trailer ~on:' '
-let lines = split_char_unbounded_no_trailer ~on:'\n'
+
+let lines =
+  (* On AppVeyor, lines will end with "\r\n". *)
+  let rm_trailing_CR s =
+    let len = String.length s in
+    if len > 0 && s.[len - 1] = '\r' then String.sub s 0 (len - 1)
+    else s in
+  fun str ->
+    let l = split_char_unbounded_no_trailer ~on:'\n' str in
+    List.map rm_trailing_CR l
+
 let pair s = match split_char_bounded s ~on:':' ~max:2 with
   | []      -> ("",None)
   | [x]     -> (x, None)
@@ -106,6 +116,25 @@ let trim s =
   then sub s !i (!j - !i + 1)
   else ""
 
+let escape_unprintable s =
+  (* Moderately efficient procedure not depending on Bytes. *)
+  let must_not_escape = ref true in
+  let i = ref 0 in
+  while !i < String.length s && !must_not_escape do
+    if s.[!i] < ' ' then must_not_escape := false;
+    incr i
+  done;
+  if !must_not_escape then s
+  else (
+    let b = Buffer.create (String.length s + 8) in
+    for i = 0 to String.length s - 1 do
+      if s.[i] < ' ' then Buffer.add_string b (Char.escaped s.[i])
+      else Buffer.add_char b s.[i]
+    done;
+    Buffer.contents b
+  )
+
+
 let same_fds f = Unix.(f ~stdin ~stdout ~stderr)
 
 let shell command ~stdin ~stdout ~stderr =
@@ -123,7 +152,8 @@ let after_shell command ~stdin ~stdout ~stderr =
   | x ->
     if not !suppress_failure
     then begin
-      Printf.eprintf "'%s' exited %d. Terminating with %d\n" command x x;
+      Printf.eprintf "'%s' exited %d. Terminating with %d\n"
+        (escape_unprintable command) x x;
       exit x
     end
 
@@ -147,7 +177,10 @@ module Quips = struct
   let (?|.) fmt = Printf.ksprintf (?|) fmt
 
   let (?|~) fmt = Printf.ksprintf (fun command ->
-    print_endline command;
+    (* Both Travis and AppVeyor support ANSI colors. *)
+    print_string "\027[36m";
+    print_string (escape_unprintable command);
+    print_endline "\027[0m";
     ?|  command
   ) fmt
 

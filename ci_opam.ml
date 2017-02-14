@@ -188,7 +188,7 @@ with_fold "Prepare" (fun () ->
            && Sys.file_exists ("opam" / "opam")
       then ("opam" / "opam")
       else if Sys.file_exists "opam" then "opam"
-      else failwith "No opam file found, aborting."
+      else Format.ksprintf failwith "No opam file found for %s, aborting." pkg
     in
 
     List.iter pin pins;

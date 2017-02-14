@@ -178,13 +178,17 @@ with_fold "Prepare" (fun () ->
     let (/) = Filename.concat in
 
     let opam =
+      let pkg =
+        try String.sub pkg 0 (String.index pkg '.')
+        with Not_found -> pkg
+      in
       if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
       else if Sys.file_exists "opam"
            && Sys.is_directory "opam"
            && Sys.file_exists ("opam" / "opam")
       then ("opam" / "opam")
       else if Sys.file_exists "opam" then "opam"
-      else failwith "No opam file found, aborting."
+      else Format.ksprintf failwith "No opam file found for %s, aborting." pkg
     in
 
     List.iter pin pins;

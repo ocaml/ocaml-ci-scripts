@@ -178,6 +178,10 @@ with_fold "Prepare" (fun () ->
     let (/) = Filename.concat in
 
     let opam =
+      let pkg =
+        try String.sub pkg 0 (String.index pkg '.')
+        with Not_found -> pkg
+      in
       if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
       else if Sys.file_exists "opam"
            && Sys.is_directory "opam"

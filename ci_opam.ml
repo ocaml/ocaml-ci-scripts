@@ -60,8 +60,8 @@ let add_remote =
   fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
 
 let pin pin = match pair pin with
-  | (pkg,None)     -> ?|. "opam pin add %s --dev-repo -n" pkg
-  | (pkg,Some url) -> ?|. "opam pin add %s %s -n" pkg url
+  | (pkg,None)     -> ?|~ "opam pin add %s --dev-repo -n" pkg
+  | (pkg,Some url) -> ?|~ "opam pin add %s %s -n" pkg url
 
 let is_base pkg =
   match trim (?|> "opam show -f version %s" pkg) with

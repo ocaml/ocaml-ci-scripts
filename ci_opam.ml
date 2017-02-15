@@ -23,6 +23,7 @@ open Yorick
 
 (* The package name *)
 let pkg = getenv_default "PACKAGE" "my-package"
+let pkg_name = try String.sub pkg 0 (String.index pkg '.') with Not_found -> pkg
 
 (* Extra remotes to stack on top of the initialization remote *)
 let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
@@ -79,8 +80,14 @@ let with_opambuildtest fn =
   res
 
 let get_package_versions_from_json file =
-  let cmd = ~~ "jq -r '.[]? | .[]? | .install? | select(. != null) | select(.name? != \"%s\") |[.name, .version] | join(\".\")' %s" in
-  lines (?|> cmd pkg file)
+  let cmd = ~~ "jq -r '.[]? | .[]? \
+                | .install? \
+                | select(. != null) \
+                | select(.name? != \"%s\") \
+                | [.name, .version] \
+                | join(\".\")' %s"
+  in
+  lines (?|> cmd pkg_name file)
 
 let install ?(depopts="") ?(tests=false) args =
   let install_deps = if tests then
@@ -178,17 +185,14 @@ with_fold "Prepare" (fun () ->
     let (/) = Filename.concat in
 
     let opam =
-      let pkg =
-        try String.sub pkg 0 (String.index pkg '.')
-        with Not_found -> pkg
-      in
-      if Sys.file_exists (pkg ^ ".opam") then (pkg ^ ".opam")
+      if Sys.file_exists (pkg_name ^ ".opam") then (pkg_name ^ ".opam")
       else if Sys.file_exists "opam"
            && Sys.is_directory "opam"
            && Sys.file_exists ("opam" / "opam")
       then ("opam" / "opam")
       else if Sys.file_exists "opam" then "opam"
-      else Format.ksprintf failwith "No opam file found for %s, aborting." pkg
+      else
+        Format.ksprintf failwith "No opam file found for %s, aborting." pkg_name
     in
 
     List.iter pin pins;

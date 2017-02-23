@@ -78,7 +78,7 @@ then begin
                    \  CheckHostIP no
                    \  UserKnownHostsFile=/dev/null"
   in
-  export "XENIMG" "mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
+  export "XENIMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
   export "MIRDIR" "${MIRDIR:-src}";
   export "DEPLOYD" "${TRAVIS_REPO_SLUG#*/}-deployment";
 

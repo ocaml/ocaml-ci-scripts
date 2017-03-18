@@ -29,6 +29,7 @@ let extra_remotes = list (getenv_default "EXTRA_REMOTES" "")
 let pins = list (getenv_default "PINS" "")
 
 (* Mirage deployment environment *)
+let (|>) a b = b a
 let is_deploy = getenv_default "DEPLOY" "false" |> fuzzy_bool_of_string
 let is_travis_pr =
   getenv_default "TRAVIS_PULL_REQUEST" "false" |> fuzzy_bool_of_string
@@ -63,7 +64,8 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install mirage";
-?| "mirage configure --$MIRAGE_BACKEND";
+?| "mirage configure -t $MIRAGE_BACKEND";
+?| "make depend";
 ?| "make";
 ?| "echo TRAVIS_BRANCH=$TRAVIS_BRANCH"
 ;;
@@ -94,14 +96,17 @@ then begin
   (* clone deployment repo *)
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
   (* remove and recreate any existing image for this commit *)
-  ?|  "rm -rf $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "mkdir -p $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "cp $MIRDIR/$XENIMG $MIRDIR/config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "rm -f $DEPLOYD/xen/$TRAVIS_COMMIT/${XENIMG}.bz2";
   ?|  "bzip2 -9 $DEPLOYD/xen/$TRAVIS_COMMIT/$XENIMG";
   ?|  "echo $TRAVIS_COMMIT > $DEPLOYD/xen/latest";
   (* commit and push changes *)
   ?|  "cd $DEPLOYD &&\
-       \ git add xen/$TRAVIS_COMMIT xen/latest &&\
-       \ git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\" &&\
-       \ git push"
+      \ git add xen/$TRAVIS_COMMIT xen/latest &&\
+      \ git commit -m \"adding $TRAVIS_COMMIT for $MIRAGE_BACKEND\" &&\
+      \ git status &&\
+      \ git clean -fdx &&\
+      \ git pull --rebase &&\
+      \ git push"
 end

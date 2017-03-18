@@ -1,3 +1,4 @@
+echo -en "travis_fold:start:prepare.ci\r"
 # If a fork of these scripts is specified, use that GitHub user instead
 fork_user=${FORK_USER:-ocaml}
 
@@ -9,16 +10,16 @@ fork_branch=${FORK_BRANCH:-master}
 set -uex
 
 get() {
-  wget https://raw.githubusercontent.com/${fork_user}/ocaml-travisci-skeleton/${fork_branch}/$@
+  wget https://raw.githubusercontent.com/${fork_user}/ocaml-ci-scripts/${fork_branch}/$@
 }
 
-TMP_BUILD=$(mktemp -d 2>/dev/null || mktemp -d -t 'travistmpdir')
+TMP_BUILD=$(mktemp -d 2>/dev/null || mktemp -d -t 'citmpdir')
 cd ${TMP_BUILD}
 
 get .travis-ocaml.sh
 get yorick.mli
 get yorick.ml
-get travis_opam.ml
+get ci_opam.ml
 
 sh .travis-ocaml.sh
 export OPAMYES=1
@@ -30,7 +31,8 @@ opam install ocamlfind
 ocamlc.opt yorick.mli
 ocamlfind ocamlc -c yorick.ml
 
-ocamlfind ocamlc -o travis-opam -package unix -linkpkg yorick.cmo travis_opam.ml
+ocamlfind ocamlc -o ci-opam -package unix -linkpkg yorick.cmo ci_opam.ml
 cd -
 
-${TMP_BUILD}/travis-opam
+echo -en "travis_fold:end:prepare.ci\r"
+${TMP_BUILD}/ci-opam

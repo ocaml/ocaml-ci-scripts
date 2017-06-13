@@ -69,8 +69,8 @@ esac
 
 opam init -a default "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
 
-# to clean up possible caches
-opam update -u
+# update cached .opam
+opam update
 
 is_msvc=0
 case "$SWITCH" in

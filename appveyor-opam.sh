@@ -68,6 +68,10 @@ case "$SWITCH" in
 esac
 
 opam init -a default "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
+
+# to clean up possible caches
+opam update -u
+
 is_msvc=0
 case "$SWITCH" in
     *msvc*)

@@ -19,6 +19,7 @@ echo REVDEPS="$REVDEPS" >> env.list
 echo EXTRA_DEPS="$EXTRA_DEPS" >> env.list
 echo PRE_INSTALL_HOOK="$PRE_INSTALL_HOOK" >> env.list
 echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list
+echo $EXTRA_ENV >> env.list
 
 # build a local image to trigger any ONBUILDs
 echo FROM ocaml/opam:${DISTRO}_ocaml-${OCAML_VERSION} > Dockerfile

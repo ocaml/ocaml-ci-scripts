@@ -64,8 +64,9 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install mirage";
-?| "MODE=$MIRAGE_BACKEND make configure";
-?| "make build";
+?| "mirage configure -t $MIRAGE_BACKEND";
+?| "make depend";
+?| "make";
 ?| "echo TRAVIS_BRANCH=$TRAVIS_BRANCH"
 ;;
 

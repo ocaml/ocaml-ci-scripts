@@ -104,14 +104,14 @@ let install ?(depopts="") ?(tests=false) args =
           get_package_versions_from_json tmp
         )
     else extra_deps in
-  if install_deps <> [] then begin
+  if install_deps <> [] then (
     let deps = (ql install_deps) *~ " " in
     let install_depext () = ?|. "opam depext -u %s" deps in
     if tests then
       with_opambuildtest install_depext
     else install_depext ();
     ?|~ "opam install --unset-root %s" deps
-  end;
+  );
 
   let args = if tests then "-t" :: args else args in
 
@@ -119,11 +119,10 @@ let install ?(depopts="") ?(tests=false) args =
   ?|~ "opam install %s %s" pkg (ql args *~ " ");
   ?|  post_install_hook;
 
-  begin match extra_deps with
-    | [] -> ()
-    | deps ->
-      ?|. "opam remove -a %s" (filter_base ((ql deps) *~ " "))
-  end
+  match extra_deps with
+  | [] -> ()
+  | deps ->
+    ?|. "opam remove -a %s" (filter_base ((ql deps) *~ " "))
 
 let with_fold_travis name f =
   Printf.printf "travis_fold:start:%s\r%!" name;
@@ -172,15 +171,14 @@ with_fold "Prepare" (fun () ->
     export "OPAMYES" "1";
     ?| "eval $(opam config env)";
 
-    begin (* remotes *)
-      let remotes =
-        ?|> "opam remote list --short | grep -v default | tr \"\\n\" \" \""
-      in
-      if remotes <> "" then begin
-        ?|. "opam remote remove %s" remotes
-      end;
-      List.iter add_remote extra_remotes
+    (* remotes *)
+    let remotes =
+      ?|> "opam remote list --short | grep -v default | tr \"\\n\" \" \""
+    in
+    if remotes <> "" then begin
+      ?|. "opam remote remove %s" remotes
     end;
+    List.iter add_remote extra_remotes;
 
     let (/) = Filename.concat in
 
@@ -200,81 +198,80 @@ with_fold "Prepare" (fun () ->
     ?|~ "opam pin add %s . -n" pkg;
     ?|  "eval $(opam config env)";
     ?|  "opam install depext";
+    (* Install the external dependencies *)
+    ?|~ "opam depext -u %s" pkg;
   );
 
 with_fold "Simple" (fun () ->
-    (* Install the external dependencies *)
-    ?|~ "opam depext -u %s" pkg;
-
     (* Install the OCaml dependencies *)
     ?|~ "opam install %s --deps-only" pkg;
 
-    begin (* Simple installation/removal test *)
-      if install_run then (
-        install ["-v"];
-        ?|~ "opam remove %s -v" pkg
-      ) else
-        echo "INSTALL=false, skipping the basic installation run.";
-    end;
+    (* Simple installation/removal test *)
+    if install_run then (
+      install ["-v"];
+      ?|~ "opam remove %s -v" pkg
+    ) else
+      echo "INSTALL=false, skipping the basic installation run.";
   );
 
-with_fold "Simple.test" begin fun () ->
-  if tests_run then begin
-    (* run tests only for this package *)
-    install ~tests:true ["-v"];
-    ?|~ "opam remove %s -v" pkg
-  end else
-    echo "TESTS=false, skipping the test run.";
-end;
+with_fold "Simple.test" (fun () ->
+    if tests_run then (
+      (* run tests only for this package *)
+      install ~tests:true ["-v"];
+      ?|~ "opam remove %s -v" pkg
+    ) else
+      echo "TESTS=false, skipping the test run.";
+  );
 
-begin (* optional dependencies *)
-  let depopts_run = match depopts_run with
-    | [] | ["false"] -> None
-    | ["*"] -> (* query OPAM *)
-      let d =
-        ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
-      in
-      Some d
-    | depopts -> Some (depopts *~ " ")
-  in
-  match depopts_run with
-  | None   -> echo "DEPOPTS=false, skipping the optional dependency run.";
-  | Some d -> install_with_depopts d
-end;
+(* optional dependencies *)
+with_fold "Simple.depopts" (fun () ->
+    let depopts_run = match depopts_run with
+      | [] | ["false"] -> None
+      | ["*"] -> (* query OPAM *)
+        let d =
+          ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
+        in
+        Some d
+      | depopts -> Some (depopts *~ " ")
+    in
+    match depopts_run with
+    | None   -> echo "DEPOPTS=false, skipping the optional dependency run.";
+    | Some d -> install_with_depopts d
+  );
 
-with_fold "Reverse.dependencies" begin fun () ->
-  let revdeps = match revdep_run with
-    | [] | ["false"] | ["0"] -> None
-    | ["*"] | ["true"] | ["1"] ->
-      let revdep_cmd = ~~ "opam list --depends-on %s --short" in
-      (match !?* (?|>) revdep_cmd pkg with
-       | ls, 0 -> Some (lines ls)
-       | ls, 1 when lines ls = [] -> Some []
-       | _,  x ->
-         Printf.eprintf "'%(%s%)' exited %d. Terminating with %d\n"
-           revdep_cmd pkg x x;
-         exit x
-      )
-    | packages -> Some packages
-  in
-  match revdeps with
-  | None -> echo "REVDEPS=false, skipping the reverse dependency rebuild run."
-  | Some packages ->
-    let revdep_count = List.length packages in
-    echo "\nREVDEPS %d total" revdep_count;
-    let packages = List.fold_left (fun acc pkg ->
-        match max_version pkg with
-        | Some pkgv -> pkgv::acc
-        | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
-      ) [] packages in
-    let installable_count = List.length packages in
-    echo "%d/%d REVDEPS installable" installable_count revdep_count;
+with_fold "Reverse.dependencies" (fun () ->
+    let revdeps = match revdep_run with
+      | [] | ["false"] | ["0"] -> None
+      | ["*"] | ["true"] | ["1"] ->
+        let revdep_cmd = ~~ "opam list --depends-on %s --short" in
+        (match !?* (?|>) revdep_cmd pkg with
+         | ls, 0 -> Some (lines ls)
+         | ls, 1 when lines ls = [] -> Some []
+         | _,  x ->
+           Printf.eprintf "'%(%s%)' exited %d. Terminating with %d\n"
+             revdep_cmd pkg x x;
+           exit x
+        )
+      | packages -> Some packages
+    in
+    match revdeps with
+    | None -> echo "REVDEPS=false, skipping the reverse dependency rebuild run."
+    | Some packages ->
+      let revdep_count = List.length packages in
+      echo "\nREVDEPS %d total" revdep_count;
+      let packages = List.fold_left (fun acc pkg ->
+          match max_version pkg with
+          | Some pkgv -> pkgv::acc
+          | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
+        ) [] packages in
+      let installable_count = List.length packages in
+      echo "%d/%d REVDEPS installable" installable_count revdep_count;
 
-    ignore (List.fold_left (fun i dependent ->
-        echo "\nInstalling %s (REVDEP %d/%d)" dependent i installable_count;
-        ?|~ "opam depext -u %s" dependent;
-        ?|~ "opam install %s" dependent;
-        ?|~ "opam remove %s" dependent;
-        i + 1
-      ) 1 packages)
-end;
+      ignore (List.fold_left (fun i dependent ->
+          echo "\nInstalling %s (REVDEP %d/%d)" dependent i installable_count;
+          ?|~ "opam depext -u %s" dependent;
+          ?|~ "opam install %s" dependent;
+          ?|~ "opam remove %s" dependent;
+          i + 1
+        ) 1 packages)
+  );

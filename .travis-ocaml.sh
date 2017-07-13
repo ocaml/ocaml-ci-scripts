@@ -55,7 +55,7 @@ install_on_linux () {
        OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0";
        ppa=avsm/ocaml42+opam12 ;;
     4.04,1.2.2)
-        OCAML_VERSION=4.02; OPAM_SWITCH="4.04.0"
+        OCAML_VERSION=4.02; OPAM_SWITCH="4.04.2"
         ppa=avsm/ocaml42+opam12 ;;
     4.05,1.2.2)
         OCAML_VERSION=4.02; OPAM_SWITCH="4.05.0+trunk"

@@ -45,7 +45,7 @@ echo env.list:
 cat env.list
 echo Command:
 OS=~/build/$TRAVIS_REPO_SLUG
-echo docker run --env-file=env.list -v ${OS}:/repo local-build travis-opam
+echo docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam
 
 # run ci-opam with the local repo volume mounted
 chmod -R a+w $OS

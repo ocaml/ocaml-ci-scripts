@@ -19,6 +19,7 @@ sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)
 
+opam depext -y conf-m4
 opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
 
 echo -en "travis_fold:end:prepare.ci\r"

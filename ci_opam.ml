@@ -22,7 +22,21 @@ open Yorick
 (* User-defined variables *)
 
 (* The package name *)
-let pkg = getenv_default "PACKAGE" "my-package"
+let default_pkg = "my-package"
+
+let pkg =
+  let pkg = getenv_default "PACKAGE" default_pkg in
+  if pkg <> default_pkg then pkg
+  else
+    let files = Array.to_list (Sys.readdir ".") in
+    let opams = List.filter (function file ->
+        Filename.check_suffix file ".opam"
+      ) files
+    in
+    match opams with
+    | [f] -> (try Filename.chop_extension f with Invalid_argument _ -> f)
+    | _   -> default_pkg
+
 let pkg_name = try String.sub pkg 0 (String.index pkg '.') with Not_found -> pkg
 
 (* Extra remotes to stack on top of the initialization remote *)

@@ -91,18 +91,14 @@ else
     opam install depext ocamlfind
 fi
 
-TMP_BUILD=$(mktemp -d 2>/dev/null || mktemp -d -t 'citmpdir')
-cd "${TMP_BUILD}"
+export OPAMYES=1
+eval $(opam config env)
 
-echo "downloading ocaml-ci-scripts from github.com/${fork_user}/ocaml-ci-scripts/${fork_branch}" >&2
-get ci_opam.ml
-get yorick.mli
-get yorick.ml
-
-ocamlc.opt yorick.mli
-ocamlfind ocamlc -c yorick.ml
-ocamlfind ocamlc -o ci-opam.exe -package unix -linkpkg yorick.cmo ci_opam.ml
+echo opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
 
 cd "${APPVEYOR_BUILD_FOLDER}"
 
-${TMP_BUILD}/ci-opam.exe
+# copy the binaries to allow removal of the travis-opam package
+opam config exec -- cp $(which ci-opam.exe) ci-opam.exe
+"${APPVEYOR_BUILD_FOLDER}"/ci-opam.exe

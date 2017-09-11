@@ -1,4 +1,4 @@
-### 1.1.0 (2017-09-06)
+### 1.1.0 (2017-09-11)
 
 * Rename travis-opam into ci-opam (#101, @avsm)
 * Do not run the tests of dependencies (#145, @edwintorok)
@@ -6,6 +6,7 @@
 * Allow to use `PACKAGE=name.version` (#152, @samoht)
 * Improve log outputs (folding, more debug message, etc
   (@Chris00, @edwintorok, @samoht)
+* Automatically infer package name when using `pkg.opam` (#181, @samoht)
 
 ### 1.0.3 (2016-11-23):
 

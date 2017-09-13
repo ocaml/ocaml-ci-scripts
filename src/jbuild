@@ -1,0 +1,6 @@
+(jbuild_version 1)
+
+(executables
+  ((names        (ci_opam travis_mirage))
+   (public_names (ci-opam travis-mirage))
+   (libraries    (yorick))))

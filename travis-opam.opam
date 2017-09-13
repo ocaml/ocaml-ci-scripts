@@ -9,8 +9,13 @@ authors: [
   "David Sheets"
 ]
 
+build: [
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+
 depends: [
-  "ocamlbuild" {build}
+  "jbuilder" {build}
 ]
 
 depexts: [
@@ -23,5 +28,3 @@ depexts: [
   [["oraclelinux"] ["jq"]]
   [["ubuntu"] ["jq"]]
 ]
-
-build: [make]

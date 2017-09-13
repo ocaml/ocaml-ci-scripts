@@ -98,6 +98,7 @@ let pair s = match split_char_bounded s ~on:':' ~max:2 with
 let fuzzy_bool_of_string s = match String.lowercase s with
   | "false" | "0" -> false
   | _ -> true
+[@@warning "-3"]
 
 let echo fmt = Printf.ksprintf print_endline fmt
 

@@ -5,3 +5,7 @@ all:
 
 clean:
 	jbuilder clean
+
+push:
+	docker build . -t ocaml/ci-opam
+	docker push ocaml/ci-opam

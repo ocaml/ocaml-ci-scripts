@@ -1,6 +1,14 @@
 (jbuild_version 1)
 
-(executables
-  ((names        (ci_opam travis_mirage))
-   (public_names (ci-opam travis-mirage))
+(executable
+  ((name        ci_opam)
+   (modules     (ci_opam))
+   (public_name ci-opam)
+;   (flags        (:standard -cclib -static))
+   (libraries    (yorick))))
+
+(executable
+  ((name        travis_mirage)
+   (modules     (travis_mirage))
+   (public_name travis-mirage)
    (libraries    (yorick))))

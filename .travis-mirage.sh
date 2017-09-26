@@ -20,8 +20,6 @@ get src/yorick/yorick.mli
 get src/yorick/yorick.ml
 get src/travis_mirage.ml
 
-exit 1
-
 sh .travis-ocaml.sh
 export OPAMYES=1
 eval $(opam config env)

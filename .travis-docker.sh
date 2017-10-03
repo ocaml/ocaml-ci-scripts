@@ -24,7 +24,14 @@ echo $EXTRA_ENV >> env.list
 # build a local image to trigger any ONBUILDs
 echo FROM ocaml/opam:${DISTRO}_ocaml-${OCAML_VERSION} > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile
-echo RUN git pull origin master >> Dockerfile
+
+if [ -n "$BASE_REMOTE" ]; then
+    echo "RUN git remote set-url origin ${BASE_REMOTE} &&\
+        git fetch origin master && git reset --hard origin/master"  >> Dockerfile
+else
+    echo RUN git pull origin master >> Dockerfile
+fi
+
 
 if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
     echo RUN opam remove travis-opam >> Dockerfile

@@ -20,12 +20,10 @@ env:
   - OCAML_VERSION=4.00 [...]
   - OCAML_VERSION=4.01 [...]
   - OCAML_VERSION=4.02 [...]
-  - OCAML_VERSION=latest [...]
 ```
 
-Add one line per compiler version you want to test. `latest` is the latest
-stable version of OCaml. The `[...]` are other environments variables set for
-this Travis CI run.
+Add one line per compiler version you want to test. The `[...]` are other
+environments variables set for this Travis CI run.
 
 ### Changing the Base OPAM Remote
 

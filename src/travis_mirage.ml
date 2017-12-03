@@ -64,7 +64,7 @@ List.iter pin pins;
 
 ?| "opam update -u";
 ?| "opam install 'mirage>=3.0.0'";
-?| {| [ -n "$SRC_DIR" ] && cd "$SRC_DIR" |}
+?| {| [ -n "$SRC_DIR" ] && cd "$SRC_DIR" |};
 ?| "mirage configure -t $MIRAGE_BACKEND";
 ?| "make depend";
 ?| "make";

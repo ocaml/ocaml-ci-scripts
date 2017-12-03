@@ -63,7 +63,7 @@ List.iter pin pins;
 ?| "eval $(opam config env)";
 
 ?| "opam update -u";
-?| "opam install mirage";
+?| "opam install 'mirage>=3.0.0'";
 ?| "mirage configure -t $MIRAGE_BACKEND";
 ?| "make depend";
 ?| "make";

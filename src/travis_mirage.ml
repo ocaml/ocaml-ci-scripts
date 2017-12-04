@@ -83,10 +83,12 @@ then begin
                    \  CheckHostIP no
                    \  UserKnownHostsFile=/dev/null"
   in
-  export "XENIMG" "mir-${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
-  export "MIRDIR" "${MIRDIR:-src}";
+  export "IMG" "${XENIMG:-$TRAVIS_REPO_SLUG#mirage/mirage-}.xen";
+  export "MIRIMG" "mir-${IMG}";
   export "DEPLOYD" "${TRAVIS_REPO_SLUG#*/}-deployment";
 
+  (* deployment target expects `mir-${XENIMG}`, so prepend it *)
+  ?| "mv ${IMG} ${MIRIMG}";
   (* setup ssh *)
   ?|  "opam install travis-senv";
   ?|  "mkdir -p ~/.ssh";
@@ -101,7 +103,7 @@ then begin
   ?|  "git clone git@mir-deploy:${TRAVIS_REPO_SLUG}-deployment";
   (* remove and recreate any existing image for this commit *)
   ?|  "mkdir -p $DEPLOYD/xen/$TRAVIS_COMMIT";
-  ?|  "cp $MIRDIR/$XENIMG $MIRDIR/config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
+  ?|  "cp $XENIMG config.ml $DEPLOYD/xen/$TRAVIS_COMMIT";
   ?|  "rm -f $DEPLOYD/xen/$TRAVIS_COMMIT/${XENIMG}.bz2";
   ?|  "bzip2 -9 $DEPLOYD/xen/$TRAVIS_COMMIT/$XENIMG";
   ?|  "echo $TRAVIS_COMMIT > $DEPLOYD/xen/latest";

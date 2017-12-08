@@ -217,19 +217,12 @@ env:
 
 ## Mirage Unikernels, `.travis-mirage.sh`
 
-This causes Travis to build a repo as a Mirage unikernel. It assumes the
-existence of a `Makefile` at the root of the repo having targets `configure` and
-`build`. Configuration choices are passed to the `make configure` target via
-environment variables:
+This causes Travis to build a repo as a Mirage unikernel.  The location of the
+unikernel within the repository may be specified by setting the SRC_DIR variable.
+Configuration choices are passed to `mirage configure` via environment variables:
 
-+ `DEPLOY=[1|...]`: if set to `1` then requests a deployment build
-+ `MIRAGE_BACKEND=[unix|xen]`: selects Mirage backend mode
-+ `MIRAGE_NET=[socket|direct]`: selects Mirage network stack
-
-If a deployment build is requested then the corresponding Mirage `-deployment`
-repo is cloned, the Xen VM image that was built is committed to it and the
-`latest` pointer updated, and then the keys embedded in the `.travis.yml` file
-are used to push the updated `-deployment` repo back to the `mirage` org.
++ `MIRAGE_BACKEND=[unix|xen|qubes|virtio|ukvm|macosx]`: selects Mirage backend mode
++ `FLAGS`: other configuration flags to set in `mirage configure`
 
 ### Changing the version of OPAM
 

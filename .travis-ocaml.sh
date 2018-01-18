@@ -14,6 +14,18 @@ full_apt_version () {
 
 set -uex
 
+if [ "${INSTALL_LOCAL+x}" = x ] ; then
+  if [ "$TRAVIS_OS_NAME" = osx ] ; then
+    echo INSTALL_LOCAL not permitted for macOS targets
+    exit 1
+  fi
+
+  if [ "${OPAM_SWITCH:=system}" != system ] ; then
+    echo "INSTALL_LOCAL requires OPAM_SWITCH=system (or unset/null)"
+    exit 1
+  fi
+fi
+
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
 OPAM_VERSION=${OPAM_VERSION:-1.2.2}
@@ -68,18 +80,22 @@ install_on_linux () {
 
   sudo add-apt-repository --yes ppa:${ppa}
   sudo apt-get update -qq
-  sudo apt-get install -y \
-     "$(full_apt_version ocaml $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-base $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-native-compilers $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-compiler-libs $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-interp $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-base-nox $OCAML_VERSION)" \
-     "$(full_apt_version ocaml-nox $OCAML_VERSION)" \
-     "$(full_apt_version camlp4 $OCAML_VERSION)" \
-     "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
-     jq \
-     opam
+  if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+    sudo apt-get install -y \
+       "$(full_apt_version ocaml $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-base $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-native-compilers $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-compiler-libs $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-interp $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-base-nox $OCAML_VERSION)" \
+       "$(full_apt_version ocaml-nox $OCAML_VERSION)" \
+       "$(full_apt_version camlp4 $OCAML_VERSION)" \
+       "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
+       jq \
+       opam
+  else
+    sudo apt-get install -y jq opam
+  fi
 
   TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
 
@@ -99,6 +115,18 @@ install_on_linux () {
     sudo apt-get -qq update
   fi
 
+  if [ "$INSTALL_LOCAL" != 0 ] ; then
+    echo -en "travis_fold:start:build.ocaml\r"
+    echo "Building a local OCaml; this may take a few minutes..."
+    wget "http://caml.inria.fr/pub/distrib/ocaml-${OCAML_FULL_VERSION%.*}/ocaml-$OCAML_FULL_VERSION.tar.gz"
+    tar -xzf "ocaml-$OCAML_FULL_VERSION.tar.gz"
+    cd "ocaml-$OCAML_FULL_VERSION"
+    ./configure -prefix /usr/local ${OCAML_CONFIGURE_ARGS:=--with-debug-runtime}
+    make world.opt
+    sudo make install
+    cd ..
+    echo -en "travis_fold:end:build.ocaml\r"
+  fi
 }
 
 install_on_osx () {

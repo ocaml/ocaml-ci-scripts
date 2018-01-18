@@ -44,6 +44,21 @@ you require a specific release (for example a beta or release candidate), you
 can set `OPAM_SWITCH` to the precise compiler to be used. `OPAM_SWITCH` takes
 precedence over `OCAML_VERSION`.
 
+### Testing system switches
+
+It is possible to test a specific compiler as though it were a system switch by
+setting the environment variable `INSTALL_LOCAL` to `1`. In this case,
+`OPAM_SWITCH` must be either empty, un-set or `system`. The script will compile
+the latest release of `OCAML_VERSION` and install it to `/usr/local/` which opam
+will then pick up as a system compiler instead of the Ubuntu-installed OCaml.
+
+This process does not install camlp4, though Ubuntu does (at least at present)
+install camlp4 4.02.3 with opam. If you require camlp4 for the compiler, you
+will need to install it as part of your test script using opam.
+
+At present, this feature is only available on Ubuntu Travis images and will
+return an error if specified for a macOS image.
+
 ## opam Package, `.travis-opam.sh`
 
 Instructions:

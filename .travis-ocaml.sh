@@ -18,7 +18,6 @@ set -uex
 OCAML_VERSION=${OCAML_VERSION:-latest}
 OPAM_VERSION=${OPAM_VERSION:-1.2.2}
 OPAM_INIT=${OPAM_INIT:-true}
-OPAM_SWITCH=${OPAM_SWITCH:-system}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
@@ -39,29 +38,29 @@ esac
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2)
-       OCAML_VERSION=4.02; OPAM_SWITCH="3.12.1"
+       OCAML_VERSION=4.02; OCAML_FULL_VERSION=3.12.1
        ppa=avsm/ocaml42+opam12 ;;
     4.00,1.2.2)
-       OCAML_VERSION=4.02; OPAM_SWITCH="4.00.1"
+       OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.00.1
        ppa=avsm/ocaml42+opam12 ;;
     4.01,1.2.2)
-       OCAML_VERSION=4.02; OPAM_SWITCH="4.01.0"
+       OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.01.0
        ppa=avsm/ocaml42+opam12 ;;
-    4.02,1.1.2) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam11 ;;
-    4.02,1.2.0) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam120 ;;
-    4.02,1.2.1) OPAM_SWITCH=4.02.3; ppa=avsm/ocaml42+opam121 ;;
-    4.02,1.2.2) ppa=avsm/ocaml42+opam12 ;;
+    4.02,1.1.2) OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system}; ppa=avsm/ocaml42+opam11 ;;
+    4.02,1.2.0) OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system}; ppa=avsm/ocaml42+opam120 ;;
+    4.02,1.2.1) OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system}; ppa=avsm/ocaml42+opam121 ;;
+    4.02,1.2.2) OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system}; ppa=avsm/ocaml42+opam12 ;;
     4.03,1.2.2)
-       OCAML_VERSION=4.02; OPAM_SWITCH="4.03.0";
+       OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.03.0
        ppa=avsm/ocaml42+opam12 ;;
     4.04,1.2.2)
-        OCAML_VERSION=4.02; OPAM_SWITCH="4.04.2"
+        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.04.2
         ppa=avsm/ocaml42+opam12 ;;
     4.05,1.2.2)
-        OCAML_VERSION=4.02; OPAM_SWITCH="4.05.0"
+        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.05.0
         ppa=avsm/ocaml42+opam12 ;;
     4.06,1.2.2)
-        OCAML_VERSION=4.02; OPAM_SWITCH="4.06.0"
+        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.06.0
         ppa=avsm/ocaml42+opam12 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;
@@ -112,15 +111,15 @@ install_on_osx () {
   esac
   brew update &> /dev/null
   case "$OCAML_VERSION,$OPAM_VERSION" in
-    3.12,1.2.2) OPAM_SWITCH=3.12.1; brew install opam ;;
-    4.00,1.2.2) OPAM_SWITCH=4.00.1; brew install opam ;;
-    4.01,1.2.2) OPAM_SWITCH=4.01.0; brew install opam ;;
-    4.02,1.2.2) OPAM_SWITCH=4.02.3; brew install opam ;;
-    4.02,1.3.0) OPAM_SWITCH=4.02.3; brew install opam --HEAD ;;
-    4.03,1.2.2) OPAM_SWITCH=4.03.0; brew install opam ;;
-    4.04,1.2.2) OPAM_SWITCH=4.04.2; brew install opam ;;
-    4.05,1.2.2) OPAM_SWITCH=4.05.0; brew install opam ;;
-    4.06,1.2.2) OPAM_SWITCH=system; brew install ocaml; brew install opam ;;
+    3.12,1.2.2) OCAML_FULL_VERSION=3.12.1; brew install opam ;;
+    4.00,1.2.2) OCAML_FULL_VERSION=4.00.1; brew install opam ;;
+    4.01,1.2.2) OCAML_FULL_VERSION=4.01.0; brew install opam ;;
+    4.02,1.2.2) OCAML_FULL_VERSION=4.02.3; brew install opam ;;
+    4.02,1.3.0) OCAML_FULL_VERSION=4.02.3; brew install opam --HEAD ;;
+    4.03,1.2.2) OCAML_FULL_VERSION=4.03.0; brew install opam ;;
+    4.04,1.2.2) OCAML_FULL_VERSION=4.04.2; brew install opam ;;
+    4.05,1.2.2) OCAML_FULL_VERSION=4.05.0; brew install opam ;;
+    4.06,1.2.2) OCAML_FULL_VERSION=4.06.0; OPAM_SWITCH=${OPAM_SWITCH:-system}; brew install ocaml; brew install opam ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        exit 1 ;;
   esac
@@ -131,6 +130,8 @@ case $TRAVIS_OS_NAME in
     osx) install_on_osx ;;
     linux) install_on_linux ;;
 esac
+
+OPAM_SWITCH=${OPAM_SWITCH:-$OCAML_FULL_VERSION}
 
 export OPAMYES=1
 

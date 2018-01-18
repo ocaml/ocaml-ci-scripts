@@ -3,7 +3,7 @@
 ## Plain OCaml Install, `.travis-ocaml.sh`
 
 This is a helper script that simply installs the Ubuntu OCaml compiler packages,
-including Camlp4, plus OPAM. This is fetched and executed by the other Travis
+including Camlp4, plus opam. This is fetched and executed by the other Travis
 scripts in this repo. Set the `OCAML_VERSION` variable to the desired version,
 e.g.,
 
@@ -25,19 +25,26 @@ env:
 Add one line per compiler version you want to test. The `[...]` are other
 environments variables set for this Travis CI run.
 
-### Changing the Base OPAM Remote
+### Changing the Base opam Remote
 
 ```yaml
 env:
-  - [...] BASE_REMOTE=<url> [...]
+pick  - [...] BASE_REMOTE=<url> [...]
 ```
 
-The bare-bones install script can be configured to initialize OPAM with
-a metadata repository that isn't the default community OPAM remote of
+The bare-bones install script can be configured to initialize opam with
+a metadata repository that isn't the default community opam remote of
 [git://github.com/ocaml/opam-repository](git://github.com/ocaml/opam-repository).
-`BASE_REMOTE` initializes OPAM with a repository address of your choice.
+`BASE_REMOTE` initializes opam with a repository address of your choice.
 
-## OPAM Package, `.travis-opam.sh`
+### Testing a specific switch
+
+The `OCAML_VERSION` variable will select the latest release of that version. If
+you require a specific release (for example a beta or release candidate), you
+can set `OPAM_SWITCH` to the precise compiler to be used. `OPAM_SWITCH` takes
+precedence over `OCAML_VERSION`.
+
+## opam Package, `.travis-opam.sh`
 
 Instructions:
 
@@ -89,7 +96,7 @@ This information is read from the `opam` file per default, but it is also
 possible to specify sets of optional dependencies that will be tried instead,
 e.g. for testing multiple configurations with different set of dependencies.
 These package names do not need to be defined in the `opam` file, they can be
-any package in the OPAM repository.
+any package in the opam repository.
 
 ```yaml
 env:
@@ -148,16 +155,16 @@ env:
   - [...] REVDEPS="<list of space-separated package names>" [...]
 ```
 
-### Customizing the OPAM Pin Set
+### Customizing the opam Pin Set
 
 ```yaml
 env:
   - [...] PINS="<list of space-separated name:url pin pairs>" [...]
 ```
 
-You can customize the development pins of an OPAM package test run with
+You can customize the development pins of an opam package test run with
 the `PINS` variable. Each pin specified will *only* result in that pin
-being added into OPAM's pin set -- no default installation will be
+being added into opam's pin set -- no default installation will be
 performed. A pin of a package name without a colon (":") will result in
 that package being pinned to the URL in that package's `dev-repo`
 field. A pin of a `name:url` or `name.version:url` pair will pin the
@@ -178,7 +185,7 @@ These only get executed when installing your package, not the dependencies.
 The hook functionality might be useful for running commands like OASIS to
 generate build files which are not checked into the repository.
 
-### Changing OPAM Remotes
+### Changing opam Remotes
 
 ```yaml
 env:
@@ -186,7 +193,7 @@ env:
 ```
 
 In addition to changing the `BASE_REMOTE` to configure an initialization
-repository, `.travis-opam.sh` users can layer additional OPAM remotes on top
+repository, `.travis-opam.sh` users can layer additional opam remotes on top
 of the `BASE_REMOTE` with `EXTRA_REMOTES`. Remotes are added from left
 to right.
 
@@ -224,13 +231,13 @@ Configuration choices are passed to `mirage configure` via environment variables
 + `MIRAGE_BACKEND=[unix|xen|qubes|virtio|ukvm|macosx]`: selects Mirage backend mode
 + `FLAGS`: other configuration flags to set in `mirage configure`
 
-### Changing the version of OPAM
+### Changing the version of opam
 
 ```yaml
   - [...] OPAM_VERSION="1.1.2"
 ```
 
-By default, the latest stable version of OPAM will be used. The scripts supports
+By default, the latest stable version of opam will be used. the scripts supports
 these version:
 
 - `OPAM_VERSION=1.1.2` only when the OS is `unix` (default)

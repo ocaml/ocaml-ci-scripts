@@ -39,9 +39,9 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
          https://github.com/$fork_user/ocaml-ci-scripts.git#$fork_branch \
          >> Dockerfile
 fi
-echo RUN opam depext -i travis-opam >> Dockerfile
 
 echo RUN opam update -u -y >> Dockerfile
+echo RUN opam depext -ui travis-opam >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile
 docker build -t local-build .

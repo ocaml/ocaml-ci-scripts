@@ -12,6 +12,12 @@ env:
   - OCAML_VERSION=4.02 [...]
 ```
 
+**Note:** Setting the `OCAML_VERSION` to `latest` is no longer valid, and there is
+no default `OCAML_VERSION`; you must set one, either per-entry or once in the global
+section for all tests.  For discussion, please see
+[the issue](https://github.com/ocaml/ocaml-ci-scripts/issues/110) in which
+updating `OCAML_VERSION` from version 4.02.3 was initially proposed.
+
 ### Testing Multiple Compilers
 
 ```yaml

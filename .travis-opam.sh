@@ -21,6 +21,9 @@ eval $(opam config env)
 
 opam depext -y conf-m4
 opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+cp ~/.opam/$(opam switch show)/bin/ci-opam ~/
+opam remove -a travis-opam
+mv ~/ci-opam ~/.opam/$(opam switch show)/bin/ci-opam
 
 echo -en "travis_fold:end:prepare.ci\r"
 opam config exec -- ci-opam

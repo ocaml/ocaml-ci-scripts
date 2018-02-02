@@ -93,15 +93,44 @@ let with_opambuildtest fn =
   unset "OPAMBUILDTEST";
   res
 
-let get_package_versions_from_json file =
-  let cmd = ~~ "jq -r '.[]? | .[]? \
-                | .install? \
-                | select(. != null) \
-                | select(.name? != \"%s\") \
-                | [.name, .version] \
-                | join(\".\")' %s"
+(* Function taken from jsonm documentation *)
+let json_of_src d =
+  let dec d = match Jsonm.decode d with
+    | `Lexeme l -> l
+    | `Error _ | `End | `Await -> assert false
   in
-  lines (?|> cmd pkg_name file)
+  let rec value v k d = match v with
+    | `Os -> obj [] k d  | `As -> arr [] k d
+    | `Null | `Bool _ | `String _ | `Float _ as v -> k v d
+    | _ -> assert false
+  and arr vs k d = match dec d with
+    | `Ae -> k (`A (List.rev vs)) d
+    | v -> value v (fun v -> arr (v :: vs) k) d
+  and obj ms k d = match dec d with
+    | `Oe -> k (`O (List.rev ms)) d
+    | `Name n -> value (dec d) (fun v -> obj ((n, v) :: ms) k) d
+    | _ -> assert false
+  in
+  value (dec d) (fun v _ -> v) d
+
+let obj = function `O x -> x | _ -> assert false
+let arr = function `A x -> x | _ -> assert false
+let str = function `String x -> x | _ -> assert false
+
+let get_package_versions_from_json file =
+  let file = open_in file in
+  let decoder = Jsonm.decoder (`Channel file) in
+  let pkgs =
+    let get_pkg_ver o =
+      str (List.assoc "name" o) ^ "." ^ str (List.assoc "version" o)
+    in
+    let get_install o = get_pkg_ver (obj (List.assoc "install" o)) in
+    let get_pkg elt = get_install (obj elt) in
+    let get_solution o = List.map get_pkg (arr (List.assoc "solution" o)) in
+    get_solution (obj (json_of_src decoder))
+  in
+  close_in file;
+  pkgs
 
 let install ?(depopts="") ?(tests=false) args =
   let install_deps = if tests then

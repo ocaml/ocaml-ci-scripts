@@ -303,9 +303,11 @@ with_fold "Reverse.dependencies" (fun () ->
       let revdep_count = List.length packages in
       echo "\nREVDEPS %d total" revdep_count;
       let packages = List.fold_left (fun acc pkg ->
-          match max_version pkg with
-          | Some pkgv -> pkgv::acc
-          | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
+          if List.mem pkg pins then pkg::acc else begin
+            match max_version pkg with
+            | Some pkgv -> pkgv::acc
+            | None -> echo "Skipping uninstallable REVDEP %s" pkg; acc
+          end
         ) [] packages in
       let installable_count = List.length packages in
       echo "%d/%d REVDEPS installable" installable_count revdep_count;

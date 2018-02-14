@@ -114,7 +114,7 @@ let json_of_src d =
   value (dec d) (fun v _ -> v) d
 
 let obj = function `O x -> x | _ -> assert false
-let arr = function `A x -> x | _ -> assert false
+let maybe_arr = function `A x -> x | _ -> []
 let str = function `String x -> x | _ -> assert false
 
 let get_package_versions_from_json file =
@@ -128,7 +128,7 @@ let get_package_versions_from_json file =
     in
     let get_install o = try get_pkg_ver (obj (List.assoc "install" o)) with Not_found -> [] in
     let get_pkg elt = get_install (obj elt) in
-    List.concat (List.map get_pkg (List.concat (List.map arr (arr (json_of_src decoder)))))
+    List.concat (List.map get_pkg (List.concat (List.map maybe_arr (maybe_arr (json_of_src decoder)))))
   in
   close_in file;
   pkgs

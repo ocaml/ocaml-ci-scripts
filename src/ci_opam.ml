@@ -129,7 +129,7 @@ let get_package_versions_from_json file =
         let version = str (List.assoc "version" o) in
         [name ^ "." ^ version]
     in
-    let get_install o = get_pkg_ver (obj (List.assoc "install" o)) in
+    let get_install o = try get_pkg_ver (obj (List.assoc "install" o)) with Not_found -> [] in
     let get_pkg elt = get_install (obj elt) in
     List.concat (List.map get_pkg (List.concat (List.map arr (arr (json_of_src decoder)))))
   in

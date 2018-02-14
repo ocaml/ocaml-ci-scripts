@@ -122,11 +122,16 @@ let get_package_versions_from_json file =
   let decoder = Jsonm.decoder (`Channel file) in
   let pkgs =
     let get_pkg_ver o =
-      str (List.assoc "name" o) ^ "." ^ str (List.assoc "version" o)
+      let name = str (List.assoc "name" o) in
+      if String.equal name pkg_name then
+        []
+      else
+        let version = str (List.assoc "version" o) in
+        [name ^ "." ^ version]
     in
     let get_install o = get_pkg_ver (obj (List.assoc "install" o)) in
     let get_pkg elt = get_install (obj elt) in
-    List.map get_pkg (List.concat (List.map arr (arr (json_of_src decoder))))
+    List.concat (List.map get_pkg (List.concat (List.map arr (arr (json_of_src decoder)))))
   in
   close_in file;
   pkgs

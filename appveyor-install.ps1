@@ -52,7 +52,6 @@ function add_program($exe,$pkg_name){
 add_program "curl"
 add_program "diff" "diffutils"
 add_program "git"
-add_program "jq"
 add_program "m4"
 add_program "make"
 add_program "patch"

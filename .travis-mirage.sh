@@ -29,6 +29,7 @@ opam install ocamlfind
 ocamlc.opt yorick.mli
 ocamlfind ocamlc -c yorick.ml
 ocamlfind ocamlc -o travis-mirage -package unix -linkpkg yorick.cmo travis_mirage.ml
+opam remove ocamlfind
 cd -
 
 ${TMP_BUILD}/travis-mirage

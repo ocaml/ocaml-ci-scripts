@@ -5,7 +5,7 @@
    (modules     (ci_opam))
    (public_name ci-opam)
 ;   (flags        (:standard -cclib -static))
-   (libraries    (yorick))))
+   (libraries    (yorick jsonm))))
 
 (executable
   ((name        travis_mirage)

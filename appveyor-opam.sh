@@ -86,9 +86,9 @@ case "$SWITCH" in
         eval $(opam config env)
 esac
 if [ $is_msvc -eq 0 ]; then
-    opam install depext-cygwinports depext ocamlfind
+    opam install depext-cygwinports depext
 else
-    opam install depext ocamlfind
+    opam install depext
 fi
 
 export OPAMYES=1
@@ -101,4 +101,5 @@ cd "${APPVEYOR_BUILD_FOLDER}"
 
 # copy the binaries to allow removal of the travis-opam package
 opam config exec -- cp $(which ci-opam.exe) ci-opam.exe
+opam remove -a travis-opam
 "${APPVEYOR_BUILD_FOLDER}"/ci-opam.exe

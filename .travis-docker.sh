@@ -42,6 +42,9 @@ fi
 
 echo RUN opam update -u -y >> Dockerfile
 echo RUN opam depext -ui travis-opam >> Dockerfile
+echo RUN cp "~/.opam/${OCAML_VERSION}/bin/ci-opam" "~/" >> Dockerfile
+echo RUN opam remove -a travis-opam >> Dockerfile
+echo RUN mv "~/ci-opam" "~/.opam/${OCAML_VERSION}/bin/ci-opam" >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile
 docker build -t local-build .

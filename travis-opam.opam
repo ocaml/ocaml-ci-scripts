@@ -3,6 +3,8 @@ maintainer:   "thomas@gazagnaire.org"
 homepage:     "https://github.com/ocaml/ocaml-ci-scripts"
 bug-reports:  "https://github.com/ocaml/ocaml-ci-scripts/issues"
 dev-repo:     "https://github.com/ocaml/ocaml-ci-scripts.git"
+doc:          "https://ocaml.github.io/ocaml-ci-scripts/"
+
 authors: [
   "Thomas Gazagnaire"
   "Richard Mortier"

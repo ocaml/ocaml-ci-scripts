@@ -1,3 +1,20 @@
+### 1.2.0 (2018-02-14)
+
+* Use jbuilder (#180, @samoht)
+* Add a Dockerfile and runes to push an image to Docker Hub (#183, @samoht)
+* Support BASE_REMOTE in .travis-docker.sh (#188, @edwintorok)
+* Add OCaml 4.06 support (#190, #191, @andyli and @gasche)
+* Remove `latest` as a supported compiler version
+  (#192, #203, @hannesm and @yomimono)
+* Fix deployment logic for travis-mirage (#195 #198, @yomimono and @samoht)
+* Add an ISC license to the project (#204, @samoht)
+* Allow the user to specify the Docker hub user from which to get the base image
+  (#200, @yomimono)
+* Don't try to deduce the maximum version of pinned revdeps (#207, @yomimono)
+* INSTALL_LOCAL option: allowing a specific compiler to be tested as a "system"
+  compiler (#202, @dra27)
+* Replace jq uses by jsonm (#211, #215, #216, @jpdeplaix)
+
 ### 1.1.0 (2017-09-11)
 
 * Rename travis-opam into ci-opam (#101, @avsm)

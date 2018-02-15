@@ -124,7 +124,7 @@ let get_package_versions_from_json file =
     let get_pkg_ver o =
       let name = str (List.assoc "name" o) in
       let version = str (List.assoc "version" o) in
-      if String.equal name pkg_name then [] else [name ^ "." ^ version]
+      if name = pkg_name then [] else [name ^ "." ^ version]
     in
     let get_install o = try get_pkg_ver (obj (List.assoc "install" o)) with Not_found -> [] in
     let get_pkg elt = get_install (obj elt) in

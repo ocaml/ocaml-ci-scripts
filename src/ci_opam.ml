@@ -113,9 +113,9 @@ let json_of_src d =
   in
   value (dec d) (fun v _ -> v) d
 
-let obj = function `O x -> x | _ -> assert false
-let maybe_arr = function `A x -> x | _ -> []
-let str = function `String x -> x | _ -> assert false
+let obj = function `O x -> x | _ -> raise Not_found
+let maybe_arr = function `A x -> x | `O x -> List.map snd x | _ -> []
+let str = function `String x -> x | _ -> raise Not_found
 
 let get_package_versions_from_json file =
   let file = open_in file in
@@ -126,8 +126,8 @@ let get_package_versions_from_json file =
       let version = str (List.assoc "version" o) in
       if name = pkg_name then [] else [name ^ "." ^ version]
     in
-    let get_install o = try get_pkg_ver (obj (List.assoc "install" o)) with Not_found -> [] in
-    let get_pkg elt = get_install (obj elt) in
+    let get_install o = get_pkg_ver (obj (List.assoc "install" o)) in
+    let get_pkg elt = try get_install (obj elt) with Not_found -> [] in
     List.concat (List.map get_pkg (List.concat (List.map maybe_arr (maybe_arr (json_of_src decoder)))))
   in
   close_in file;

@@ -68,7 +68,7 @@ install_on_linux () {
         OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.05.0
         ppa=avsm/ocaml42+opam12 ;;
     4.06,1.2.2)
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.06.0
+        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.06.1
         ppa=avsm/ocaml42+opam12 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."

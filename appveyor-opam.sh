@@ -94,12 +94,12 @@ fi
 export OPAMYES=1
 eval $(opam config env)
 
-echo opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
-opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+echo opam pin add ci-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+opam pin add ci-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
 
 cd "${APPVEYOR_BUILD_FOLDER}"
 
-# copy the binaries to allow removal of the travis-opam package
+# copy the binaries to allow removal of the ci-opam package
 opam config exec -- cp $(which ci-opam.exe) ci-opam.exe
-opam remove -a travis-opam
+opam remove -a ci-opam
 "${APPVEYOR_BUILD_FOLDER}"/ci-opam.exe

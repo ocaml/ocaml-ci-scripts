@@ -35,17 +35,17 @@ else
 fi
 
 
-echo RUN opam remove travis-opam >> Dockerfile
+echo RUN opam remove ci-opam >> Dockerfile
 if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
-    echo RUN opam pin add -n travis-opam \
+    echo RUN opam pin add -n ci-opam \
          https://github.com/$fork_user/ocaml-ci-scripts.git#$fork_branch \
          >> Dockerfile
 fi
 
 echo RUN opam update -u -y >> Dockerfile
-echo RUN opam depext -ui travis-opam >> Dockerfile
+echo RUN opam depext -ui ci-opam >> Dockerfile
 echo RUN cp '~/.opam/$(opam switch show)/bin/ci-opam' "~/" >> Dockerfile
-echo RUN opam remove -a travis-opam >> Dockerfile
+echo RUN opam remove -a ci-opam >> Dockerfile
 echo RUN mv "~/ci-opam" '~/.opam/$(opam switch show)/bin/ci-opam' >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile

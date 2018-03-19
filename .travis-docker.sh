@@ -29,7 +29,7 @@ echo WORKDIR /home/opam/opam-repository >> Dockerfile
 
 if [ -n "$BASE_REMOTE" ]; then
     echo "RUN git remote set-url origin ${BASE_REMOTE} &&\
-        git fetch origin master && git reset --hard origin/master"  >> Dockerfile
+        git fetch origin && git reset --hard origin/master"  >> Dockerfile
 else
     echo RUN git pull origin master >> Dockerfile
 fi

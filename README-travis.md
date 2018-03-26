@@ -22,10 +22,9 @@ updating `OCAML_VERSION` from version 4.02.3 was initially proposed.
 
 ```yaml
 env:
-  - OCAML_VERSION=3.12 [...]
-  - OCAML_VERSION=4.00 [...]
-  - OCAML_VERSION=4.01 [...]
   - OCAML_VERSION=4.02 [...]
+  - OCAML_VERSION=4.05 [...]
+  - OCAML_VERSION=4.06 [...]
 ```
 
 Add one line per compiler version you want to test. The `[...]` are other
@@ -261,9 +260,9 @@ Configuration choices are passed to `mirage configure` via environment variables
 By default, the latest stable version of opam will be used. the scripts supports
 these version:
 
-- `OPAM_VERSION=1.1.2` only when the OS is `unix` (default)
-- `OPAM_VERSION=1.2.0` only when the OS is `unix` (default)
-- `OPAM_VERSION=1.2.2` when the OS is either `unix` or `osx`
+- `OPAM_VERSION=1.1.2` only when the OS is `unix`
+- `OPAM_VERSION=1.2.0` only when the OS is `unix`
+- `OPAM_VERSION=1.2.2` when the OS is either `unix` or `osx` (default)
 - `OPAM_VERSION=1.3.0` only when the OS is `osx`
 
 ### Testing on different OS

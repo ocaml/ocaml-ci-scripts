@@ -135,6 +135,7 @@ install_on_osx () {
         ;;
   esac
   brew update &> /dev/null
+  brew upgrade python || true
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2) OCAML_FULL_VERSION=3.12.1; brew install opam ;;
     4.00,1.2.2) OCAML_FULL_VERSION=4.00.1; brew install opam ;;

@@ -60,6 +60,14 @@ let revdep_run = list (getenv_default "REVDEPS" "")
 (* run opam lint *)
 let opam_lint = fuzzy_bool_of_string (getenv_default "OPAM_LINT" "true")
 
+(* opam version *)
+let opam_version =
+  let raw = ?|> "opam --version" in
+  match if String.length raw <= 1 then '?' else raw.[0] with
+  | '2' -> `V2
+  | '1' -> `V1
+  | _   -> failwith (raw ^ ": invalid opam version")
+
 (* other variables *)
 let extra_deps = list (getenv_default "EXTRA_DEPS" "")
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
@@ -238,7 +246,9 @@ with_fold "Prepare" (fun () ->
     in
 
     List.iter pin pins;
-    (if opam_lint then ?|~ "opam lint %s" opam);
+    (if opam_lint then match opam_version with
+        | `V2 -> ?|~ "opam lint %s --warn=-21-32-48" opam
+        | _   -> ?|~ "opam lint %s" opam);
     ?|~ "opam pin add %s . -n" pkg;
     ?|  "eval $(opam config env)";
     ?|  "opam install depext";

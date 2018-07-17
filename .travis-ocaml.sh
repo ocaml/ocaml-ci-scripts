@@ -215,7 +215,7 @@ install_on_osx () {
                 OPAM_SWITCH=${OPAM_SWITCH:-system};
                 brew install ocaml; brew install opam ;;
     4.07,2.0.0) OCAML_FULL_VERSION=4.07.0;
-                OPAM_SWITCH=${OPAM_SWITCH:-system};
+                OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
                 brew install ocaml;
                 install_opam2 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"

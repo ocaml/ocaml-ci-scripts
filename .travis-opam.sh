@@ -22,7 +22,11 @@ eval $(opam config env)
 opam depext -y conf-m4
 opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
 cp ~/.opam/$(opam switch show)/bin/ci-opam ~/
-opam remove -a travis-opam
+
+# workaround a bug in opam 2.0~rc3
+# opam remove -a travis-opam
+opam remove travis-opam conf-m4 dune jbuilder jsonm ocamlbuild ocamlfind result topkg uchar uutf
+
 mv ~/ci-opam ~/.opam/$(opam switch show)/bin/ci-opam
 
 echo -en "travis_fold:end:prepare.ci\r"

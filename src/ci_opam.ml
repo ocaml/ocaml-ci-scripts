@@ -82,9 +82,10 @@ let add_remote =
   let layer = ref 0 in
   fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
 
-let pin pin = match pair pin with
-  | (pkg,None)     -> ?|~ "opam pin add %s --dev-repo -n" pkg
-  | (pkg,Some url) -> ?|~ "opam pin add %s %s -n" pkg url
+let pin = function
+  | pkg, None     -> ?|~ "opam pin add %s --dev-repo -n" pkg
+  | pkg, Some "." -> ?|~ "opam pin add %s --kind=path . -n" pkg
+  | pkg, Some url -> ?|~ "opam pin add %s %s -n" pkg url
 
 let is_base pkg =
   match trim (?|> "opam show -f version %s" pkg) with
@@ -215,6 +216,16 @@ let max_version package =
   in
   next_version (trim (?|> "opam show -f version %s" package))
 
+module Strings = Map.Make(String)
+
+let lint_pins pkg pins =
+  let pins = List.map pair pins in
+  let pkgs =
+    List.fold_left (fun acc (k, v) -> Strings.add k v acc) Strings.empty pins
+  in
+  let pkgs = Strings.add pkg (Some ".") pkgs in
+  Strings.fold (fun k v acc -> (k, v) :: acc) pkgs []
+
 ;; (* Go go go *)
 
 with_fold "Prepare" (fun () ->
@@ -245,11 +256,11 @@ with_fold "Prepare" (fun () ->
         Format.ksprintf failwith "No opam file found for %s, aborting." pkg_name
     in
 
-    List.iter pin pins;
     (if opam_lint then match opam_version with
         | `V2 -> ?|~ "opam lint %s --warn=-21-32-48" opam
         | _   -> ?|~ "opam lint %s" opam);
-    ?|~ "opam pin add %s . -n" pkg;
+    let pins = lint_pins pkg pins in
+    List.iter pin pins;
     ?|  "eval $(opam config env)";
     ?|  "opam install depext";
     (* Install the external dependencies *)

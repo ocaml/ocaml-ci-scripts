@@ -254,17 +254,14 @@ Configuration choices are passed to `mirage configure` via environment variables
 
 ### Changing the version of opam
 
+By default, the CI scripts are using the latest RC release of opam *2.0.0*.
+To use a different version of opam, use:
+
 ```yaml
-  - [...] OPAM_VERSION="1.1.2"
-```
+  - [...] OPAM_VERSION="1.2.2"
+ ```
 
-By default, the latest stable version of opam will be used. the scripts supports
-these version:
-
-- `OPAM_VERSION=1.1.2` only when the OS is `unix`
-- `OPAM_VERSION=1.2.0` only when the OS is `unix`
-- `OPAM_VERSION=1.2.2` when the OS is either `unix` or `osx` (default)
-- `OPAM_VERSION=1.3.0` only when the OS is `osx`
+Supported versions are `2.0.0`, `1.2.2`, `1.2.0 and `1.1.2`.
 
 ### Testing on different OS
 
@@ -276,6 +273,12 @@ Add the following to your `.travis.yml`:
 os:
   - linux
   - osx
+```
+
+To enable XQuartz support on MacOS, use:
+
+```yaml
+  - [...] INSTALL_XQUARTZ=true
 ```
 
 ## Pushing OCamldoc docs to Github page, `.travis-docgen.sh`

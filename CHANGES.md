@@ -1,3 +1,16 @@
+### 1.3.0 (2018-08-02)
+
+* `OCAML_VERSION=4.06` now uses 4.06.1 instead 4.06.0 (#218, @yomimono)
+* Fix travis docker when the current image is using the system switch
+  (#219, @kit-ty-kate)
+* Fix opam 1.3/2.0 json format parsing (#220, @kit-ty-kate)
+* Fix BASE_REMOTE in .travis-docker.sh in CentOS 7 containers (#222, @gaborigloi)
+* update some version numbers in travis readme (#224, @yomimono)
+* (not so) temporary workaround for python failure on OS X (#225, @fdopen)
+* travis-docker: try to make git quieter (#227, @mor1)
+* Add branches for OCaml 4.07 (#230, @Leonidas-from-XIV)
+* Use opam2 by default (#232, @samoht)
+
 ### 1.2.0 (2018-02-14)
 
 * Use jbuilder (#180, @samoht)

@@ -5,10 +5,12 @@ echo -en "travis_fold:start:prepare.ci\r"
 default_user=ocaml
 default_branch=master
 default_hub_user=ocaml
+default_opam_version=2.0.0
 
 fork_user=${FORK_USER:-$default_user}
 fork_branch=${FORK_BRANCH:-$default_branch}
 hub_user=${HUB_USER:-$default_hub_user}
+opam_version=${OPAM_VERSION:-$default_opam_version}
 
 # create env file
 echo PACKAGE="$PACKAGE" > env.list
@@ -24,14 +26,22 @@ echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list
 echo $EXTRA_ENV >> env.list
 
 # build a local image to trigger any ONBUILDs
-echo FROM ${hub_user}/opam:${DISTRO}_ocaml-${OCAML_VERSION} > Dockerfile
+case $opam_version in
+    2.0.0) from=${hub_user}/opam2:${DISTRO} ;;
+    *)     from=${hub_user}/opam:${DISTRO}_ocaml-${OCAML_VERSION} ;;
+esac
+
+echo FROM $from  > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile
 
 if [ -n "$BASE_REMOTE" ]; then
     echo "RUN git remote set-url origin ${BASE_REMOTE} &&\
         git fetch origin && git reset --hard origin/master"  >> Dockerfile
 else
-    echo RUN git pull -q origin master >> Dockerfile
+    case $opam_version in
+        2.0.0) echo RUN git pull -q origin 2.0.0 >> Dockerfile ;;
+        *) echo RUN git pull -q origin master >> Dockerfile ;;
+    esac
 fi
 
 
@@ -42,6 +52,14 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
          >> Dockerfile
 fi
 
+case $opam_version in
+    2.0.0)
+        echo ENV OPAMYES=1 >> Dockerfile
+        [[ ${DISTRO} = "fedora"* ]] &&
+            echo RUN sudo yum install rsync -y >> Dockerfile ;;
+    *) ;;
+esac
+
 echo RUN opam update -u -y >> Dockerfile
 echo RUN opam depext -ui travis-opam >> Dockerfile
 echo RUN cp '~/.opam/$(opam switch show)/bin/ci-opam' "~/" >> Dockerfile
@@ -49,6 +67,7 @@ echo RUN opam remove -a travis-opam >> Dockerfile
 echo RUN mv "~/ci-opam" '~/.opam/$(opam switch show)/bin/ci-opam' >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile
+
 docker build -t local-build .
 
 echo Dockerfile:

@@ -60,6 +60,14 @@ let revdep_run = list (getenv_default "REVDEPS" "")
 (* run opam lint *)
 let opam_lint = fuzzy_bool_of_string (getenv_default "OPAM_LINT" "true")
 
+(* opam version *)
+let opam_version =
+  let raw = ?|> "opam --version" in
+  match if String.length raw <= 1 then '?' else raw.[0] with
+  | '2' -> `V2
+  | '1' -> `V1
+  | _   -> failwith (raw ^ ": invalid opam version")
+
 (* other variables *)
 let extra_deps = list (getenv_default "EXTRA_DEPS" "")
 let pre_install_hook = getenv_default "PRE_INSTALL_HOOK" ""
@@ -74,9 +82,10 @@ let add_remote =
   let layer = ref 0 in
   fun remote -> ?|~ "opam remote add extra%d %s" !layer remote; incr layer
 
-let pin pin = match pair pin with
-  | (pkg,None)     -> ?|~ "opam pin add %s --dev-repo -n" pkg
-  | (pkg,Some url) -> ?|~ "opam pin add %s %s -n" pkg url
+let pin = function
+  | pkg, None     -> ?|~ "opam pin add %s --dev-repo -n" pkg
+  | pkg, Some "." -> ?|~ "opam pin add %s --kind=path . -n" pkg
+  | pkg, Some url -> ?|~ "opam pin add %s %s -n" pkg url
 
 let is_base pkg =
   match trim (?|> "opam show -f version %s" pkg) with
@@ -207,6 +216,16 @@ let max_version package =
   in
   next_version (trim (?|> "opam show -f version %s" package))
 
+module Strings = Map.Make(String)
+
+let lint_pins pkg pins =
+  let pins = List.map pair pins in
+  let pkgs =
+    List.fold_left (fun acc (k, v) -> Strings.add k v acc) Strings.empty pins
+  in
+  let pkgs = Strings.add pkg (Some ".") pkgs in
+  Strings.fold (fun k v acc -> (k, v) :: acc) pkgs []
+
 ;; (* Go go go *)
 
 with_fold "Prepare" (fun () ->
@@ -237,9 +256,11 @@ with_fold "Prepare" (fun () ->
         Format.ksprintf failwith "No opam file found for %s, aborting." pkg_name
     in
 
+    (if opam_lint then match opam_version with
+        | `V2 -> ?|~ "opam lint %s --warn=-21-32-48" opam
+        | _   -> ?|~ "opam lint %s" opam);
+    let pins = lint_pins pkg pins in
     List.iter pin pins;
-    (if opam_lint then ?|~ "opam lint %s" opam);
-    ?|~ "opam pin add %s . -n" pkg;
     ?|  "eval $(opam config env)";
     ?|  "opam install depext";
     (* Install the external dependencies *)

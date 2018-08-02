@@ -52,10 +52,10 @@ install_opam2 () {
             sudo add-apt-repository --yes ppa:ansible/bubblewrap
             sudo apt-get update -qq
             sudo apt-get install -y bubblewrap
-            sudo wget https://github.com/ocaml/opam/releases/download/2.0.0-rc3/opam-2.0.0-rc3-x86_64-linux -O /usr/local/bin/opam
+            sudo wget https://github.com/ocaml/opam/releases/download/2.0.0-rc4/opam-2.0.0-rc4-x86_64-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
-            sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0-rc3/opam-2.0.0-rc3-x86_64-darwin -o /usr/local/bin/opam
+            sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0-rc4/opam-2.0.0-rc4-x86_64-darwin -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
 }

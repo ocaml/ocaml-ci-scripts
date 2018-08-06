@@ -84,68 +84,89 @@ install_ppa () {
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=3.12.1 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=3.12.1
+        install_ppa avsm/ocaml42+opam12 ;;
     3.12,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=3.12.1 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=3.12.1
+        install_opam2 ;;
     4.00,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.00.1 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.00.1
+        install_ppa avsm/ocaml42+opam12 ;;
     4.00,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.00.1 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.00.1
+        install_opam2 ;;
     4.01,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.01.0 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.01.0
+        install_ppa avsm/ocaml42+opam12 ;;
     4.01,2.0.0)
-        install_opam2
-        OCAML_FULL_VERSION=4.01.0 OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system} ;;
+        OCAML_FULL_VERSION=4.01.0
+        OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system}
+        install_opam2 ;;
     4.02,1.1.2)
-        install_ppa avsm/ocaml42+opam11
-        OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system} ;;
+        OCAML_FULL_VERSION=4.02.3
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
+        install_ppa avsm/ocaml42+opam11 ;;
     4.02,1.2.0)
-        install_ppa avsm/ocaml42+opam120
-        OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system} ;;
+        OCAML_FULL_VERSION=4.02.3
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
+        install_ppa avsm/ocaml42+opam120 ;;
     4.02,1.2.1)
-        install_ppa avsm/ocaml42+opam121
-        OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system} ;;
+        OCAML_FULL_VERSION=4.02.3
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
+        install_ppa avsm/ocaml42+opam121 ;;
     4.02,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_FULL_VERSION=4.02.3; OPAM_SWITCH=${OPAM_SWITCH:-system} ;;
+        OCAML_FULL_VERSION=4.02.3
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
+        install_ppa avsm/ocaml42+opam12 ;;
     4.02,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.02.3 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.02.3
+        install_opam2 ;;
     4.03,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.03.0 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.03.0
+        install_ppa avsm/ocaml42+opam12 ;;
     4.03,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.03.0 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.03.0
+        install_opam2 ;;
     4.04,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.04.2 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.04.2
+        install_ppa avsm/ocaml42+opam12 ;;
     4.04,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.04.2 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.04.2
+        install_opam2 ;;
     4.05,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.05.0 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.05.0
+        install_ppa avsm/ocaml42+opam12 ;;
     4.05,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.05.0 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.05.0
+        install_opam2 ;;
     4.06,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.06.1 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.06.1
+        install_ppa avsm/ocaml42+opam12 ;;
     4.06,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.06.1 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.06.1
+        install_opam2 ;;
     4.07,1.2.2)
-        install_ppa avsm/ocaml42+opam12
-        OCAML_VERSION=4.02; OCAML_FULL_VERSION=4.07.0 ;;
+        OCAML_VERSION=4.02
+        OCAML_FULL_VERSION=4.07.0
+        install_ppa avsm/ocaml42+opam12 ;;
     4.07,2.0.0)
-        install_opam2
-        OCAML_VERSION=4.01; OCAML_FULL_VERSION=4.07.0 ;;
+        OCAML_VERSION=4.01
+        OCAML_FULL_VERSION=4.07.0
+        install_opam2 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
        echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.07\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"

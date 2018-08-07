@@ -263,6 +263,11 @@ esac
 echo OCAML_VERSION=$OCAML_VERSION >  .travis-ocaml.env
 echo OPAM_SWITCH=$OPAM_SWITCH     >> .travis-ocaml.env
 
-ocaml -version
+if [ command -v ocaml ]; then
+    ocaml -version
+else
+    echo "OCaml is not yet installed"
+fi
+
 opam --version
 opam --git-version

@@ -229,7 +229,7 @@ let lint_pins pkg pins =
 ;; (* Go go go *)
 
 with_fold "Prepare" (fun () ->
-    set "-ue";
+    set "-uex";
     unset "TESTS";
     export "OPAMYES" "1";
     ?| "eval $(opam config env)";
@@ -261,6 +261,7 @@ with_fold "Prepare" (fun () ->
         | _   -> ?|~ "opam lint %s" opam);
     let pins = lint_pins pkg pins in
     List.iter pin pins;
+    ?|~ "echo %s are pinned" (String.concat ", " (List.map fst pins));
     ?|  "eval $(opam config env)";
     ?|  "opam install depext";
     (* Install the external dependencies *)

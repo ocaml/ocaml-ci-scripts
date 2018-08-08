@@ -14,22 +14,31 @@ full_apt_version () {
 
 set -uex
 
+
+# the ocaml version to test
+OCAML_VERSION=${OCAML_VERSION:-latest}
+OPAM_VERSION=${OPAM_VERSION:-2.0.0}
+OPAM_INIT=${OPAM_INIT:-true}
+
 if [ "${INSTALL_LOCAL+x}" = x ] ; then
   if [ "$TRAVIS_OS_NAME" = osx ] ; then
     echo INSTALL_LOCAL not permitted for macOS targets
     exit 1
   fi
 
-  if [ "${OPAM_SWITCH:=system}" != system ] ; then
-    echo "INSTALL_LOCAL requires OPAM_SWITCH=system (or unset/null)"
-    exit 1
-  fi
+  case ${OPAM_VERSION} in
+      2.0.0)
+          if [ "${OPAM_SWITCH:=ocaml-system}" != ocaml-system ] ; then
+              echo "INSTALL_LOCAL requires OPAM_SWITCH=ocaml-system (or unset/null)"
+              exit 1
+          fi ;;
+      *)
+          if [ "${OPAM_SWITCH:=system}" != system ] ; then
+              echo "INSTALL_LOCAL requires OPAM_SWITCH=system (or unset/null)"
+              exit 1
+          fi ;;
+  esac
 fi
-
-# the ocaml version to test
-OCAML_VERSION=${OCAML_VERSION:-latest}
-OPAM_VERSION=${OPAM_VERSION:-2.0.0}
-OPAM_INIT=${OPAM_INIT:-true}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 case $OPAM_VERSION in
@@ -81,6 +90,13 @@ install_ppa () {
   fi
 }
 
+install_ocaml () {
+    sudo apt-get install -y  \
+         ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
+         ocaml-interp ocaml-base-nox ocaml-nox \
+         camlp4 camlp4-extra
+}
+
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2)
@@ -106,6 +122,7 @@ install_on_linux () {
     4.01,2.0.0)
         OCAML_FULL_VERSION=4.01.0
         OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system}
+        install_ocaml ;
         install_opam2 ;;
     4.02,1.1.2)
         OCAML_FULL_VERSION=4.02.3
@@ -234,7 +251,8 @@ install_on_osx () {
     4.06,2.0.0) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
     4.07,1.2.2) OCAML_FULL_VERSION=4.07.0;
                 OPAM_SWITCH=${OPAM_SWITCH:-system};
-                brew install ocaml; brew install opam ;;
+                brew install ocaml;
+                brew install opam ;;
     4.07,2.0.0) OCAML_FULL_VERSION=4.07.0;
                 OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
                 brew install ocaml;

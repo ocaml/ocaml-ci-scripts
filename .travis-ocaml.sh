@@ -14,22 +14,31 @@ full_apt_version () {
 
 set -uex
 
+
+# the ocaml version to test
+OCAML_VERSION=${OCAML_VERSION:-latest}
+OPAM_VERSION=${OPAM_VERSION:-2.0.0}
+OPAM_INIT=${OPAM_INIT:-true}
+
 if [ "${INSTALL_LOCAL+x}" = x ] ; then
   if [ "$TRAVIS_OS_NAME" = osx ] ; then
     echo INSTALL_LOCAL not permitted for macOS targets
     exit 1
   fi
 
-  if [ "${OPAM_SWITCH:=system}" != system ] ; then
-    echo "INSTALL_LOCAL requires OPAM_SWITCH=system (or unset/null)"
-    exit 1
-  fi
+  case ${OPAM_VERSION} in
+      2.0.0)
+          if [ "${OPAM_SWITCH:=ocaml-system}" != ocaml-system ] ; then
+              echo "INSTALL_LOCAL requires OPAM_SWITCH=ocaml-system (or unset/null)"
+              exit 1
+          fi ;;
+      *)
+          if [ "${OPAM_SWITCH:=system}" != system ] ; then
+              echo "INSTALL_LOCAL requires OPAM_SWITCH=system (or unset/null)"
+              exit 1
+          fi ;;
+  esac
 fi
-
-# the ocaml version to test
-OCAML_VERSION=${OCAML_VERSION:-latest}
-OPAM_VERSION=${OPAM_VERSION:-2.0.0}
-OPAM_INIT=${OPAM_INIT:-true}
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 case $OPAM_VERSION in

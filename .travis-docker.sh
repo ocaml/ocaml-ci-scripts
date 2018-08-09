@@ -39,7 +39,9 @@ if [ -n "$BASE_REMOTE" ]; then
         git fetch origin && git reset --hard origin/master"  >> Dockerfile
 else
     case $opam_version in
-        2.0.0) echo RUN git pull -q origin 2.0.0 >> Dockerfile ;;
+        2.0.0)
+          echo RUN git checkout 2.0.0 >> Dockerfile
+          echo RUN git pull -q origin 2.0.0 >> Dockerfile ;;
         *) echo RUN git pull -q origin master >> Dockerfile ;;
     esac
 fi

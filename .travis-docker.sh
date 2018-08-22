@@ -55,10 +55,7 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
 fi
 
 case $opam_version in
-    2.0.0)
-        echo ENV OPAMYES=1 >> Dockerfile
-        [[ ${DISTRO} = "fedora"* ]] &&
-            echo RUN sudo yum install rsync -y >> Dockerfile ;;
+    2.0.0) echo RUN opam switch ${OCAML_VERSION} >> Dockerfile ;;
     *) ;;
 esac
 

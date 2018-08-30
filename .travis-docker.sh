@@ -55,7 +55,9 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
 fi
 
 case $opam_version in
-    2.0.0) echo RUN opam switch ${OCAML_VERSION} >> Dockerfile ;;
+    2.0.0)
+      echo "RUN opam switch ${OCAML_VERSION} ||\
+          opam switch create ${OCAML_VERSION}" >> Dockerfile ;;
     *) ;;
 esac
 

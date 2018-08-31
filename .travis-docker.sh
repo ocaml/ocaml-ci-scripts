@@ -6,11 +6,13 @@ default_user=ocaml
 default_branch=master
 default_hub_user=ocaml
 default_opam_version=2.0.0
+default_base_remote_branch=master
 
 fork_user=${FORK_USER:-$default_user}
 fork_branch=${FORK_BRANCH:-$default_branch}
 hub_user=${HUB_USER:-$default_hub_user}
 opam_version=${OPAM_VERSION:-$default_opam_version}
+base_remote_branch=${BASE_REMOTE_BRANCH:-$default_base_remote_branch}
 
 # create env file
 echo PACKAGE="$PACKAGE" > env.list
@@ -36,7 +38,7 @@ echo WORKDIR /home/opam/opam-repository >> Dockerfile
 
 if [ -n "$BASE_REMOTE" ]; then
     echo "RUN git remote set-url origin ${BASE_REMOTE} &&\
-        git fetch origin && git reset --hard origin/master"  >> Dockerfile
+        git fetch origin && git reset --hard origin/$base_remote_branch"  >> Dockerfile
 else
     case $opam_version in
         2.0.0)

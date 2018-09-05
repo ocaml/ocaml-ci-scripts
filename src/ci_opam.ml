@@ -257,7 +257,7 @@ with_fold "Prepare" (fun () ->
     in
 
     (if opam_lint then match opam_version with
-        | `V2 -> ?|~ "opam show %s --raw | opam lint -" opam
+        | `V2 -> ?|~ "opam lint %s --warn=-21-32-48" opam
         | _   -> ?|~ "opam lint %s" opam);
     let pins = lint_pins pkg pins in
     List.iter pin pins;

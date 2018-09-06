@@ -226,6 +226,15 @@ let lint_pins pkg pins =
   let pkgs = Strings.add pkg (Some ".") pkgs in
   Strings.fold (fun k v acc -> (k, v) :: acc) pkgs []
 
+let (/) = Filename.concat
+
+let temp_dir () =
+  let dir =
+    Filename.get_temp_dir_name () / "opam-ci-" ^ string_of_int (Random.int 256)
+  in
+  ?|~ "rm -rf %s && mkdir -p %s" dir dir;
+  dir
+
 ;; (* Go go go *)
 
 with_fold "Prepare" (fun () ->
@@ -243,8 +252,6 @@ with_fold "Prepare" (fun () ->
     end;
     List.iter add_remote extra_remotes;
 
-    let (/) = Filename.concat in
-
     let opam =
       if Sys.file_exists (pkg_name ^ ".opam") then (pkg_name ^ ".opam")
       else if Sys.file_exists "opam"
@@ -257,7 +264,11 @@ with_fold "Prepare" (fun () ->
     in
 
     (if opam_lint then match opam_version with
-        | `V2 -> ?|~ "opam lint %s --warn=-21-32-48" opam
+        | `V2 ->
+          (* note: 'opam show ./file --raw' will not do the 1.2->2.0
+             translation in opam2 pre-release *)
+          let tmp_dir = temp_dir () in
+          ?|~ "cp %s %s && opam show %s --raw | opam lint -" opam tmp_dir tmp_dir
         | _   -> ?|~ "opam lint %s" opam);
     let pins = lint_pins pkg pins in
     List.iter pin pins;

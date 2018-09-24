@@ -42,8 +42,8 @@ fi
 
 # the base opam repository to use for bootstrapping and catch-all namespace
 case $OPAM_VERSION in
-    2.0.0) BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository#2.0.0} ;;
-    *) BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository} ;;
+    2.0.0) BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository} ;;
+    *) BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository#1.2} ;;
 esac
 
 # whether we need a new gcc and binutils
@@ -61,10 +61,10 @@ install_opam2 () {
             sudo add-apt-repository --yes ppa:ansible/bubblewrap
             sudo apt-get update -qq
             sudo apt-get install -y bubblewrap
-            sudo wget https://github.com/ocaml/opam/releases/download/2.0.0-rc4/opam-2.0.0-rc4-x86_64-linux -O /usr/local/bin/opam
+            sudo wget https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
-            sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0-rc4/opam-2.0.0-rc4-x86_64-darwin -o /usr/local/bin/opam
+            sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-darwin -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
 }

@@ -1,3 +1,12 @@
+### 1.3.0 (2018-09-24)
+
+* Set variables before installing ppas (#234, @samoht)
+* Fix name of system switch when using INSTALL_LOCAL=1 (#236, @samoht)
+* Fix .travis-docker.sh when opam 2 is used (#237, @gaborigloi)
+* Add support for BASE_REMOTE_BRANCH (#239, @lindig)
+* Create a new switch if not pre-installed (#242, @NathanReb)
+* Better lint for opam 1.2 files when using opam2 (#245, @samoht)
+
 ### 1.2.0 (2018-02-14)
 
 * Use jbuilder (#180, @samoht)

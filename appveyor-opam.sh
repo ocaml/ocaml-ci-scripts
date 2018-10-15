@@ -9,13 +9,23 @@ fork_user=${FORK_USER:-ocaml}
 fork_branch=${FORK_BRANCH:-master}
 
 # default setttings
-SWITCH=${OPAM_SWITCH:-'4.03.0+mingw64c'}
-OPAM_URL='https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.1/opam64.tar.xz'
-OPAM_ARCH=opam64
+OPAM_VERSION=${OPAM_VERSION:-2.0.0}
+case "$OPAM_VERSION" in
+    1*)
+        SWITCH=${OPAM_SWITCH:-'4.03.0+mingw64c'}
+        OPAM_DL_SUB_LINK=0.0.0.1
+        ;;
+    *)
+        SWITCH=${OPAM_SWITCH:-'4.07.1+mingw64c'}
+        OPAM_DL_SUB_LINK=0.0.0.2
+        ;;
+esac
 
+OPAM_URL="https://github.com/fdopen/opam-repository-mingw/releases/download/${OPAM_DL_SUB_LINK}/opam64.tar.xz"
+OPAM_ARCH=opam64
 if [ "$PROCESSOR_ARCHITECTURE" != "AMD64" ] && \
        [ "$PROCESSOR_ARCHITEW6432" != "AMD64" ]; then
-    OPAM_URL='https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.1/opam32.tar.xz'
+    OPAM_URL="https://github.com/fdopen/opam-repository-mingw/releases/download/${OPAM_DL_SUB_LINK}/opam32.tar.xz"
     OPAM_ARCH=opam32
 fi
 
@@ -37,6 +47,8 @@ curl -fsSL -o "${OPAM_ARCH}.tar.xz" "${OPAM_URL}"
 tar -xf "${OPAM_ARCH}.tar.xz"
 "${OPAM_ARCH}/install.sh" --quiet
 
+jobs=
+jobs_param=
 if [ "$APPVEYOR_YML_VERSION" != "0" ]; then
     # The default PATH contains far too many folders. There is always
     # a risk, that a tool is picked from the wrong location. It
@@ -46,11 +58,10 @@ if [ "$APPVEYOR_YML_VERSION" != "0" ]; then
     set +eu
     # see https://www.appveyor.com/docs/build-configuration/#build-environment
     # currently NUMBER_OF_PROCESSORS matches these settings
-    if [ -z "$OPAMJOBS" ]; then
-        if echo "$NUMBER_OF_PROCESSORS" | egrep -q '^[0-9]+$' ; then
-            if [ $NUMBER_OF_PROCESSORS -gt 1 ]; then
-                export OPAMJOBS=$NUMBER_OF_PROCESSORS
-            fi
+    if echo "$NUMBER_OF_PROCESSORS" | egrep -q '^[0-9]+$' ; then
+        if [ $NUMBER_OF_PROCESSORS -gt 1 ]; then
+            jobs="$NUMBER_OF_PROCESSORS"
+            jobs_param="-j $jobs"
         fi
     fi
     set -eu
@@ -67,7 +78,18 @@ case "$SWITCH" in
         ;;
 esac
 
-opam init -a default "https://github.com/fdopen/opam-repository-mingw.git" --comp "$SWITCH" --switch "$SWITCH"
+case "$OPAM_VERSION" in
+    1*)
+        opam init $jobs_param -a default "https://github.com/fdopen/opam-repository-mingw.git#opam1" --comp "$SWITCH" --switch "$SWITCH"
+        ;;
+    *)
+        opam init $jobs_param -c "ocaml-variants.${SWITCH}" --disable-sandboxing --enable-completion --enable-shell-hook --auto-setup default "https://github.com/fdopen/opam-repository-mingw.git#opam2"
+        ;;
+esac
+
+if [ -n "$jobs" ]; then
+    opam config set jobs "$jobs"
+fi
 
 # update cached .opam
 opam update

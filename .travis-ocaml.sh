@@ -178,11 +178,11 @@ install_on_linux () {
         install_opam2 ;;
     4.07,1.2.2)
         OCAML_VERSION=4.02
-        OCAML_FULL_VERSION=4.07.0
+        OCAML_FULL_VERSION=4.07.1
         install_ppa avsm/ocaml42+opam12 ;;
     4.07,2.0.0)
         OCAML_VERSION=4.01
-        OCAML_FULL_VERSION=4.07.0
+        OCAML_FULL_VERSION=4.07.1
         install_opam2 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
@@ -249,11 +249,11 @@ install_on_osx () {
     4.05,2.0.0) OCAML_FULL_VERSION=4.05.0; install_opam2 ;;
     4.06,1.2.2) OCAML_FULL_VERSION=4.06.1; brew install opam ;;
     4.06,2.0.0) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
-    4.07,1.2.2) OCAML_FULL_VERSION=4.07.0;
+    4.07,1.2.2) OCAML_FULL_VERSION=4.07.1;
                 OPAM_SWITCH=${OPAM_SWITCH:-system};
                 brew install ocaml;
                 brew install opam ;;
-    4.07,2.0.0) OCAML_FULL_VERSION=4.07.0;
+    4.07,2.0.0) OCAML_FULL_VERSION=4.07.1;
                 OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
                 brew install ocaml;
                 install_opam2 ;;

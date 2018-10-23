@@ -56,15 +56,28 @@ UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
 # Install XQuartz on OSX
 INSTALL_XQUARTZ=${INSTALL_XQUARTZ:-"false"}
 
+install_ocaml () {
+    sudo apt-get install -y  \
+         ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
+         ocaml-interp ocaml-base-nox ocaml-nox \
+         camlp4 camlp4-extra
+}
+
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
+            if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+                install_ocaml
+            fi
             sudo add-apt-repository --yes ppa:ansible/bubblewrap
             sudo apt-get update -qq
             sudo apt-get install -y bubblewrap
             sudo wget https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
+            if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+                brew install ocaml
+            fi
             sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-darwin -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
@@ -89,13 +102,6 @@ install_ppa () {
   sudo apt-get install -y opam
 }
 
-install_ocaml () {
-    sudo apt-get install -y  \
-         ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
-         ocaml-interp ocaml-base-nox ocaml-nox \
-         camlp4 camlp4-extra
-}
-
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2)
@@ -116,7 +122,7 @@ install_on_linux () {
     4.01,2.0.0)
         OCAML_FULL_VERSION=4.01.0
         OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system}
-        install_ocaml ;
+        install_ocaml
         install_opam2 ;;
     4.02,1.1.2)
         OCAML_FULL_VERSION=4.02.3

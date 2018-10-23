@@ -292,8 +292,8 @@ with_fold "Prepare" (fun () ->
           in
           (* note: 'opam show ./file --raw' will not do the 1.2->2.0
              translation in opam2 pre-release *)
-          let tmp_dir = temp_dir () in
-          ?|~ "cp %s %s && opam show %s --raw | opam lint %s-" opam tmp_dir tmp_dir warn
+          ?|~ "opam-package-upgrade %s" opam;
+          ?|~ "opam lint %s %s" opam warn
         | _   -> ?|~ "opam lint %s" opam);
     let pins = lint_pins pkg pins in
     List.iter pin pins;

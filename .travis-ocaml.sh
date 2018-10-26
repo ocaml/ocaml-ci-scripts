@@ -17,6 +17,7 @@ set -uex
 
 # the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
+SYS_OCAML_VERSION=4.02
 OPAM_VERSION=${OPAM_VERSION:-2.0.0}
 OPAM_INIT=${OPAM_INIT:-true}
 
@@ -55,15 +56,28 @@ UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
 # Install XQuartz on OSX
 INSTALL_XQUARTZ=${INSTALL_XQUARTZ:-"false"}
 
+install_ocaml () {
+    sudo apt-get install -y  \
+         ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
+         ocaml-interp ocaml-base-nox ocaml-nox \
+         camlp4 camlp4-extra
+}
+
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
+            if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+                install_ocaml
+            fi
             sudo add-apt-repository --yes ppa:ansible/bubblewrap
             sudo apt-get update -qq
             sudo apt-get install -y bubblewrap
             sudo wget https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
+            if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+                brew install ocaml
+            fi
             sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.0/opam-2.0.0-x86_64-darwin -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
@@ -75,54 +89,40 @@ install_ppa () {
   sudo apt-get update -qq
   if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
     sudo apt-get install -y \
-       "$(full_apt_version ocaml $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-base $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-native-compilers $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-compiler-libs $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-interp $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-base-nox $OCAML_VERSION)" \
-       "$(full_apt_version ocaml-nox $OCAML_VERSION)" \
-       "$(full_apt_version camlp4 $OCAML_VERSION)" \
-       "$(full_apt_version camlp4-extra $OCAML_VERSION)" \
-       opam
-  else
-    sudo apt-get install -y opam
+       "$(full_apt_version ocaml $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-base $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-native-compilers $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-compiler-libs $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-interp $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-base-nox $SYS_OCAML_VERSION)" \
+       "$(full_apt_version ocaml-nox $SYS_OCAML_VERSION)" \
+       "$(full_apt_version camlp4 $SYS_OCAML_VERSION)" \
+       "$(full_apt_version camlp4-extra $SYS_OCAML_VERSION)"
   fi
-}
-
-install_ocaml () {
-    sudo apt-get install -y  \
-         ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
-         ocaml-interp ocaml-base-nox ocaml-nox \
-         camlp4 camlp4-extra
+  sudo apt-get install -y opam
 }
 
 install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=3.12.1
         install_ppa avsm/ocaml42+opam12 ;;
     3.12,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=3.12.1
         install_opam2 ;;
     4.00,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.00.1
         install_ppa avsm/ocaml42+opam12 ;;
     4.00,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.00.1
         install_opam2 ;;
     4.01,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.01.0
         install_ppa avsm/ocaml42+opam12 ;;
     4.01,2.0.0)
         OCAML_FULL_VERSION=4.01.0
         OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system}
-        install_ocaml ;
+        install_ocaml
         install_opam2 ;;
     4.02,1.1.2)
         OCAML_FULL_VERSION=4.02.3
@@ -141,47 +141,36 @@ install_on_linux () {
         OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam12 ;;
     4.02,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.02.3
         install_opam2 ;;
     4.03,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.03.0
         install_ppa avsm/ocaml42+opam12 ;;
     4.03,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.03.0
         install_opam2 ;;
     4.04,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.04.2
         install_ppa avsm/ocaml42+opam12 ;;
     4.04,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.04.2
         install_opam2 ;;
     4.05,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.05.0
         install_ppa avsm/ocaml42+opam12 ;;
     4.05,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.05.0
         install_opam2 ;;
     4.06,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.06.1
         install_ppa avsm/ocaml42+opam12 ;;
     4.06,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.06.1
         install_opam2 ;;
     4.07,1.2.2)
-        OCAML_VERSION=4.02
         OCAML_FULL_VERSION=4.07.1
         install_ppa avsm/ocaml42+opam12 ;;
     4.07,2.0.0)
-        OCAML_VERSION=4.01
         OCAML_FULL_VERSION=4.07.1
         install_opam2 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"

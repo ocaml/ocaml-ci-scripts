@@ -61,7 +61,7 @@ fi
 case $opam_version in
     2.0.0)
       echo "RUN opam switch ${OCAML_VERSION} ||\
-          opam switch create ${OCAML_VERSION}" >> Dockerfile ;;
+          opam switch create ocaml-base-compiler.${OCAML_VERSION}" >> Dockerfile ;;
     *) ;;
 esac
 

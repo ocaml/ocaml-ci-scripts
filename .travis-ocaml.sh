@@ -256,7 +256,7 @@ case $TRAVIS_OS_NAME in
     linux) install_on_linux ;;
 esac
 
-OPAM_SWITCH=${OPAM_SWITCH:-$OCAML_FULL_VERSION}
+OPAM_SWITCH=${OPAM_SWITCH:-ocaml-base-compiler.$OCAML_FULL_VERSION}
 
 export OPAMYES=1
 

@@ -45,6 +45,7 @@ else
           echo RUN git checkout master >> Dockerfile
           echo RUN git pull -q origin master >> Dockerfile ;;
         *)
+          echo RUN git fetch -q origin 1.2 >> Dockerfile
           echo RUN git checkout 1.2 >> Dockerfile
           echo RUN git pull -q origin 1.2 >> Dockerfile ;;
     esac

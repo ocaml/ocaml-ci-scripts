@@ -1,11 +1,12 @@
 #!/bin/sh -e
 # To use this, run `opam travis --help`
 
-echo -en "travis_fold:start:prepare.ci\r"
+fold_name="prepare"
+echo -en "travis_fold:start:$fold_name.ci\r"
 default_user=ocaml
 default_branch=master
 default_hub_user=ocaml
-default_opam_version=2.0.0
+default_opam_version=2
 default_base_remote_branch=master
 
 fork_user=${FORK_USER:-$default_user}
@@ -29,8 +30,32 @@ echo $EXTRA_ENV >> env.list
 
 # build a local image to trigger any ONBUILDs
 case $opam_version in
-    2.0.0) from=${hub_user}/opam2:${DISTRO} ;;
-    *)     from=${hub_user}/opam:${DISTRO}_ocaml-${OCAML_VERSION} ;;
+    2*)
+        if [ "$opam_version" != "2" ] ; then
+          set +x
+          # There is no way to tell Travis to close a fold but have it initially
+          # open.
+          echo -en "travis_fold:end:$fold_name.ci\r"
+          echo -e "[\e[0;31mWARNING\e[0m;] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"2\"" >&2
+          echo -e "[\e[0;31mWARNING\e[0m;] The containers have the latest maintenance release of opam 2.0" >&2
+          opam_version=2
+          echo -en "travis_fold:start:continue.ci\r"
+          fold_name="continue"
+          set -x
+        fi
+        from=${hub_user}/opam2:${DISTRO} ;;
+    *)
+        if [ "$opam_version" != "1" ] ; then
+          set +x
+          echo -en "travis_fold:end:$fold_name.ci\r"
+          echo -e "[\e[0;31mWARNING\e[0m;] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"1\"" >&2
+          echo -e "[\e[0;31mWARNING\e[0m;] The containers all run OPAM 1.2.2" >&2
+          echo -en "travis_fold:start:continue.ci\r"
+          fold_name="continue"
+          opam_version=1
+          set -x
+        fi
+        from=${hub_user}/opam:${DISTRO}_ocaml-${OCAML_VERSION} ;;
 esac
 
 echo FROM $from  > Dockerfile
@@ -41,7 +66,7 @@ if [ -n "$BASE_REMOTE" ]; then
         git fetch origin && git reset --hard origin/$base_remote_branch"  >> Dockerfile
 else
     case $opam_version in
-        2.0.0)
+        2)
           echo RUN git checkout master >> Dockerfile
           echo RUN git pull -q origin master >> Dockerfile ;;
         *)
@@ -60,7 +85,7 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
 fi
 
 case $opam_version in
-    2.0.0)
+    2)
       echo "RUN opam switch ${OCAML_VERSION} ||\
           opam switch create ocaml-base-compiler.${OCAML_VERSION}" >> Dockerfile ;;
     *) ;;
@@ -93,5 +118,5 @@ echo docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam
 
 # run ci-opam with the local repo volume mounted
 chmod -R a+w $OS
-echo -en "travis_fold:end:prepare.ci\r"
+echo -en "travis_fold:end:$fold_name.ci\r"
 docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam

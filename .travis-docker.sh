@@ -45,11 +45,12 @@ else
           echo RUN git checkout master >> Dockerfile
           echo RUN git pull -q origin master >> Dockerfile ;;
         *)
+          echo RUN git fetch -q origin 1.2 >> Dockerfile
           echo RUN git checkout 1.2 >> Dockerfile
           echo RUN git pull -q origin 1.2 >> Dockerfile ;;
     esac
 fi
-
+echo RUN opam update >> Dockerfile
 
 echo RUN opam remove travis-opam >> Dockerfile
 if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
@@ -61,14 +62,21 @@ fi
 case $opam_version in
     2.0.0)
       echo "RUN opam switch ${OCAML_VERSION} ||\
-          opam switch create ${OCAML_VERSION}" >> Dockerfile ;;
+          opam switch create ocaml-base-compiler.${OCAML_VERSION}" >> Dockerfile ;;
     *) ;;
 esac
 
-echo RUN opam update -u -y >> Dockerfile
-echo RUN opam depext -ui travis-opam >> Dockerfile
+echo RUN opam upgrade -y >> Dockerfile
+# Temporarily install opam-ed to work around https://github.com/ocaml/opam/issues/3662
+echo RUN opam depext -ui travis-opam opam-ed >> Dockerfile
 echo RUN cp '~/.opam/$(opam switch show)/bin/ci-opam' "~/" >> Dockerfile
-echo RUN opam remove -a travis-opam >> Dockerfile
+# Ensure that ocaml-config.1 is definitely in the compiler (base) packages
+# for the switch. The remove-item is to ensure that it only appears once.
+echo RUN opam exec -- opam-ed -i -f '~/.opam/$(opam switch show)/.opam-switch/switch-state' \
+                              "'remove-item compiler \"ocaml-config.1\"'" \
+                              "'append compiler \"ocaml-config.1\"'" >> Dockerfile
+# opam should now not attempt to remove ocaml-config.1
+echo RUN opam remove -a travis-opam opam-ed >> Dockerfile
 echo RUN mv "~/ci-opam" '~/.opam/$(opam switch show)/bin/ci-opam' >> Dockerfile
 echo VOLUME /repo >> Dockerfile
 echo WORKDIR /repo >> Dockerfile

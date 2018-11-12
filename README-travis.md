@@ -254,7 +254,7 @@ Configuration choices are passed to `mirage configure` via environment variables
 
 ### Changing the version of opam
 
-By default, the CI scripts are using the latest RC release of opam *2.0.0*.
+By default, the CI scripts are using the latest release of opam *2.0.1*.
 To use a different version of opam, use:
 
 ```yaml

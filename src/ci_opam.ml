@@ -281,7 +281,7 @@ with_fold "Prepare" (fun () ->
 
 with_fold "Simple" (fun () ->
     (* Install the OCaml dependencies *)
-    ?|~ "opam install %s --deps-only" pkg;
+    ?|~ "opam install %s --deps-only -v" pkg;
 
     (* Simple installation/removal test *)
     if install_run then (

@@ -36,8 +36,8 @@ case $opam_version in
           # There is no way to tell Travis to close a fold but have it initially
           # open.
           echo -en "travis_fold:end:$fold_name.ci\r"
-          echo -e "[\e[0;31mWARNING\e[0m;] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"2\"" >&2
-          echo -e "[\e[0;31mWARNING\e[0m;] The containers have the latest maintenance release of opam 2.0" >&2
+          echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"2\"" >&2
+          echo -e "[\e[0;31mWARNING\e[0m] The containers have the latest maintenance release of opam 2.0" >&2
           opam_version=2
           echo -en "travis_fold:start:continue.ci\r"
           fold_name="continue"
@@ -48,8 +48,8 @@ case $opam_version in
         if [ "$opam_version" != "1" ] ; then
           set +x
           echo -en "travis_fold:end:$fold_name.ci\r"
-          echo -e "[\e[0;31mWARNING\e[0m;] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"1\"" >&2
-          echo -e "[\e[0;31mWARNING\e[0m;] The containers all run OPAM 1.2.2" >&2
+          echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"1\"" >&2
+          echo -e "[\e[0;31mWARNING\e[0m] The containers all run OPAM 1.2.2" >&2
           echo -en "travis_fold:start:continue.ci\r"
           fold_name="continue"
           opam_version=1

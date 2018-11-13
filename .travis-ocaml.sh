@@ -56,8 +56,27 @@ UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
 # Install XQuartz on OSX
 INSTALL_XQUARTZ=${INSTALL_XQUARTZ:-"false"}
 
+APT_UPDATED=0
+
+add_ppa () {
+    if [ "$TRAVIS_OS_NAME" = "linux" ] ; then
+        APT_UPDATED=0
+        sudo add-apt-repository --yes ppa:$1
+    fi
+}
+
+apt_install () {
+    if [ "$TRAVIS_OS_NAME" = "linux" ] ; then
+        if [ "$APT_UPDATED" -eq 0 ] ; then
+            APT_UPDATED=1
+            sudo apt-get update -qq
+        fi
+        sudo apt-get install -y "$@"
+    fi
+}
+
 install_ocaml () {
-    sudo apt-get install -y  \
+    apt_install \
          ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
          ocaml-interp ocaml-base-nox ocaml-nox \
          camlp4 camlp4-extra
@@ -66,12 +85,11 @@ install_ocaml () {
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
+            add_ppa ansible/bubblewrap
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 install_ocaml
             fi
-            sudo add-apt-repository --yes ppa:ansible/bubblewrap
-            sudo apt-get update -qq
-            sudo apt-get install -y bubblewrap
+            apt_install bubblewrap
             sudo wget https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
@@ -84,11 +102,9 @@ install_opam2 () {
 }
 
 install_ppa () {
-  ppa=$1
-  sudo add-apt-repository --yes ppa:${ppa}
-  sudo apt-get update -qq
+  add_ppa $1
   if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
-    sudo apt-get install -y \
+    apt_install \
        "$(full_apt_version ocaml $SYS_OCAML_VERSION)" \
        "$(full_apt_version ocaml-base $SYS_OCAML_VERSION)" \
        "$(full_apt_version ocaml-native-compilers $SYS_OCAML_VERSION)" \
@@ -99,7 +115,7 @@ install_ppa () {
        "$(full_apt_version camlp4 $SYS_OCAML_VERSION)" \
        "$(full_apt_version camlp4-extra $SYS_OCAML_VERSION)"
   fi
-  sudo apt-get install -y opam
+  apt_install opam
 }
 
 install_on_linux () {
@@ -195,6 +211,7 @@ install_on_linux () {
     echo "Adding Ubuntu Trusty mirrors"
     sudo add-apt-repository "${TRUSTY}"
     sudo apt-get -qq update
+    APT_UPDATED=1
   fi
 
   if [ "${INSTALL_LOCAL:=0}" != 0 ] ; then

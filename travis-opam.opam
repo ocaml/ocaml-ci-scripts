@@ -19,4 +19,5 @@ build: [
 depends: [
   "jbuilder" {build}
   "jsonm" {build}
+  "opam-file-format" {build}
 ]

@@ -1,0 +1,12 @@
+(executable
+  (name        ci_opam)
+  (modules     ci_opam)
+  (public_name ci-opam)
+;  (flags       (:standard -cclib -static))
+  (libraries   yorick jsonm opam-file-format))
+
+(executable
+  (name        travis_mirage)
+  (modules     travis_mirage)
+  (public_name travis-mirage)
+  (libraries   yorick))

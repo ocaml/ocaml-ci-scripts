@@ -12,11 +12,11 @@ authors: [
 ]
 
 build: [
-  ["jbuilder" "subst"] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 
 depends: [
-  "jbuilder" {build}
+  "dune" {build}
   "jsonm" {build}
+  "opam-file-format" {build}
 ]

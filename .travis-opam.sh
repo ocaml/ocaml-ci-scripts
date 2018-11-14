@@ -13,14 +13,19 @@ get() {
   wget https://raw.githubusercontent.com/${fork_user}/ocaml-ci-scripts/${fork_branch}/$@
 }
 
-get .travis-ocaml.sh
+test "$TRAVIS_REPO_SLUG" = "ocaml/ocaml-ci-scripts" || \
+  get .travis-ocaml.sh
 sh .travis-ocaml.sh
 
 export OPAMYES=1
 eval $(opam config env)
 
 opam depext -y conf-m4
-opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+if [ "$TRAVIS_REPO_SLUG" = "ocaml/ocaml-ci-scripts" ] ; then
+  opam pin add travis-opam --kind=path .
+else
+  opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
+fi
 cp ~/.opam/$(opam switch show)/bin/ci-opam ~/
 
 opam remove -a travis-opam

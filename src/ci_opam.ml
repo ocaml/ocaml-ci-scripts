@@ -265,10 +265,34 @@ with_fold "Prepare" (fun () ->
 
     (if opam_lint then match opam_version with
         | `V2 ->
+          let warn =
+            let ch = open_in opam in
+            let lexbuf = Lexing.from_channel ch in
+            let rec f state =
+              match state, OpamLexer.token lexbuf with
+              | (`Base, OpamBaseParser.IDENT "opam-version") ->
+                  f `Colon
+              | (`Colon, OpamBaseParser.COLON) ->
+                  f `Version
+              | (`Version, OpamBaseParser.STRING version) ->
+                  if String.length version > 0 && version.[0] = '1' then
+                    "--warn=-57 "
+                  else
+                    ""
+              | (_, OpamBaseParser.EOF) ->
+                  (* Failed to identify the opam-version - assume 2.0+ *)
+                  ""
+              | _ ->
+                  f state
+            in
+            let warn = f `Base in
+            close_in ch;
+            warn
+          in
           (* note: 'opam show ./file --raw' will not do the 1.2->2.0
              translation in opam2 pre-release *)
           let tmp_dir = temp_dir () in
-          ?|~ "cp %s %s && opam show %s --raw | opam lint -" opam tmp_dir tmp_dir
+          ?|~ "cp %s %s && opam show %s --raw | opam lint %s-" opam tmp_dir tmp_dir warn
         | _   -> ?|~ "opam lint %s" opam);
     let pins = lint_pins pkg pins in
     List.iter pin pins;

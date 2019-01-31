@@ -23,7 +23,7 @@ OPAM_VERSION=${OPAM_VERSION:-2}
 OPAM_INIT=${OPAM_INIT:-true}
 
 case $OPAM_VERSION in
-    2|2.0) OPAM_VERSION=2.0.1;;
+    2|2.0) OPAM_VERSION=2.0.3;;
 esac
 
 if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
@@ -113,7 +113,7 @@ install_opam2 () {
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 brew install ocaml
             fi
-            sudo curl -sL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-darwin -o /usr/local/bin/opam
+            sudo curl -sL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
 }

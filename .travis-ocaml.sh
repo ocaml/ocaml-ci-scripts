@@ -121,6 +121,8 @@ install_opam2 () {
 install_ppa () {
   add_ppa $1
   if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
+    sudo apt-get -qq update
+    APT_UPDATED=1
     apt_install \
        "$(full_apt_version ocaml $SYS_OCAML_VERSION)" \
        "$(full_apt_version ocaml-base $SYS_OCAML_VERSION)" \

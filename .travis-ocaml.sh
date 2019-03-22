@@ -95,8 +95,7 @@ apt_install () {
 install_ocaml () {
     apt_install \
          ocaml ocaml-base ocaml-native-compilers ocaml-compiler-libs \
-         ocaml-interp ocaml-base-nox ocaml-nox \
-         camlp4 camlp4-extra
+         ocaml-interp ocaml-base-nox ocaml-nox
 }
 
 install_opam2 () {
@@ -130,9 +129,7 @@ install_ppa () {
        "$(full_apt_version ocaml-compiler-libs $SYS_OCAML_VERSION)" \
        "$(full_apt_version ocaml-interp $SYS_OCAML_VERSION)" \
        "$(full_apt_version ocaml-base-nox $SYS_OCAML_VERSION)" \
-       "$(full_apt_version ocaml-nox $SYS_OCAML_VERSION)" \
-       "$(full_apt_version camlp4 $SYS_OCAML_VERSION)" \
-       "$(full_apt_version camlp4-extra $SYS_OCAML_VERSION)"
+       "$(full_apt_version ocaml-nox $SYS_OCAML_VERSION)"
   fi
   apt_install opam
 }

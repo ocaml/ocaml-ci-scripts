@@ -88,7 +88,7 @@ apt_install () {
             APT_UPDATED=1
             sudo apt-get update -qq
         fi
-        sudo apt-get install -y "$@"
+        sudo apt-get install --no-install-recommends -y "$@"
     fi
 }
 

@@ -22,8 +22,10 @@ SYS_OCAML_VERSION=4.02
 OPAM_VERSION=${OPAM_VERSION:-2}
 OPAM_INIT=${OPAM_INIT:-true}
 
+OPAM_LATEST_RELEASE=2.0.3
+
 case $OPAM_VERSION in
-    2|2.0) OPAM_VERSION=2.0.3;;
+    2|2.0) OPAM_VERSION=$OPAM_LATEST_RELEASE;;
 esac
 
 if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
@@ -36,6 +38,13 @@ if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
         set -x
     fi
     OPAM_VERSION="$BREW_OPAM_VERSION"
+fi
+
+if [ "$OPAM_VERSION" != "$OPAM_LATEST_RELEASE" ] ; then
+    set +x
+    echo -e "[\e[0;31mWARNING\e[0m] Out-of-date opam $OPAM_VERSION requested" >&2
+    echo -e "[\e[0;31mWARNING\e[0m] Latest release is $OPAM_LATEST_RELEASE" >&2
+    set -x
 fi
 
 if [ "${INSTALL_LOCAL+x}" = x ] ; then

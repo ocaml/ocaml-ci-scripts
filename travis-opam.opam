@@ -20,3 +20,5 @@ depends: [
   "jsonm" {build}
   "opam-file-format" {build}
 ]
+
+synopsis: "Continuous integration scripts for OCaml projects"

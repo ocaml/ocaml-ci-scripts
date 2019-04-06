@@ -1,22 +1,23 @@
-opam-version: "1.2"
-maintainer:   "thomas@gazagnaire.org"
-homepage:     "https://github.com/ocaml/ocaml-ci-scripts"
-bug-reports:  "https://github.com/ocaml/ocaml-ci-scripts/issues"
-dev-repo:     "https://github.com/ocaml/ocaml-ci-scripts.git"
-doc:          "https://ocaml.github.io/ocaml-ci-scripts/"
+opam-version: "2.0"
+synopsis: "Scripts for OCaml projects"
+description: """
+Supported CI:
 
-authors: [
-  "Thomas Gazagnaire"
-  "Richard Mortier"
-  "David Sheets"
-]
-
-build: [
-  ["dune" "build" "-p" name "-j" jobs]
-]
-
+- **stable**: [Travis CI](/README-travis.md) Ubuntu, Debian and OSX workers.
+- **experimental**: [Appveyor](/README-appveyor.md) Windows Server 2012 R2 (x64) workers."""
+maintainer: "thomas@gazagnaire.org"
+authors: ["Thomas Gazagnaire" "Richard Mortier" "David Sheets"]
+homepage: "https://github.com/ocaml/ocaml-ci-scripts"
+doc: "https://ocaml.github.io/ocaml-ci-scripts/"
+bug-reports: "https://github.com/ocaml/ocaml-ci-scripts/issues"
 depends: [
   "dune" {build}
+  "ocaml"
   "jsonm" {build}
   "opam-file-format" {build}
 ]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/ocaml/ocaml-ci-scripts.git"

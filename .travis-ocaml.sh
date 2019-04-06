@@ -121,7 +121,7 @@ install_opam2 () {
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 brew install ocaml
             fi
-            sudo curl -sL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos -o /usr/local/bin/opam
+            sudo curl -fsSL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
 }

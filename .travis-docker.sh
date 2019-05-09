@@ -1,5 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
 # To use this, run `opam travis --help`
+set -e
 
 fold_name="prepare"
 echo -en "travis_fold:start:$fold_name.ci\r"

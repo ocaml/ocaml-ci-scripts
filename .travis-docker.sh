@@ -16,6 +16,10 @@ hub_user=${HUB_USER:-$default_hub_user}
 opam_version=${OPAM_VERSION:-$default_opam_version}
 base_remote_branch=${BASE_REMOTE_BRANCH:-$default_base_remote_branch}
 
+[ -z "$OCAMLFORMAT" ] && [ -z "$OCAML_VERSION" ] \
+  && echo "You need to set at least one of OCAMLFORMAT or OCAML_VERSION env variables" \
+  && exit 1
+
 if [ ! -z "$OCAMLFORMAT" ]; then
   from=${hub_user}/ocamlformat:${OCAMLFORMAT}
 

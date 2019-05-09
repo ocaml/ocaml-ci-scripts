@@ -218,6 +218,30 @@ repository, `.travis-opam.sh` users can layer additional opam remotes on top
 of the `BASE_REMOTE` with `EXTRA_REMOTES`. Remotes are added from left
 to right.
 
+## Docker builds, `.travis-docker.sh`
+
+### Check code formatting
+
+You can check the formatting of your `dune` and OCaml files by setting the `OCAMLFORMAT` env
+variable to the `ocamlformat` version you're using to format your code.
+
+Note that this only works if your project uses `dune` as build system and you enabled the formatting
+with a `(using fmt <ver>)` field in your `dune-project`.
+
+Note that the formatting check is performed separately and independently from the main build. It's
+done using an image with the pre-installed ocamlformat version on a switch with the latest version
+of OCaml and doesn't install anything nor try to build your packages. It just runs `dune build @fmt`
+to verify that the code is correctly formatted. It will fail and print the diff if it's not.
+
+That means that you can run it as a seperate build, e.g. you can do:
+
+```yaml
+env:
+  - OCAML_VERSION=4.06
+  - OCAML_VERSION=4.07
+  - OCAMLFORMAT=0.9
+```
+
 ## GCC and binutils
 
 ```yaml

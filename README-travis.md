@@ -24,8 +24,8 @@ updating `OCAML_VERSION` from version 4.02.3 was initially proposed.
 env:
   - OCAML_VERSION=4.02 [...]
   - OCAML_VERSION=4.05 [...]
-  - OCAML_VERSION=4.06 [...]
   - OCAML_VERSION=4.07 [...]
+  - OCAML_VERSION=4.08 [...]
 ```
 
 Add one line per compiler version you want to test. The `[...]` are other

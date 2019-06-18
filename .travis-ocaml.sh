@@ -212,9 +212,15 @@ install_on_linux () {
     4.07,2*)
         OCAML_FULL_VERSION=4.07.1
         install_opam2 ;;
+    4.08,1.2.2)
+        OCAML_FULL_VERSION=4.08.0
+        install_ppa avsm/ocaml42+opam12 ;;
+    4.08,2*)
+        OCAML_FULL_VERSION=4.08.0
+        install_opam2 ;;
     *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
        echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
-       echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.07\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
+       echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.08\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
        exit 1 ;;
   esac
 
@@ -277,11 +283,13 @@ install_on_osx () {
     4.05,2*) OCAML_FULL_VERSION=4.05.0; install_opam2 ;;
     4.06,1.2.2) OCAML_FULL_VERSION=4.06.1; brew install opam ;;
     4.06,2*) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
-    4.07,1.2.2) OCAML_FULL_VERSION=4.07.1;
+    4.07,1.2.2) OCAML_FULL_VERSION=4.07.1; brew install opam ;;
+    4.07,2*) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
+    4.08,1.2.2) OCAML_FULL_VERSION=4.08.0;
                 OPAM_SWITCH=${OPAM_SWITCH:-system};
                 brew install ocaml;
                 brew install opam ;;
-    4.07,2*) OCAML_FULL_VERSION=4.07.1;
+    4.08,2*) OCAML_FULL_VERSION=4.08.0;
                 OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
                 brew install ocaml;
                 install_opam2 ;;

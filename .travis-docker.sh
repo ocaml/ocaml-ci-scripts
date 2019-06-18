@@ -62,8 +62,7 @@ echo FROM $from  > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile
 
 if [ -n "$BASE_REMOTE" ]; then
-    echo "RUN git remote set-url origin ${BASE_REMOTE} &&\
-        git fetch origin && git reset --hard origin/$base_remote_branch"  >> Dockerfile
+    echo "RUN opam repo remove --all default && opam repo add --all-switches default ${BASE_REMOTE}#${base_remote_branch}" >> Dockerfile
 else
     case $opam_version in
         2)
@@ -75,7 +74,7 @@ else
           echo RUN git pull -q origin 1.2 >> Dockerfile ;;
     esac
 fi
-echo RUN opam update >> Dockerfile
+echo RUN opam update --verbose >> Dockerfile
 
 echo RUN opam remove travis-opam >> Dockerfile
 if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then

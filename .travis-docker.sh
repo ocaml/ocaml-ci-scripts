@@ -16,16 +16,17 @@ opam_version=${OPAM_VERSION:-$default_opam_version}
 base_remote_branch=${BASE_REMOTE_BRANCH:-$default_base_remote_branch}
 
 # create env file
-echo PACKAGE="$PACKAGE" > env.list
-echo EXTRA_REMOTES="$EXTRA_REMOTES" >> env.list
-echo PINS="$PINS" >> env.list
-echo INSTALL="$INSTALL" >> env.list
-echo DEPOPTS="$DEPOPTS" >> env.list
-echo TESTS="$TESTS" >> env.list
-echo REVDEPS="$REVDEPS" >> env.list
-echo EXTRA_DEPS="$EXTRA_DEPS" >> env.list
-echo PRE_INSTALL_HOOK="$PRE_INSTALL_HOOK" >> env.list
-echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list
+rm -f env.list
+if [ -n "${PACKAGE+x}" ] ; then echo PACKAGE="$PACKAGE" >> env.list ; fi
+if [ -n "${EXTRA_REMOTES+x}" ] ; then echo EXTRA_REMOTES="$EXTRA_REMOTES" >> env.list ; fi
+if [ -n "${PINS+x}" ] ; then echo PINS="$PINS" >> env.list ; fi
+if [ -n "${INSTALL+x}" ] ; then echo INSTALL="$INSTALL" >> env.list ; fi
+if [ -n "${DEPOPTS+x}" ] ; then echo DEPOPTS="$DEPOPTS" >> env.list ; fi
+if [ -n "${TESTS+x}" ] ; then echo TESTS="$TESTS" >> env.list ; fi
+if [ -n "${REVDEPS+x}" ] ; then echo REVDEPS="$REVDEPS" >> env.list ; fi
+if [ -n "${EXTRA_DEPS+x}" ] ; then echo EXTRA_DEPS="$EXTRA_DEPS" >> env.list ; fi
+if [ -n "${PRE_INSTALL_HOOK+x}" ] ; then echo PRE_INSTALL_HOOK="$PRE_INSTALL_HOOK" >> env.list ; fi
+if [ -n "${POST_INSTALL_HOOK+x}" ] ; then echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list ; fi
 echo $EXTRA_ENV >> env.list
 
 # build a local image to trigger any ONBUILDs

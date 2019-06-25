@@ -93,8 +93,6 @@ esac
 echo RUN opam upgrade -y >> Dockerfile
 echo RUN opam depext -ui travis-opam >> Dockerfile
 echo RUN cp '~/.opam/$(opam switch show)/bin/ci-opam' "~/" >> Dockerfile
-# Ensure that ocaml-config is definitely in the compiler (base) packages
-echo RUN opam switch set-base '$(opam list --base --short | grep -Fxv ocaml-config | tr "\n" " " | sed -e "s/$/ocaml-config/")' >> Dockerfile
 echo RUN opam remove -a travis-opam >> Dockerfile
 echo RUN mv "~/ci-opam" '~/.opam/$(opam switch show)/bin/ci-opam' >> Dockerfile
 echo VOLUME /repo >> Dockerfile

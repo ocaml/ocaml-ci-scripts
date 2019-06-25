@@ -26,6 +26,7 @@ let default_pkg = "my-package"
 
 let pkg =
   let pkg = getenv_default "PACKAGE" default_pkg in
+  let pkg = if String.length pkg = 0 then default_pkg else pkg in
   if pkg <> default_pkg then pkg
   else
     let files = Array.to_list (Sys.readdir ".") in

@@ -16,6 +16,6 @@ depends: [
 ]
 build: [
   ["dune" "subst"] {pinned}
-  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@install" "-j" jobs]
 ]
 dev-repo: "git+https://github.com/ocaml/ocaml-ci-scripts.git"

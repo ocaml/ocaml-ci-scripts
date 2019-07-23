@@ -110,7 +110,10 @@ install_ocaml () {
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
-            add_ppa ansible/bubblewrap
+            case $TRAVIS_DIST in
+                precise|trusty|xenial)
+                    add_ppa ansible/bubblewrap ;;
+            esac
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 install_ocaml
             fi

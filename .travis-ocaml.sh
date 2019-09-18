@@ -294,8 +294,6 @@ install_on_osx () {
     4.06,2*) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
     4.07,1.2.2) OCAML_FULL_VERSION=4.07.1; brew install opam ;;
     4.07,2*) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
-    4.07,1.2.2) OCAML_FULL_VERSION=4.07.1; brew install opam ;;
-    4.07,2*) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
     4.08,1.2.2) OCAML_FULL_VERSION=4.08.1;
                 OPAM_SWITCH=${OPAM_SWITCH:-system};
                 brew install ocaml;

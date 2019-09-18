@@ -26,6 +26,7 @@ env:
   - OCAML_VERSION=4.05 [...]
   - OCAML_VERSION=4.07 [...]
   - OCAML_VERSION=4.08 [...]
+  - OCAML_VERSION=4.09 [...]
 ```
 
 Add one line per compiler version you want to test. The `[...]` are other

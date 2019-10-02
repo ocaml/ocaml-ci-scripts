@@ -192,6 +192,18 @@ that package being pinned to the URL in that package's `dev-repo`
 field. A pin of a `name:url` or `name.version:url` pair will pin the
 package to the given URL.
 
+### Building with new and not yet published packages
+
+```yaml
+env:
+  - [...] PINS="ounit2.2.2.0:. ounit2-lwt.2.2.0:." [...]
+```
+
+If you start a project from scratch and use these scripts without a
+pre-existing package in OPAM, you need to pin the package to a precise
+version directly in the environment. This will allow to install the
+package and other dependencies correctly.
+
 ### Hooks
 
 ```yaml

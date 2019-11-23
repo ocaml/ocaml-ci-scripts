@@ -11,7 +11,7 @@ homepage: "https://github.com/ocaml/ocaml-ci-scripts"
 doc: "https://ocaml.github.io/ocaml-ci-scripts/"
 bug-reports: "https://github.com/ocaml/ocaml-ci-scripts/issues"
 depends: [
-  "dune" {build}
+  "dune"
   "ocaml"
   "jsonm" {build}
   "opam-file-format" {build}

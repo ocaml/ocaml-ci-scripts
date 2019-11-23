@@ -1,3 +1,7 @@
+### 1.5.0
+
+* Port to dune (@dra27 @avsm)
+
 ### 1.4.0 (2018-09-24)
 
 * Set variables before installing ppas (#234, @samoht)

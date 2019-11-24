@@ -274,7 +274,6 @@ install_on_osx () {
         sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
         ;;
   esac
-  brew upgrade python || true
   case "$OCAML_VERSION,$OPAM_VERSION" in
     3.12,1.2.2) OCAML_FULL_VERSION=3.12.1; brew install opam ;;
     3.12,2*) OCAML_FULL_VERSION=3.12.1; install_opam2 ;;

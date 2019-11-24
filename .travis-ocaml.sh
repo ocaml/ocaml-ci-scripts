@@ -319,7 +319,7 @@ export OPAMYES=1
 
 case $OPAM_INIT in
   true)
-      env OPAMDEBUG=2 opam init -a "$BASE_REMOTE" --comp="$OPAM_SWITCH"
+      opam init -a "$BASE_REMOTE" --comp="$OPAM_SWITCH"
       eval $(opam config env)
       ;;
 esac

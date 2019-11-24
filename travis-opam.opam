@@ -3,10 +3,10 @@ synopsis: "Scripts for OCaml projects"
 description: """
 Supported CI:
 
-- **stable**: [Travis CI](/README-travis.md) Ubuntu, Debian and OSX workers.
+- **stable**: [Travis CI](/README-travis.md) Ubuntu, Debian and macOS workers.
 - **experimental**: [Appveyor](/README-appveyor.md) Windows Server 2012 R2 (x64) workers."""
 maintainer: "thomas@gazagnaire.org"
-authors: ["Thomas Gazagnaire" "Richard Mortier" "David Sheets"]
+authors: ["Thomas Gazagnaire" "Richard Mortier" "David Sheets" "Anil Madhavapeddy"]
 homepage: "https://github.com/ocaml/ocaml-ci-scripts"
 doc: "https://ocaml.github.io/ocaml-ci-scripts/"
 bug-reports: "https://github.com/ocaml/ocaml-ci-scripts/issues"

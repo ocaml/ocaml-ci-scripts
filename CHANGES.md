@@ -1,6 +1,8 @@
-### 1.5.0
+### 1.5.0 (2019-11-23)
 
 * Port to dune (@dra27 @avsm)
+* Support empty `PACKAGE` variables (@dra27)
+* More verbose install to keep Travis jobs from suspending (@liyishuai)
 
 ### 1.4.0 (2018-09-24)
 

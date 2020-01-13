@@ -8,12 +8,17 @@ default_branch=master
 default_hub_user=ocaml
 default_opam_version=2
 default_base_remote_branch=master
+beta_repository=git://github.com/ocaml/ocaml-beta-repository.git
 
 fork_user=${FORK_USER:-$default_user}
 fork_branch=${FORK_BRANCH:-$default_branch}
 hub_user=${HUB_USER:-$default_hub_user}
 opam_version=${OPAM_VERSION:-$default_opam_version}
 base_remote_branch=${BASE_REMOTE_BRANCH:-$default_base_remote_branch}
+
+if [ "$OCAML_BETA" = "enable" ]; then
+    EXTRA_REMOTES="${EXTRA_REMOTES}${EXTRA_REMOTES:+ }$beta_repository"
+fi
 
 # create env file
 rm -f env.list
@@ -86,9 +91,15 @@ fi
 
 case $opam_version in
     2)
+      opam_repo_selection=
+      ocaml_package=ocaml-base-compiler
+      if [ "$OCAML_BETA" = "enable" ]; then
+          echo "RUN opam repo add --dont-select beta $beta_repository" >> Dockerfile
+          opam_repo_selection="--repo=default,beta "
+          ocaml_package=ocaml-variants
+      fi
       echo "RUN opam switch ${OCAML_VERSION} ||\
-          opam switch create ocaml-base-compiler.${OCAML_VERSION} ||\
-          opam switch create ${OCAML_VERSION}" >> Dockerfile ;;
+          opam switch create ${opam_repo_selection}${ocaml_package}.${OCAML_VERSION}" >> Dockerfile ;;
     *) ;;
 esac
 

@@ -15,12 +15,12 @@ full_apt_version () {
 set -uex
 
 
-# the ocaml version to test
 OCAML_VERSION=${OCAML_VERSION:-latest}
 SYS_OCAML_VERSION=4.02
 # Default opam is the latest release of opam 2
 OPAM_VERSION=${OPAM_VERSION:-2}
 OPAM_INIT=${OPAM_INIT:-true}
+OCAML_BETA=${OCAML_BETA:-disable}
 
 OPAM_LATEST_RELEASE=2.0.5
 
@@ -227,10 +227,15 @@ install_on_linux () {
     4.09,2*)
         OCAML_FULL_VERSION=4.09.0
         install_opam2 ;;
-    *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
-       echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
-       echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.09\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
-       exit 1 ;;
+    *)
+        if [ "$OCAML_BETA" != "enable" ]; then
+            echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
+            echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
+            echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.09\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
+            exit 1
+        fi
+        OCAML_FULL_VERSION="${OCAML_VERSION}"
+        install_opam2 ;;
   esac
 
   TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
@@ -303,8 +308,13 @@ install_on_osx () {
                 install_opam2 ;;
     4.09,1.2.2) OCAML_FULL_VERSION=4.09.0; brew install opam ;;
     4.09,2*) OCAML_FULL_VERSION=4.09.0; install_opam2 ;;
-    *) echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
-       exit 1 ;;
+    *)
+        if [ "$OCAML_BETA" != "enable" ]; then
+            echo "Unknown OCAML_VERSION=$OCAML_VERSION OPAM_VERSION=$OPAM_VERSION"
+            exit 1
+        fi
+        OCAML_FULL_VERSION="${OCAML_VERSION}"
+        install_opam2 ;;
   esac
 }
 
@@ -313,13 +323,24 @@ case $TRAVIS_OS_NAME in
     linux) install_on_linux ;;
 esac
 
-OPAM_SWITCH=${OPAM_SWITCH:-ocaml-base-compiler.$OCAML_FULL_VERSION}
+ocaml_package=ocaml-base-compiler
+if [ "$OCAML_BETA" = "enable" ]; then
+    ocaml_package=ocaml-variants
+fi
+
+OPAM_SWITCH=${OPAM_SWITCH:-$ocaml_package.$OCAML_FULL_VERSION}
 
 export OPAMYES=1
 
 case $OPAM_INIT in
   true)
-      opam init -a "$BASE_REMOTE" --comp="$OPAM_SWITCH"
+      opam init -a --bare "$BASE_REMOTE"
+      opam_repo_selection=
+      if [ "$OCAML_BETA" = "enable" ]; then
+          opam repo add --dont-select beta git://github.com/ocaml/ocaml-beta-repository.git
+          opam_repo_selection="--repo=default,beta"
+      fi
+      opam switch create $opam_repo_selection "$OPAM_SWITCH"
       eval $(opam config env)
       ;;
 esac

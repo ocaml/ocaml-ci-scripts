@@ -340,7 +340,7 @@ case $OPAM_INIT in
           opam repo add --dont-select beta git://github.com/ocaml/ocaml-beta-repository.git
           opam_repo_selection="--repo=default,beta"
       fi
-      opam switch create $opam_repo_selection "$OPAM_SWITCH"
+      opam switch "$OPAM_SWITCH" || opam switch create $opam_repo_selection "$OPAM_SWITCH"
       eval $(opam config env)
       ;;
 esac

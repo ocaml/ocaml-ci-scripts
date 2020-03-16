@@ -4,7 +4,7 @@ $cyg_root="C:\cygwin64"
 $cyg_setup="setup-x86_64.exe"
 $cyg_mirror="http://cygwin.mirror.constant.com"
 $appveyor_build_folder=".\"
-$cyg_pkgs="mingw64-x86_64-gcc-core,mingw64-x86_64-headers,mingw64-x86_64-runtime,mingw64-x86_64-winpthreads"
+$cyg_pkgs=""
 
 if ( Test-Path env:fork_user ){
     $fork_user=$env:fork_user

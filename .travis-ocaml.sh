@@ -199,7 +199,6 @@ install_on_linux () {
         install_ppa avsm/ocaml42+opam12 ;;
     4.05,2*)
         OCAML_FULL_VERSION=4.05.0
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_opam2 ;;
     4.06,1.2.2)
         OCAML_FULL_VERSION=4.06.1

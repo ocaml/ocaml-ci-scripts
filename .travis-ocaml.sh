@@ -16,7 +16,7 @@ set -uex
 
 
 OCAML_VERSION=${OCAML_VERSION:-latest}
-SYS_OCAML_VERSION=4.02
+SYS_OCAML_VERSION=4.05
 # Default opam is the latest release of opam 2
 OPAM_VERSION=${OPAM_VERSION:-2}
 OPAM_INIT=${OPAM_INIT:-true}
@@ -168,19 +168,15 @@ install_on_linux () {
         install_opam2 ;;
     4.02,1.1.2)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam11 ;;
     4.02,1.2.0)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam120 ;;
     4.02,1.2.1)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam121 ;;
     4.02,1.2.2)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam12 ;;
     4.02,2*)
         OCAML_FULL_VERSION=4.02.3
@@ -199,9 +195,11 @@ install_on_linux () {
         install_opam2 ;;
     4.05,1.2.2)
         OCAML_FULL_VERSION=4.05.0
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam12 ;;
     4.05,2*)
         OCAML_FULL_VERSION=4.05.0
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_opam2 ;;
     4.06,1.2.2)
         OCAML_FULL_VERSION=4.06.1

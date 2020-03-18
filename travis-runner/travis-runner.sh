@@ -2,7 +2,7 @@
 set -ex
 
 SCRIPT=".travis-docker.sh"
-wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/${SCRIPT} -O /build-script/${SCRIPT}
+wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/${SCRIPT} -O /build-script/${SCRIPT}
 
 . /build-script/env.sh
 

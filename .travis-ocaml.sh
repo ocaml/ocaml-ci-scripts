@@ -16,13 +16,13 @@ set -uex
 
 
 OCAML_VERSION=${OCAML_VERSION:-latest}
-SYS_OCAML_VERSION=4.02
+SYS_OCAML_VERSION=4.05
 # Default opam is the latest release of opam 2
 OPAM_VERSION=${OPAM_VERSION:-2}
 OPAM_INIT=${OPAM_INIT:-true}
 OCAML_BETA=${OCAML_BETA:-disable}
 
-OPAM_LATEST_RELEASE=2.0.5
+OPAM_LATEST_RELEASE=2.0.6
 
 case $OPAM_VERSION in
     2|2.0) OPAM_VERSION=$OPAM_LATEST_RELEASE;;
@@ -76,8 +76,8 @@ esac
 # whether we need a new gcc and binutils
 UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}
 
-# Install Trusty remotes
-UBUNTU_TRUSTY=${UBUNTU_TRUSTY:-"0"}
+# Install Xenial remotes
+UBUNTU_XENIAL=${UBUNTU_XENIAL:-"0"}
 
 # Install XQuartz on OSX
 INSTALL_XQUARTZ=${INSTALL_XQUARTZ:-"false"}
@@ -111,7 +111,7 @@ install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
             case $TRAVIS_DIST in
-                precise|trusty|xenial)
+                precise|trusty|xenial|bionic)
                     add_ppa ansible/bubblewrap ;;
             esac
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
@@ -168,19 +168,15 @@ install_on_linux () {
         install_opam2 ;;
     4.02,1.1.2)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam11 ;;
     4.02,1.2.0)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam120 ;;
     4.02,1.2.1)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam121 ;;
     4.02,1.2.2)
         OCAML_FULL_VERSION=4.02.3
-        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam12 ;;
     4.02,2*)
         OCAML_FULL_VERSION=4.02.3
@@ -199,6 +195,7 @@ install_on_linux () {
         install_opam2 ;;
     4.05,1.2.2)
         OCAML_FULL_VERSION=4.05.0
+        OPAM_SWITCH=${OPAM_SWITCH:-system}
         install_ppa avsm/ocaml42+opam12 ;;
     4.05,2*)
         OCAML_FULL_VERSION=4.05.0
@@ -241,21 +238,21 @@ install_on_linux () {
         install_opam2 ;;
   esac
 
-  TRUSTY="deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
+  XENIAL="deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe"
 
   if [ "$UPDATE_GCC_BINUTILS" != "0" ] ; then
     echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
-    sudo add-apt-repository "${TRUSTY}"
+    sudo add-apt-repository "${XENIAL}"
     sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
     sudo apt-get -qq update
-    sudo apt-get install -y gcc-4.8
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
-    sudo add-apt-repository -r "${TRUSTY}"
+    sudo apt-get install -y gcc-5
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90
+    sudo add-apt-repository -r "${XENIAL}"
   fi
 
-  if [ "$UBUNTU_TRUSTY" != "0" ] ; then
-    echo "Adding Ubuntu Trusty mirrors"
-    sudo add-apt-repository "${TRUSTY}"
+  if [ "$UBUNTU_XENIAL" != "0" ] ; then
+    echo "Adding Ubuntu Xenial mirrors"
+    sudo add-apt-repository "${XENIAL}"
     sudo apt-get -qq update
     APT_UPDATED=1
   fi

@@ -26,7 +26,7 @@ OPAM_LATEST_RELEASE=2.0.6
 
 case $OPAM_VERSION in
     2|2.0) OPAM_VERSION=$OPAM_LATEST_RELEASE;;
-    *) echo "Opam version '$OPAM_VERSION' is not supported"; exit 1;;
+    1.*) echo "Opam version '$OPAM_VERSION' is not supported"; exit 1;;
 esac
 
 if [ "$TRAVIS_OS_NAME" = "osx" ] ; then

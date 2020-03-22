@@ -148,7 +148,7 @@ install_on_linux () {
     4.06) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
     4.07) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
-    4.09) OCAML_FULL_VERSION=4.09.0; install_opam2 ;;
+    4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
     4.10) OCAML_FULL_VERSION=4.10.0; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then

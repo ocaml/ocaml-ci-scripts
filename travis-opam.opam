@@ -22,5 +22,3 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 dev-repo: "git+https://github.com/ocaml/ocaml-ci-scripts.git"
-pin-depends:
-[ "opam-package-upgrade.0.1" "git+http://github.com/AltGr/opam-package-upgrade"]

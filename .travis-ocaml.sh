@@ -101,7 +101,7 @@ install_opam2 () {
     case $TRAVIS_OS_NAME in
         linux)
             case $TRAVIS_DIST in
-                precise|trusty|xenial|bionic)
+                precise|trusty|xenial)
                     add_ppa ansible/bubblewrap ;;
             esac
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then

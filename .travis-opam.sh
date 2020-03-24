@@ -27,10 +27,12 @@ else
   opam pin add travis-opam https://github.com/${fork_user}/ocaml-ci-scripts.git#${fork_branch}
 fi
 cp ~/.opam/$(opam switch show)/bin/ci-opam ~/
+cp ~/.opam/$(opam switch show)/bin/opam-package-upgrade ~/
 
 opam remove -a travis-opam
 
 mv ~/ci-opam ~/.opam/$(opam switch show)/bin/ci-opam
+mv ~/opam-package-upgrade ~/.opam/$(opam switch show)/bin/opam-package-upgrade
 
 echo -en "travis_fold:end:prepare.ci\r"
 opam config exec -- ci-opam

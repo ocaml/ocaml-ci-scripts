@@ -100,7 +100,7 @@ install_ocaml () {
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         freebsd)
-            pkg insall -qy ocaml-opam
+            pkg insall -qy ocaml-opam ;;
         linux)
             case $TRAVIS_DIST in
                 precise|trusty|xenial)

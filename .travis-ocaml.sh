@@ -99,6 +99,8 @@ install_ocaml () {
 
 install_opam2 () {
     case $TRAVIS_OS_NAME in
+        freebsd)
+            pkg insall -qy ocaml-opam
         linux)
             case $TRAVIS_DIST in
                 precise|trusty|xenial)
@@ -134,6 +136,23 @@ install_ppa () {
        "$(full_apt_version ocaml-nox $SYS_OCAML_VERSION)"
   fi
   apt_install opam
+}
+
+install_on_freebsd () {
+  case "$OCAML_VERSION" in
+    3.12) OCAML_FULL_VERSION=3.12.1; install_opam2 ;;
+    4.00) OCAML_FULL_VERSION=4.00.1; install_opam2 ;;
+    4.01) OCAML_FULL_VERSION=4.01.0; install_opam2 ;;
+    4.02) OCAML_FULL_VERSION=4.02.3; install_opam2 ;;
+    4.03) OCAML_FULL_VERSION=4.03.0; install_opam2 ;;
+    4.04) OCAML_FULL_VERSION=4.04.2; install_opam2 ;;
+    4.05) OCAML_FULL_VERSION=4.05.0; install_opam2 ;;
+    4.06) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
+    4.07) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
+    4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
+    4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
+    4.10) OCAML_FULL_VERSION=4.10.0; install_opam2 ;;
+  esac
 }
 
 install_on_linux () {
@@ -229,6 +248,7 @@ install_on_osx () {
 }
 
 case $TRAVIS_OS_NAME in
+    freebsd) install_on_freebsd ;;
     osx) install_on_osx ;;
     linux) install_on_linux ;;
 esac

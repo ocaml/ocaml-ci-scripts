@@ -152,6 +152,15 @@ install_on_freebsd () {
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
     4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
     4.10) OCAML_FULL_VERSION=4.10.0; install_opam2 ;;
+    *)
+        if [ "$OCAML_BETA" != "enable" ]; then
+            echo "Unknown OCAML_VERSION=$OCAML_VERSION"
+            echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
+            echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.10\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
+            exit 1
+        fi
+        OCAML_FULL_VERSION="${OCAML_VERSION}"
+        install_opam2 ;;
   esac
 }
 

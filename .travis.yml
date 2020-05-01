@@ -14,5 +14,6 @@ env:
   - OCAML_VERSION=4.10.0+beta1 OCAML_BETA=enable
   - OCAML_VERSION=4.10
 os:
+  - freebsd
   - linux
   - osx

@@ -14,6 +14,10 @@ full_apt_version () {
 
 set -uex
 
+if [ "$TRAVIS_OS_NAME" = freebsd -a "${OPAM_VERSION+x}" = x ]; then
+  echo OPAM_VERSION not permitted for FreeBSD targets
+  exit 1
+fi
 
 OCAML_VERSION=${OCAML_VERSION:-latest}
 SYS_OCAML_VERSION=4.05
@@ -49,8 +53,8 @@ if [ "$OPAM_VERSION" != "$OPAM_LATEST_RELEASE" ] ; then
 fi
 
 if [ "${INSTALL_LOCAL+x}" = x ] ; then
-  if [ "$TRAVIS_OS_NAME" = osx ] ; then
-    echo INSTALL_LOCAL not permitted for macOS targets
+  if [ "$TRAVIS_OS_NAME" = osx -o "$TRAVIS_OS_NAME" = freebsd ] ; then
+    echo INSTALL_LOCAL not permitted for macOS and FreeBSD targets
     exit 1
   fi
 
@@ -99,6 +103,9 @@ install_ocaml () {
 
 install_opam2 () {
     case $TRAVIS_OS_NAME in
+        freebsd)
+            # Opam does not have any ready to use binaries for FreeBSD
+            sudo pkg install -qy ocaml-opam ;;
         linux)
             case $TRAVIS_DIST in
                 precise|trusty|xenial)
@@ -134,6 +141,32 @@ install_ppa () {
        "$(full_apt_version ocaml-nox $SYS_OCAML_VERSION)"
   fi
   apt_install opam
+}
+
+install_on_freebsd () {
+  case "$OCAML_VERSION" in
+    3.12) OCAML_FULL_VERSION=3.12.1; install_opam2 ;;
+    4.00) OCAML_FULL_VERSION=4.00.1; install_opam2 ;;
+    4.01) OCAML_FULL_VERSION=4.01.0; install_opam2 ;;
+    4.02) OCAML_FULL_VERSION=4.02.3; install_opam2 ;;
+    4.03) OCAML_FULL_VERSION=4.03.0; install_opam2 ;;
+    4.04) OCAML_FULL_VERSION=4.04.2; install_opam2 ;;
+    4.05) OCAML_FULL_VERSION=4.05.0; install_opam2 ;;
+    4.06) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
+    4.07) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
+    4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
+    4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
+    4.10) OCAML_FULL_VERSION=4.10.0; install_opam2 ;;
+    *)
+        if [ "$OCAML_BETA" != "enable" ]; then
+            echo "Unknown OCAML_VERSION=$OCAML_VERSION"
+            echo "(An unset OCAML_VERSION used to default to \"latest\", but you must now specify it."
+            echo "Try something like \"OCAML_VERSION=3.12\", \"OCAML_VERSION=4.10\", or see README-travis.md at https://github.com/ocaml/ocaml-ci-scripts )"
+            exit 1
+        fi
+        OCAML_FULL_VERSION="${OCAML_VERSION}"
+        install_opam2 ;;
+  esac
 }
 
 install_on_linux () {
@@ -229,6 +262,7 @@ install_on_osx () {
 }
 
 case $TRAVIS_OS_NAME in
+    freebsd) install_on_freebsd ;;
     osx) install_on_osx ;;
     linux) install_on_linux ;;
 esac

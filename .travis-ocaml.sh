@@ -14,6 +14,10 @@ full_apt_version () {
 
 set -uex
 
+if [ "$TRAVIS_OS_NAME" = freebsd -a "${OPAM_VERSION+x}" = x ]; then
+  echo OPAM_VERSION not permitted for FreeBSD targets
+  exit 1
+fi
 
 OCAML_VERSION=${OCAML_VERSION:-latest}
 SYS_OCAML_VERSION=4.05
@@ -49,8 +53,8 @@ if [ "$OPAM_VERSION" != "$OPAM_LATEST_RELEASE" ] ; then
 fi
 
 if [ "${INSTALL_LOCAL+x}" = x ] ; then
-  if [ "$TRAVIS_OS_NAME" = osx ] ; then
-    echo INSTALL_LOCAL not permitted for macOS targets
+  if [ "$TRAVIS_OS_NAME" = osx -o "$TRAVIS_OS_NAME" = freebsd ] ; then
+    echo INSTALL_LOCAL not permitted for macOS and FreeBSD targets
     exit 1
   fi
 
@@ -100,6 +104,7 @@ install_ocaml () {
 install_opam2 () {
     case $TRAVIS_OS_NAME in
         freebsd)
+            # Opam does not have any ready to use binaries for FreeBSD
             sudo pkg install -qy ocaml-opam ;;
         linux)
             case $TRAVIS_DIST in

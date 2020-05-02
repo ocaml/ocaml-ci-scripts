@@ -292,6 +292,10 @@ esac
 echo OCAML_VERSION=$OCAML_VERSION >  .travis-ocaml.env
 echo OPAM_SWITCH=$OPAM_SWITCH     >> .travis-ocaml.env
 
+# Temporary fix an issue with opam-depext < 1.1.3 on FreeBSD.
+# See https://github.com/ocaml/opam-depext/pull/123
+echo ASSUME_ALWAYS_YES=YES        >> .travis-ocaml.env
+
 if [ -x "$(command -v ocaml)" ]; then
     ocaml -version
 else

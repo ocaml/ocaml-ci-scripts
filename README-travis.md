@@ -284,6 +284,7 @@ Add the following to your `.travis.yml`:
 
 ```yaml
 os:
+  - freebsd
   - linux
   - osx
 ```

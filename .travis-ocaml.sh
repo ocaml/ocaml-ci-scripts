@@ -223,6 +223,7 @@ install_on_linux () {
     make world.opt
     sudo make install
     cd ..
+    rm -rf "ocaml-$OCAML_FULL_VERSION"
     ( set +x; echo -en "travis_fold:end:build.ocaml\r" ) 2>/dev/null
   fi
 }

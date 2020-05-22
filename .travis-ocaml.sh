@@ -274,6 +274,12 @@ fi
 
 OPAM_SWITCH=${OPAM_SWITCH:-$ocaml_package.$OCAML_FULL_VERSION}
 
+PACKAGES="$OPAM_SWITCH"
+case "$OCAML_VERSION" in
+  3.12|4.00|4.01|4.02|4.03|4.04|4.05|4.06)
+    PACKAGES="$PACKAGES,ocaml-secondary-compiler";;
+esac
+
 export OPAMYES=1
 
 case $OPAM_INIT in
@@ -284,7 +290,7 @@ case $OPAM_INIT in
           opam repo add --dont-select beta git://github.com/ocaml/ocaml-beta-repository.git
           opam_repo_selection="--repo=default,beta"
       fi
-      opam switch "$OPAM_SWITCH" || opam switch create $opam_repo_selection "$OPAM_SWITCH"
+      opam switch "$OPAM_SWITCH" || opam switch create $opam_repo_selection "$OPAM_SWITCH" --packages="$PACKAGES"
       eval $(opam config env)
       ;;
 esac

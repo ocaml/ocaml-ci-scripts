@@ -370,11 +370,12 @@ with_fold "Reverse.dependencies" (fun () ->
         ) [] packages in
       let installable_count = List.length packages in
       echo "%d/%d REVDEPS installable" installable_count revdep_count;
+      let install_args = if tests_run then "-t" else "" in
 
       ignore (List.fold_left (fun i dependent ->
           echo "\nInstalling %s (REVDEP %d/%d)" dependent i installable_count;
           ?|~ "opam depext -u %s" dependent;
-          ?|~ "opam install %s" dependent;
+          ?|~ "opam install %s %s" dependent install_args;
           ?|~ "opam remove %s" dependent;
           i + 1
         ) 1 packages)

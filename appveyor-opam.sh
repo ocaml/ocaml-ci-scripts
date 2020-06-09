@@ -9,7 +9,7 @@ fork_user=${FORK_USER:-ocaml}
 fork_branch=${FORK_BRANCH:-master}
 
 # default setttings
-OPAM_VERSION=${OPAM_VERSION:-2.0.0}
+OPAM_VERSION=${OPAM_VERSION:-2.0.7}
 case "$OPAM_VERSION" in
     1*)
         SWITCH=${OPAM_SWITCH:-'4.03.0+mingw64c'}

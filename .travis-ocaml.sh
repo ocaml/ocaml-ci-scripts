@@ -218,7 +218,7 @@ install_on_linux () {
   fi
 
   if [ "${INSTALL_LOCAL:=0}" != 0 ] ; then
-    echo -en "travis_fold:start:build.ocaml\r"
+    ( set +x; echo -en "travis_fold:start:build.ocaml\r" ) 2>/dev/null
     echo "Building a local OCaml; this may take a few minutes..."
     wget "http://caml.inria.fr/pub/distrib/ocaml-${OCAML_FULL_VERSION%.*}/ocaml-$OCAML_FULL_VERSION.tar.gz"
     tar -xzf "ocaml-$OCAML_FULL_VERSION.tar.gz"
@@ -227,7 +227,8 @@ install_on_linux () {
     make world.opt
     sudo make install
     cd ..
-    echo -en "travis_fold:end:build.ocaml\r"
+    rm -rf "ocaml-$OCAML_FULL_VERSION"
+    ( set +x; echo -en "travis_fold:end:build.ocaml\r" ) 2>/dev/null
   fi
 }
 

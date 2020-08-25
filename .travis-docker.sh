@@ -2,7 +2,7 @@
 # To use this, run `opam travis --help`
 
 fold_name="prepare"
-echo -en "travis_fold:start:$fold_name.ci\r"
+( set +x; echo -en "travis_fold:start:$fold_name.ci\r" ) 2>/dev/null
 default_user=ocaml
 default_branch=master
 default_hub_user=ocaml
@@ -123,5 +123,5 @@ echo docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam
 
 # run ci-opam with the local repo volume mounted
 chmod -R a+w $OS
-echo -en "travis_fold:end:$fold_name.ci\r"
+( set +x; echo -en "travis_fold:end:$fold_name.ci\r" ) 2>/dev/null
 docker run --env-file=env.list -v ${OS}:/repo local-build ci-opam

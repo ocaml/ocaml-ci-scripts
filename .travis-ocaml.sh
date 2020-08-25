@@ -28,6 +28,12 @@ OCAML_BETA=${OCAML_BETA:-disable}
 
 OPAM_LATEST_RELEASE=2.0.7
 
+case $TRAVIS_CPU_ARCH in
+    amd64) OPAM_ARCH=x86_64;;
+    arm64) OPAM_ARCH=arm64;;
+    *) echo "'$TRAVIS_CPU_ARCH' architecture not currently supported"; exit 1;;
+esac
+
 case $OPAM_VERSION in
     2|2.0) OPAM_VERSION=$OPAM_LATEST_RELEASE;;
     1.*) echo "Opam version '$OPAM_VERSION' is not supported"; exit 1;;
@@ -115,13 +121,13 @@ install_opam2 () {
                 install_ocaml
             fi
             apt_install bubblewrap
-            sudo wget https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-linux -O /usr/local/bin/opam
+            sudo wget https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-$OPAM_ARCH-linux -O /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
         osx)
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 brew install ocaml
             fi
-            sudo curl -fsSL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos -o /usr/local/bin/opam
+            sudo curl -fsSL https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-$OPAM_ARCH-macos -o /usr/local/bin/opam
             sudo chmod +x /usr/local/bin/opam ;;
     esac
 }

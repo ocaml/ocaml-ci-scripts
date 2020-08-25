@@ -1,4 +1,4 @@
-echo -en "travis_fold:start:prepare.ci\r"
+( set +x; echo -en "travis_fold:start:prepare.ci\r"; ) 2>/dev/null
 # If a fork of these scripts is specified, use that GitHub user instead
 fork_user=${FORK_USER:-ocaml}
 
@@ -34,5 +34,5 @@ opam remove -a travis-opam
 mv ~/ci-opam ~/.opam/$(opam switch show)/bin/ci-opam
 mv ~/opam-package-upgrade ~/.opam/$(opam switch show)/bin/opam-package-upgrade
 
-echo -en "travis_fold:end:prepare.ci\r"
+( set +x; echo -en "travis_fold:end:prepare.ci\r" ) 2>/dev/null
 opam config exec -- ci-opam

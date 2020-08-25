@@ -334,7 +334,7 @@ with_fold "Simple.depopts" (fun () ->
           ?|> "opam show %s | grep -oP 'depopts: \\K(.*)' | sed 's/ | / /g'" pkg
         in
         Some d
-      | depopts -> Some (depopts *~ " ")
+      | depopts -> echo "DEPOPTS=%s" (depopts *~ " "); Some (depopts *~ " ")
     in
     match depopts_run with
     | None   -> echo "DEPOPTS=false, skipping the optional dependency run.";

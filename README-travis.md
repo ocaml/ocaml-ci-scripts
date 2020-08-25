@@ -274,7 +274,7 @@ To use a different version of opam, use:
   - [...] OPAM_VERSION="1.2.2"
  ```
 
-Supported versions are `2.0.0`, `1.2.2`, `1.2.0 and `1.1.2`.
+Supported versions are `2.0.0`, `1.2.2`, `1.2.0` and `1.1.2`.
 
 ### Testing on different OS
 
@@ -294,6 +294,20 @@ To enable XQuartz support on MacOS, use:
 ```yaml
   - [...] INSTALL_XQUARTZ=true
 ```
+
+### Testing on different architecture
+
+See https://docs.travis-ci.com/user/multi-cpu-architectures/
+
+Add the following to your `.travis.yml`:
+
+```yaml
+arch:
+  - amd64
+  - arm64
+```
+
+For the moment only AMD64 (x86_64) and ARM64 (AArch64) are supported by our script.
 
 ## Pushing OCamldoc docs to Github page, `.travis-docgen.sh`
 

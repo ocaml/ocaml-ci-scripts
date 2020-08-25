@@ -115,7 +115,8 @@ install_opam2 () {
         linux)
             case $TRAVIS_DIST in
                 precise|trusty|xenial)
-                    add_ppa ansible/bubblewrap ;;
+                    # Required for bubblewrap (supports arm64 & amd64)
+                    add_ppa avsm/ppa ;;
             esac
             if [ "${INSTALL_LOCAL:=0}" = 0 ] ; then
                 install_ocaml

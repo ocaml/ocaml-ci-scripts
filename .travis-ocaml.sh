@@ -315,7 +315,8 @@ echo OPAM_SWITCH=$OPAM_SWITCH     >> .travis-ocaml.env
 echo export ASSUME_ALWAYS_YES=YES >> .travis-ocaml.env
 
 if [ -x "$(command -v ocaml)" ]; then
-    ocaml -version
+    # "|| true" is a temp fix for OCaml 4.12: https://github.com/ocaml/ocaml/pull/9798
+    ocaml -version || true
 else
     echo "OCaml is not yet installed"
 fi

@@ -28,7 +28,7 @@ OCAML_BETA=${OCAML_BETA:-disable}
 
 OPAM_LATEST_RELEASE=2.0.7
 
-case $TRAVIS_CPU_ARCH in
+case ${TRAVIS_CPU_ARCH:-amd64} in
     amd64) OPAM_ARCH=x86_64;;
     arm64) OPAM_ARCH=arm64;;
     *) echo "'$TRAVIS_CPU_ARCH' architecture not currently supported"; exit 1;;

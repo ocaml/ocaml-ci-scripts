@@ -16,6 +16,7 @@ get() {
 test "$TRAVIS_REPO_SLUG" = "ocaml/ocaml-ci-scripts" || \
   get .travis-ocaml.sh
 sh .travis-ocaml.sh
+source .travis-ocaml.env
 
 export OPAMYES=1
 eval $(opam config env)

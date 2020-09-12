@@ -192,7 +192,7 @@ install_on_linux () {
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
     4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
     4.10) OCAML_FULL_VERSION=4.10.1; install_opam2 ;;
-    4.11) OCAML_FULL_VERSION=4.11.0; install_opam2 ;;
+    4.11) OCAML_FULL_VERSION=4.11.1; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
@@ -258,12 +258,12 @@ install_on_osx () {
     4.06) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
     4.07) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
-    4.09) OCAML_FULL_VERSION=4.09.0;
+    4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
+    4.10) OCAML_FULL_VERSION=4.10.0;
           OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
           brew install ocaml;
           install_opam2 ;;
-    4.10) OCAML_FULL_VERSION=4.10.1; install_opam2 ;;
-    4.11) OCAML_FULL_VERSION=4.11.0; install_opam2 ;;
+    4.11) OCAML_FULL_VERSION=4.11.1; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
@@ -290,7 +290,7 @@ OPAM_SWITCH=${OPAM_SWITCH:-$ocaml_package.$OCAML_FULL_VERSION}
 
 PACKAGES="$OPAM_SWITCH"
 case "$OCAML_VERSION" in
-  3.12|4.00|4.01|4.02|4.03|4.04|4.05|4.06)
+  3.12|4.00|4.01|4.02|4.03|4.04|4.05|4.06|4.07)
     PACKAGES="$PACKAGES,ocaml-secondary-compiler";;
 esac
 
@@ -312,7 +312,7 @@ esac
 echo OCAML_VERSION=$OCAML_VERSION >  .travis-ocaml.env
 echo OPAM_SWITCH=$OPAM_SWITCH     >> .travis-ocaml.env
 
-# Temporary fix an issue with opam-depext < 1.1.3 on FreeBSD.
+# Temporary fix an issue with opam-depext < 1.1.4 on FreeBSD.
 # See https://github.com/ocaml/opam-depext/pull/123
 echo export ASSUME_ALWAYS_YES=YES >> .travis-ocaml.env
 

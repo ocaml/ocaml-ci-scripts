@@ -192,7 +192,7 @@ install_on_linux () {
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
     4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
     4.10) OCAML_FULL_VERSION=4.10.1; install_opam2 ;;
-    4.11) OCAML_FULL_VERSION=4.11.0; install_opam2 ;;
+    4.11) OCAML_FULL_VERSION=4.11.1; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
@@ -258,12 +258,12 @@ install_on_osx () {
     4.06) OCAML_FULL_VERSION=4.06.1; install_opam2 ;;
     4.07) OCAML_FULL_VERSION=4.07.1; install_opam2 ;;
     4.08) OCAML_FULL_VERSION=4.08.1; install_opam2 ;;
-    4.09) OCAML_FULL_VERSION=4.09.0;
+    4.09) OCAML_FULL_VERSION=4.09.1; install_opam2 ;;
+    4.10) OCAML_FULL_VERSION=4.10.0;
           OPAM_SWITCH=${OPAM_SWITCH:-ocaml-system};
           brew install ocaml;
           install_opam2 ;;
-    4.10) OCAML_FULL_VERSION=4.10.1; install_opam2 ;;
-    4.11) OCAML_FULL_VERSION=4.11.0; install_opam2 ;;
+    4.11) OCAML_FULL_VERSION=4.11.1; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then

@@ -290,7 +290,7 @@ OPAM_SWITCH=${OPAM_SWITCH:-$ocaml_package.$OCAML_FULL_VERSION}
 
 PACKAGES="$OPAM_SWITCH"
 case "$OCAML_VERSION" in
-  3.12|4.00|4.01|4.02|4.03|4.04|4.05|4.06)
+  3.12|4.00|4.01|4.02|4.03|4.04|4.05|4.06|4.07)
     PACKAGES="$PACKAGES,ocaml-secondary-compiler";;
 esac
 

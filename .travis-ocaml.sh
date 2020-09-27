@@ -40,7 +40,10 @@ case $OPAM_VERSION in
 esac
 
 if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
-    brew update &> /dev/null
+    brew update &> /dev/null &
+    while sleep 60; do echo "brew update is still running..."; done &
+    wait %1
+    kill %2
     BREW_OPAM_VERSION=$(brew info opam --json=v1 | sed -e 's/.*"versions":{[^}]*"stable":"//' -e 's/".*//')
     if [ "$OPAM_VERSION" != "$BREW_OPAM_VERSION" ] ; then
         set +x

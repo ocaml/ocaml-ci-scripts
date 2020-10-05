@@ -299,7 +299,7 @@ with_fold "Prepare" (fun () ->
     List.iter pin pins;
     ?|~ "echo %s are pinned" (String.concat ", " (List.map fst pins));
     ?|  "eval $(opam config env)";
-    ?|  "opam install depext";
+    ?|  "opam install opam-depext";
     (* Install the external dependencies *)
     ?|~ "opam depext -u %s" pkg;
   );

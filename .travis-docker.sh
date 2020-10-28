@@ -5,7 +5,7 @@ fold_name="prepare"
 ( set +x; echo -en "travis_fold:start:$fold_name.ci\r" ) 2>/dev/null
 default_user=ocaml
 default_branch=master
-default_hub_user=ocaml
+default_hub_user=ocurrent
 default_opam_version=2
 default_base_remote_branch=master
 beta_repository=git://github.com/ocaml/ocaml-beta-repository.git
@@ -46,7 +46,7 @@ if [ "$opam_version" != "2" ] ; then
   fold_name="continue"
   set -x
 fi
-from=${hub_user}/opam2:${DISTRO}
+from=${hub_user}/opam:${DISTRO}
 
 echo FROM $from  > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile

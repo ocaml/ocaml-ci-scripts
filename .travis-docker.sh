@@ -34,35 +34,19 @@ if [ -n "${PRE_INSTALL_HOOK+x}" ] ; then echo PRE_INSTALL_HOOK="$PRE_INSTALL_HOO
 if [ -n "${POST_INSTALL_HOOK+x}" ] ; then echo POST_INSTALL_HOOK="$POST_INSTALL_HOOK" >> env.list ; fi
 echo $EXTRA_ENV >> env.list
 
-# build a local image to trigger any ONBUILDs
-case $opam_version in
-    2*)
-        if [ "$opam_version" != "2" ] ; then
-          set +x
-          # There is no way to tell Travis to close a fold but have it initially
-          # open.
-          echo -en "travis_fold:end:$fold_name.ci\r"
-          echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"2\"" >&2
-          echo -e "[\e[0;31mWARNING\e[0m] The containers have the latest maintenance release of opam 2.0" >&2
-          opam_version=2
-          echo -en "travis_fold:start:continue.ci\r"
-          fold_name="continue"
-          set -x
-        fi
-        from=${hub_user}/opam2:${DISTRO} ;;
-    *)
-        if [ "$opam_version" != "1" ] ; then
-          set +x
-          echo -en "travis_fold:end:$fold_name.ci\r"
-          echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"1\"" >&2
-          echo -e "[\e[0;31mWARNING\e[0m] The containers all run OPAM 1.2.2" >&2
-          echo -en "travis_fold:start:continue.ci\r"
-          fold_name="continue"
-          opam_version=1
-          set -x
-        fi
-        from=${hub_user}/opam:${DISTRO}_ocaml-${OCAML_VERSION} ;;
-esac
+if [ "$opam_version" != "2" ] ; then
+  set +x
+  # There is no way to tell Travis to close a fold but have it initially
+  # open.
+  echo -en "travis_fold:end:$fold_name.ci\r"
+  echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"2\"" >&2
+  echo -e "[\e[0;31mWARNING\e[0m] The containers have the latest maintenance release of opam 2.0" >&2
+  opam_version=2
+  echo -en "travis_fold:start:continue.ci\r"
+  fold_name="continue"
+  set -x
+fi
+from=${hub_user}/opam2:${DISTRO}
 
 echo FROM $from  > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile
@@ -70,15 +54,8 @@ echo WORKDIR /home/opam/opam-repository >> Dockerfile
 if [ -n "$BASE_REMOTE" ]; then
     echo "RUN opam repo remove --all default && opam repo add --all-switches default ${BASE_REMOTE}#${base_remote_branch}" >> Dockerfile
 else
-    case $opam_version in
-        2)
-          echo RUN git checkout master >> Dockerfile
-          echo RUN git pull -q origin master >> Dockerfile ;;
-        *)
-          echo RUN git fetch -q origin 1.2 >> Dockerfile
-          echo RUN git checkout 1.2 >> Dockerfile
-          echo RUN git pull -q origin 1.2 >> Dockerfile ;;
-    esac
+    echo RUN git checkout master >> Dockerfile
+    echo RUN git pull -q origin master >> Dockerfile ;;
 fi
 echo RUN opam update --verbose >> Dockerfile
 
@@ -89,19 +66,15 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
          >> Dockerfile
 fi
 
-case $opam_version in
-    2)
-      opam_repo_selection=
-      ocaml_package=ocaml-base-compiler
-      if [ "$OCAML_BETA" = "enable" ]; then
-          echo "RUN opam repo add --dont-select beta $beta_repository" >> Dockerfile
-          opam_repo_selection="--repo=default,beta "
-          ocaml_package=ocaml-variants
-      fi
-      echo "RUN opam switch ${OCAML_VERSION} ||\
-          opam switch create ${opam_repo_selection}${ocaml_package}.${OCAML_VERSION}" >> Dockerfile ;;
-    *) ;;
-esac
+opam_repo_selection=
+ocaml_package=ocaml-base-compiler
+if [ "$OCAML_BETA" = "enable" ]; then
+    echo "RUN opam repo add --dont-select beta $beta_repository" >> Dockerfile
+    opam_repo_selection="--repo=default,beta "
+    ocaml_package=ocaml-variants
+fi
+echo "RUN opam switch ${OCAML_VERSION} ||\
+    opam switch create ${opam_repo_selection}${ocaml_package}.${OCAML_VERSION}" >> Dockerfile
 
 echo RUN opam upgrade -y >> Dockerfile
 echo RUN opam depext -ui travis-opam >> Dockerfile

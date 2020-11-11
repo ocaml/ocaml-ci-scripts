@@ -5,7 +5,7 @@ fold_name="prepare"
 ( set +x; echo -en "travis_fold:start:$fold_name.ci\r" ) 2>/dev/null
 default_user=ocaml
 default_branch=master
-default_hub_user=ocurrent
+default_hub_user=ocaml
 default_opam_version=2
 default_base_remote_branch=master
 beta_repository=git://github.com/ocaml/ocaml-beta-repository.git

@@ -1,4 +1,4 @@
-FROM ocurrent/opam:alpine as base
+FROM ocaml/opam:alpine as base
 
 COPY . /home/opam/src/travis-opam
 RUN sudo chown opam.nogroup -R /home/opam/src/travis-opam

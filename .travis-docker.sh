@@ -55,7 +55,7 @@ if [ -n "$BASE_REMOTE" ]; then
     echo "RUN opam repo remove --all default && opam repo add --all-switches default ${BASE_REMOTE}#${base_remote_branch}" >> Dockerfile
 else
     echo RUN git checkout master >> Dockerfile
-    echo RUN git pull -q origin master >> Dockerfile ;;
+    echo RUN git pull -q origin master >> Dockerfile
 fi
 echo RUN opam update --verbose >> Dockerfile
 

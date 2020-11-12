@@ -1,6 +1,4 @@
-FROM ocaml/opam2:alpine as base
-
-RUN opam depext -iy dune
+FROM ocaml/opam:alpine as base
 
 COPY . /home/opam/src/travis-opam
 RUN sudo chown opam.nogroup -R /home/opam/src/travis-opam
@@ -8,6 +6,9 @@ RUN sudo chown opam.nogroup -R /home/opam/src/travis-opam
 WORKDIR /home/opam/src/travis-opam
 
 RUN sed -i "s/^;\(.*static.*\)$/\1/" src/dune
+RUN opam pin add -yn .
+RUN opam depext -y travis-opam
+RUN opam install -y --deps-only travis-opam
 RUN opam exec -- dune build
 RUN sudo cp /home/opam/src/travis-opam/_build/default/src/ci_opam.exe /usr/bin/ci-opam
 

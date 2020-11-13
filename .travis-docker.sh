@@ -49,7 +49,7 @@ fi
 
 case "$OCAML_VERSION" in
 4.02|4.03|4.04|4.05|4.06|4.07|4.08|4.09|4.10|4.11|4.12) is_standard_compiler=true;;
-*) is_standard_compiler=true;;
+*) is_standard_compiler=false;;
 esac
 
 if test $is_standard_compiler = true; then

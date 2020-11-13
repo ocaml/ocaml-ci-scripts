@@ -46,7 +46,17 @@ if [ "$opam_version" != "2" ] ; then
   fold_name="continue"
   set -x
 fi
-from=${hub_user}/opam:${DISTRO}
+
+case "$OCAML_VERSION" in
+4.02|4.03|4.04|4.05|4.06|4.07|4.08|4.09|4.10|4.11|4.12) is_standard_compiler=true;;
+*) is_standard_compiler=true;;
+esac
+
+if test $is_standard_compiler = true; then
+    from=${hub_user}/opam:${DISTRO}-ocaml-${OCAML_VERSION}
+else
+    from=${hub_user}/opam:${DISTRO}
+fi
 
 echo FROM $from  > Dockerfile
 echo WORKDIR /home/opam/opam-repository >> Dockerfile
@@ -66,15 +76,17 @@ if [ $fork_user != $default_user -o $fork_branch != $default_branch ]; then
          >> Dockerfile
 fi
 
-opam_repo_selection=
-ocaml_package=ocaml-base-compiler
-if [ "$OCAML_BETA" = "enable" ]; then
-    echo "RUN opam repo add --dont-select beta $beta_repository" >> Dockerfile
-    opam_repo_selection="--repo=default,beta "
-    ocaml_package=ocaml-variants
+if test $is_standard_compiler = false; then
+    opam_repo_selection=
+    ocaml_package=ocaml-base-compiler
+    if [ "$OCAML_BETA" = "enable" ]; then
+        echo "RUN opam repo add --dont-select beta $beta_repository" >> Dockerfile
+        opam_repo_selection="--repo=default,beta "
+        ocaml_package=ocaml-variants
+    fi
+    echo "RUN opam switch ${OCAML_VERSION} ||\
+        opam switch create ${opam_repo_selection}${ocaml_package}.${OCAML_VERSION}" >> Dockerfile
 fi
-echo "RUN opam switch ${OCAML_VERSION} ||\
-    opam switch create ${opam_repo_selection}${ocaml_package}.${OCAML_VERSION}" >> Dockerfile
 
 echo RUN opam upgrade -y >> Dockerfile
 echo RUN opam depext -ui travis-opam >> Dockerfile

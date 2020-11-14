@@ -52,6 +52,18 @@ case "$OCAML_VERSION" in
 *) is_standard_compiler=false;;
 esac
 
+# TODO: Hack... Please add it in ocurrent/docker-base-images
+case "$DISTRO" in
+alpine) DISTRO=alpine-3.12;;
+centos) DISTRO=centos-8;;
+debian-stable) DISTRO=debian-10;;
+oraclelinux) DISTRO=oraclelinux-8;;
+opensuse) DISTRO=opensuse-15.2;;
+fedora) DISTRO=fedora-32;;
+ubuntu) DISTRO=ubuntu-20.10;;
+ubuntu-lts) DISTRO=ubuntu-18.04;;
+esac
+
 if test $is_standard_compiler = true; then
     from=${hub_user}/opam:${DISTRO}-ocaml-${OCAML_VERSION}
 else

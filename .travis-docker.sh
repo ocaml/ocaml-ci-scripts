@@ -52,6 +52,10 @@ case "$OCAML_VERSION" in
 *) is_standard_compiler=false;;
 esac
 
+if test "${DISTRO}" = "debian-stable"; then
+  DISTRO=debian
+fi
+
 if test $is_standard_compiler = true; then
     from=${hub_user}/opam:${DISTRO}-ocaml-${OCAML_VERSION}
 else

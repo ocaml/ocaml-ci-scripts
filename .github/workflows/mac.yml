@@ -10,6 +10,8 @@ jobs:
     - name: install ocaml
       run: |
         brew install git
+        which git
+        ln -s `which git` /usr/local/bin/git
         bash -ex .travis-ocaml.sh
         eval $(opam env)
       env:

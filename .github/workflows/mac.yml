@@ -1,0 +1,17 @@
+name: CI on macOS
+
+on: [push]
+
+jobs:
+  build_ocaml:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install ocaml
+      run: |
+        bash -ex .travis-ocaml.sh
+        eval $(opam env)
+      env:
+        OPAM_VERSION: 2
+        OCAML_VERSION: 4.13
+        TRAVIS_OS_NAME: osx

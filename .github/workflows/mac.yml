@@ -9,6 +9,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: install ocaml
       run: |
+        brew install git
         bash -ex .travis-ocaml.sh
         eval $(opam env)
       env:

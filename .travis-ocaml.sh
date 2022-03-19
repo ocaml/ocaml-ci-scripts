@@ -75,7 +75,7 @@ if [ "${INSTALL_LOCAL+x}" = x ] ; then
 fi
 
 # the base opam repository to use for bootstrapping and catch-all namespace
-BASE_REMOTE=${BASE_REMOTE:-git://github.com/ocaml/opam-repository}
+BASE_REMOTE=${BASE_REMOTE:-https://github.com/ocaml/opam-repository.git}
 
 # whether we need a new gcc and binutils
 UPDATE_GCC_BINUTILS=${UPDATE_GCC_BINUTILS:-"0"}

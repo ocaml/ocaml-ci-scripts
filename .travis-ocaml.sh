@@ -44,7 +44,8 @@ if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
     while sleep 60; do echo "brew update is still running..."; done &
     wait %1
     kill %2
-    BREW_OPAM_VERSION=$(brew info opam --json=v1 | sed -e 's/.*"versions":{[^}]*"stable":"//' -e 's/".*//')
+    BREW_OPAM_VERSION=$(brew info opam --json=v1 | tr -d '\n' | sed -e 's/.*"versions": {[^}]*"stable": "//' -e 's/".*//')
+
     if [ "$OPAM_VERSION" != "$BREW_OPAM_VERSION" ] ; then
         set +x
         echo -e "[\e[0;31mWARNING\e[0m] Ignored OPAM_VERSION=$OPAM_VERSION; interpreted as \"$BREW_OPAM_VERSION\"" >&2

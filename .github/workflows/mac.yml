@@ -9,8 +9,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: install ocaml
       run: |
-        which git
-        [ -f /usr/local/bin/git ] || ln -s `which git` /usr/local/bin/git
         bash -ex .travis-ocaml.sh
         eval $(opam env)
       env:

@@ -2,7 +2,7 @@ $fork_user="ocaml"
 $fork_branch="master"
 $cyg_root="C:\cygwin64"
 $cyg_setup="setup-x86_64.exe"
-$cyg_mirror="http://cygwin.mirror.constant.com"
+$cyg_mirror="https://cygwin.mirror.constant.com"
 $appveyor_build_folder=".\"
 $cyg_pkgs=""
 

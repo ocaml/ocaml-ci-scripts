@@ -170,7 +170,8 @@ install_on_freebsd () {
     4.11) OCAML_FULL_VERSION=4.11.2; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.1; install_opam2 ;;
     4.13) OCAML_FULL_VERSION=4.13.1; install_opam2 ;;
-    4.14) OCAML_FULL_VERSION=4.14.0+trunk; OCAML_BETA=enable; install_opam2 ;;
+    4.14) OCAML_FULL_VERSION=4.14.0; install_opam2 ;;
+    5.0) OCAML_FULL_VERSION=5.0.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
             echo "Unknown OCAML_VERSION=$OCAML_VERSION"
@@ -200,7 +201,8 @@ install_on_linux () {
     4.11) OCAML_FULL_VERSION=4.11.2; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.1; install_opam2 ;;
     4.13) OCAML_FULL_VERSION=4.13.1; install_opam2 ;;
-    4.14) OCAML_FULL_VERSION=4.14.0+trunk; OCAML_BETA=enable; install_opam2 ;;
+    4.13) OCAML_FULL_VERSION=4.14.0; install_opam2 ;;
+    5.0) OCAML_FULL_VERSION=5.0.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
             echo "Unknown OCAML_VERSION=$OCAML_VERSION"
@@ -273,7 +275,8 @@ install_on_osx () {
     4.11) OCAML_FULL_VERSION=4.11.2; install_opam2 ;;
     4.12) OCAML_FULL_VERSION=4.12.1; install_opam2 ;;
     4.13) OCAML_FULL_VERSION=4.13.1; install_opam2 ;;
-    4.14) OCAML_FULL_VERSION=4.14.0+trunk; OCAML_BETA=enable; install_opam2 ;;
+    4.14) OCAML_FULL_VERSION=4.14.0; install_opam2 ;;
+    5.0) OCAML_FULL_VERSION=5.0.0+trunk; OCAML_BETA=enable; install_opam2 ;;
     *)
         if [ "$OCAML_BETA" != "enable" ]; then
             echo "Unknown OCAML_VERSION=$OCAML_VERSION"
